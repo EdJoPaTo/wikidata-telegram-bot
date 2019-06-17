@@ -33,6 +33,8 @@
 		"tokenpath": "/run/secrets/wikidatabot-token.txt"
 	},
 	"dependencies": {
+		"@sindresorhus/tsconfig": "^0.4.0",
+		"@types/node": "^12.0.2",
 		"array-filter-unique": "^2.1.0",
 		"locale-emoji": "^0.3.0",
 		"telegraf": "^3.30.1",
@@ -42,19 +44,17 @@
 		"telegraf-wikibase": "^0.1.0",
 		"telegram-typings": "^4.0.0-beta",
 		"ts-node": "^8.3.0",
+		"typescript": "^3.5.2",
 		"wikidata-entity-reader": "^1.2.0",
 		"wikidata-entity-store": "^1.1.0",
 		"wikidata-sdk": "^6.7.0",
 		"wikidata-sdk-got": "^1.1.1"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.4.0",
-		"@types/node": "^12.0.2",
 		"@typescript-eslint/eslint-plugin": "^1.10.2",
 		"@typescript-eslint/parser": "^1.10.2",
 		"del-cli": "^2.0.0",
 		"eslint-config-xo-typescript": "^0.14.0",
-		"typescript": "^3.3.3",
 		"xo": "^0.24.0"
 	},
 	"xo": {
