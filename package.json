@@ -1,0 +1,67 @@
+{
+	"name": "wikidata-telegram-bot",
+	"private": true,
+	"version": "0.0.0",
+	"description": "Quick Look on Wikidata Entities via Telegram",
+	"license": "MIT",
+	"repository": "EdJoPaTo/wikidata-telegram-bot",
+	"author": {
+		"name": "EdJoPaTo",
+		"email": "edjopato@gmail.com",
+		"url": "edjopato.de"
+	},
+	"engines": {
+		"node": ">=12"
+	},
+	"scripts": {
+		"build": "del dist && tsc",
+		"prepack": "npm run build",
+		"start": "ts-node source/index.ts",
+		"test": "tsc && xo"
+	},
+	"main": "dist",
+	"types": "dist",
+	"files": [
+		"dist",
+		"!*.test.*"
+	],
+	"keywords": [
+		"wikidata",
+		"telegram"
+	],
+	"config": {
+		"tokenpath": "/run/secrets/wikidatabot-token.txt"
+	},
+	"dependencies": {
+		"array-filter-unique": "^2.1.0",
+		"locale-emoji": "^0.3.0",
+		"telegraf": "^3.30.1",
+		"telegraf-i18n": "^6.5.0",
+		"telegraf-inline-menu": "^3.6.0",
+		"telegraf-session-local": "0.0.7",
+		"telegraf-wikibase": "^0.1.0",
+		"telegram-typings": "^4.0.0-beta",
+		"wikidata-entity-reader": "^1.2.0",
+		"wikidata-entity-store": "^1.1.0",
+		"wikidata-sdk": "^6.7.0",
+		"wikidata-sdk-got": "^1.1.1"
+	},
+	"devDependencies": {
+		"@sindresorhus/tsconfig": "^0.4.0",
+		"@types/node": "^12.0.2",
+		"@typescript-eslint/eslint-plugin": "^1.10.2",
+		"@typescript-eslint/parser": "^1.10.2",
+		"del-cli": "^2.0.0",
+		"eslint-config-xo-typescript": "^0.14.0",
+		"ts-node": "^8.3.0",
+		"typescript": "^3.3.3",
+		"xo": "^0.24.0"
+	},
+	"xo": {
+		"extends": "xo-typescript",
+		"extensions": [
+			"ts"
+		],
+		"rules": {}
+	}
+}

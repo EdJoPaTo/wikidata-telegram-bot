@@ -1,0 +1,11 @@
+{
+	"extends": "@sindresorhus/tsconfig",
+	"include": [
+		"source"
+	],
+	"compilerOptions": {
+		"target": "esnext",
+		"esModuleInterop": true,
+		"outDir": "dist"
+	}
+}
