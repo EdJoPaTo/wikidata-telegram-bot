@@ -41,6 +41,7 @@
 		"telegraf-session-local": "0.0.7",
 		"telegraf-wikibase": "^0.1.0",
 		"telegram-typings": "^4.0.0-beta",
+		"ts-node": "^8.3.0",
 		"wikidata-entity-reader": "^1.2.0",
 		"wikidata-entity-store": "^1.1.0",
 		"wikidata-sdk": "^6.7.0",
@@ -53,7 +54,6 @@
 		"@typescript-eslint/parser": "^1.10.2",
 		"del-cli": "^2.0.0",
 		"eslint-config-xo-typescript": "^0.14.0",
-		"ts-node": "^8.3.0",
 		"typescript": "^3.3.3",
 		"xo": "^0.24.0"
 	},
