@@ -1,4 +1,5 @@
-# wikidata-telegram-bot [![Build Status](https://travis-ci.com/EdJoPaTo/wikidata-telegram-bot.svg?branch=master)](https://travis-ci.com/EdJoPaTo/wikidata-telegram-bot)
+# Wikidata Telegram Bot
+[![Build Status](https://travis-ci.com/EdJoPaTo/wikidata-telegram-bot.svg?branch=master)](https://travis-ci.com/EdJoPaTo/wikidata-telegram-bot)
 
 > Quick Look on Wikidata Entities via Telegram
 
