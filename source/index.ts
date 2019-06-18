@@ -41,7 +41,7 @@ bot.use(i18n.middleware());
 
 console.time('preload wikidata entity store');
 const wdEntityStore = new WikidataEntityStore({
-	properties: ['info', 'labels', 'descriptions', 'aliases', 'claims']
+	properties: ['info', 'labels', 'descriptions', 'aliases', 'claims', 'sitelinks']
 });
 
 bot.use(new TelegrafWikibase(wdEntityStore, {

@@ -1,3 +1,4 @@
+import {getSitelinkData} from 'wikidata-sdk';
 import {Markup, UrlButton} from 'telegraf';
 import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
@@ -47,8 +48,15 @@ export function entityButtons(store: WikidataEntityStore, entityId: string, lang
 		)
 	];
 
+	const sitelinkButtons: UrlButton[] = entity.allSitelinksInLang()
+		.map(o => Markup.urlButton(
+			getSitelinkData(o).project,
+			entity.sitelinkUrl(o)!
+		));
+
 	return [
 		...buttons,
+		...sitelinkButtons,
 		...claimUrlButtons(store, entity, 'buttons.website', language, url => url),
 		...claimUrlButtons(store, entity, 'buttons.github', language, part => `https://github.com/${part}`),
 		...claimUrlButtons(store, entity, 'buttons.googlePlayStore', language, part => `https://play.google.com/store/apps/details?id=${part}`),
