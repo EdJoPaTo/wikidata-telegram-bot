@@ -96,7 +96,7 @@ function createInlineResult(ctx: any, result: SearchResult): InlineQueryResult {
 
 	const keyboard = Markup.inlineKeyboard(
 		entityButtons(ctx.wd.store, result.id, ctx.wd.locale()) as any[],
-		{columns: 2}
+		{columns: 1}
 	);
 
 	const image = entity.images(800).map(o => encodeURI(o))[0];

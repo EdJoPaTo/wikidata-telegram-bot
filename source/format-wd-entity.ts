@@ -69,7 +69,7 @@ function claimUrlButtons(store: WikidataEntityStore, entity: WikidataEntityReade
 
 	const buttons = claimValues.map(o =>
 		Markup.urlButton(
-			property.label(),
+			`${property.label()}${claimValues.length > 1 ? ` ${o}` : ''}`,
 			urlModifier(o)
 		)
 	);
