@@ -34,6 +34,12 @@ function headerText(entity: WikidataEntityReader): string {
 		text += description;
 	}
 
+	const aliases = entity.aliases();
+	if (aliases.length > 0) {
+		text += '\n\n';
+		text += markdownArray('Alias', aliases);
+	}
+
 	return text;
 }
 
