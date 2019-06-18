@@ -51,10 +51,13 @@ export function entityButtons(store: WikidataEntityStore, entityId: string, lang
 		...buttons,
 		...claimUrlButtons(store, entity, 'buttons.website', language, url => url),
 		...claimUrlButtons(store, entity, 'buttons.github', language, part => `https://github.com/${part}`),
+		...claimUrlButtons(store, entity, 'buttons.googlePlayStore', language, part => `https://play.google.com/store/apps/details?id=${part}`),
 		...claimUrlButtons(store, entity, 'buttons.imdb', language, part => `https://www.imdb.com/title/${part}/`),
+		...claimUrlButtons(store, entity, 'buttons.itunes', language, part => `https://itunes.apple.com/app/id${part}/`),
 		...claimUrlButtons(store, entity, 'buttons.sourceCodeRepo', language, url => url),
 		...claimUrlButtons(store, entity, 'buttons.steam', language, part => `https://store.steampowered.com/app/${part}/`),
 		...claimUrlButtons(store, entity, 'buttons.subreddit', language, part => `https://www.reddit.com/r/${part}/`),
+		...claimUrlButtons(store, entity, 'buttons.telegram', language, part => `https://t.me/${part}`),
 		...claimUrlButtons(store, entity, 'buttons.twitter', language, part => `https://twitter.com/${part}`),
 		...claimUrlButtons(store, entity, 'buttons.twitterHashtag', language, part => `https://twitter.com/hashtag/${part}?f=tweets`)
 	];

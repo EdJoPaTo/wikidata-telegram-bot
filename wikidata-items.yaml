@@ -5,10 +5,13 @@ action:
   search: Q36963
 buttons:
   github: P2037
+  googlePlayStore: P3418
   imdb: P345
+  itunes: P3861
   sourceCodeRepo: P1324
   steam: P1733
   subreddit: P3984
+  telegram: P3789
   twitter: P2002
   twitterHashtag: P2572
   website: P856
