@@ -5,8 +5,6 @@ import WikidataEntityStore from 'wikidata-entity-store';
 
 import {secureIsEntityId} from './wd-helper';
 
-const MAX_CLAIM_VALUES = 8;
-
 export function entityWithClaimText(store: WikidataEntityStore, entityId: string, claimIds: string[], language = 'en'): string {
 	const entity = new WikidataEntityReader(store.entity(entityId), language);
 
@@ -89,26 +87,10 @@ function claimText(store: WikidataEntityStore, entity: WikidataEntityReader, cla
 	const claimLabel = new WikidataEntityReader(store.entity(claim), language).label();
 	const claimValues = entity.claim(claim);
 
-	if (claimValues.length === 0) {
-		return '';
-	}
+	const claimValueTexts = claimValues
+		.map(o => claimValueText(store, o, language));
 
-	let text = '';
-	text += `*${claimLabel}*`;
-	text += '\n';
-
-	const lines = claimValues
-		.slice(0, MAX_CLAIM_VALUES)
-		.map(o => claimValueText(store, o, language))
-		.map(o => `- ${o}`);
-
-	text += lines.join('\n');
-
-	if (claimValues.length > MAX_CLAIM_VALUES) {
-		text += '\n- …';
-	}
-
-	return text;
+	return markdownArray(claimLabel, claimValueTexts);
 }
 
 function claimValueText(store: WikidataEntityStore, value: any, language: string): string {
@@ -119,4 +101,25 @@ function claimValueText(store: WikidataEntityStore, value: any, language: string
 	}
 
 	return String(value);
+}
+
+function markdownArray(label: string, values: readonly string[], maxValuesShown = 8): string {
+	if (values.length === 0) {
+		return '';
+	}
+
+	let text = '';
+	text += `*${label}*`;
+	text += '\n';
+
+	text += values
+		.slice(0, maxValuesShown)
+		.map(o => `- ${o}`)
+		.join('\n');
+
+	if (values.length > maxValuesShown) {
+		text += '\n- …';
+	}
+
+	return text;
 }
