@@ -7,4 +7,4 @@ Dockerfile
 node_modules
 
 # botfiles
-token.txt
+bot-token.txt

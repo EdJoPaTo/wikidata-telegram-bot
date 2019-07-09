@@ -1,4 +1,4 @@
-import {readFileSync} from 'fs';
+import {existsSync, readFileSync} from 'fs';
 
 import Telegraf, {Markup, Extra} from 'telegraf';
 import TelegrafI18n from 'telegraf-i18n';
@@ -13,7 +13,7 @@ import languageMenu from './language-menu';
 /* eslint @typescript-eslint/no-require-imports: warn */
 const LocalSession = require('telegraf-session-local');
 
-const tokenFilePath = process.env.NODE_ENV === 'production' ? process.env.npm_package_config_tokenpath as string : 'token.txt';
+const tokenFilePath = existsSync('/run/secrets') ? '/run/secrets/bot-token.txt' : 'bot-token.txt';
 const token = readFileSync(tokenFilePath, 'utf8').trim();
 const bot = new Telegraf(token);
 
