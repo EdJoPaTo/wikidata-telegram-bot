@@ -22,7 +22,7 @@ function genCharArray(charA: string, charZ: string): string[] {
 export async function init(store: WikidataEntityStore): Promise<void> {
 	const alphabet = genCharArray('A', 'Z');
 	const resultArrArr = await Promise.all(
-		alphabet.map(o => search('en', o))
+		alphabet.map(async o => search('en', o))
 	);
 
 	const entityIds = resultArrArr
