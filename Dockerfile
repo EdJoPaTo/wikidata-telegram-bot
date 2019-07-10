@@ -12,6 +12,7 @@ RUN rm -rf node_modules && npm ci --production
 
 FROM node:12-alpine
 WORKDIR /app
+VOLUME /app/persist
 
 ENV NODE_ENV=production
 
