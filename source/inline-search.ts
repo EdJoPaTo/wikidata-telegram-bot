@@ -99,8 +99,8 @@ function createInlineResult(ctx: any, result: SearchResult): InlineQueryResult {
 		{columns: 1}
 	);
 
-	const image = entity.images(800).map(o => encodeURI(o))[0];
-	const thumb = entity.images(100).map(o => encodeURI(o))[0];
+	const image = entity.images(800)[0];
+	const thumb = entity.images(100)[0];
 
 	const inlineResult: InlineQueryResult = {
 		type: image ? 'photo' : 'article',
