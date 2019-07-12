@@ -4,6 +4,7 @@ import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
 
 import {secureIsEntityId} from './wd-helper';
+import * as format from './format';
 
 export function entityWithClaimText(store: WikidataEntityStore, entityId: string, claimIds: string[], language = 'en'): string {
 	const entity = new WikidataEntityReader(store.entity(entityId), language);
@@ -24,9 +25,9 @@ export function entityWithClaimText(store: WikidataEntityStore, entityId: string
 
 function headerText(entity: WikidataEntityReader): string {
 	let text = '';
-	text += `*${entity.label()}*`;
+	text += format.bold(entity.label());
 	text += ' ';
-	text += `_${entity.qNumber()}_`;
+	text += format.italic(entity.qNumber());
 
 	const description = entity.description();
 	if (description) {
@@ -37,7 +38,7 @@ function headerText(entity: WikidataEntityReader): string {
 	const aliases = entity.aliases();
 	if (aliases.length > 0) {
 		text += '\n\n';
-		text += markdownArray('Alias', aliases);
+		text += format.array('Alias', aliases);
 	}
 
 	return text;
@@ -96,36 +97,15 @@ function claimText(store: WikidataEntityStore, entity: WikidataEntityReader, cla
 	const claimValueTexts = claimValues
 		.map(o => claimValueText(store, o, language));
 
-	return markdownArray(claimLabel, claimValueTexts);
+	return format.array(claimLabel, claimValueTexts);
 }
 
 function claimValueText(store: WikidataEntityStore, value: any, language: string): string {
 	if (secureIsEntityId(value)) {
 		const id = value as string;
 		const reader = new WikidataEntityReader(store.entity(id), language);
-		return `[${reader.label()}](${reader.url()})`;
+		return format.url(reader.label(), reader.url());
 	}
 
 	return String(value);
-}
-
-function markdownArray(label: string, values: readonly string[], maxValuesShown = 8): string {
-	if (values.length === 0) {
-		return '';
-	}
-
-	let text = '';
-	text += `*${label}*`;
-	text += '\n';
-
-	text += values
-		.slice(0, maxValuesShown)
-		.map(o => `- ${o}`)
-		.join('\n');
-
-	if (values.length > maxValuesShown) {
-		text += '\n- …';
-	}
-
-	return text;
 }
