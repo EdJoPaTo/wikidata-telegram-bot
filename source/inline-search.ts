@@ -109,7 +109,7 @@ function createInlineResult(ctx: any, result: SearchResult): InlineQueryResult {
 		description: result.description,
 		photo_url: image,
 		thumb_url: thumb,
-		parse_mode: 'markdown',
+		parse_mode: 'html',
 		reply_markup: keyboard
 	};
 
@@ -119,7 +119,7 @@ function createInlineResult(ctx: any, result: SearchResult): InlineQueryResult {
 		inlineResult.input_message_content = {
 			message_text: text,
 			disable_web_page_preview: true,
-			parse_mode: 'markdown'
+			parse_mode: 'html'
 		};
 	}
 

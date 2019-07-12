@@ -32,13 +32,13 @@ function headerText(entity: WikidataEntityReader): string {
 	const description = entity.description();
 	if (description) {
 		text += '\n';
-		text += description;
+		text += format.escapedText(description);
 	}
 
 	const aliases = entity.aliases();
 	if (aliases.length > 0) {
 		text += '\n\n';
-		text += format.array('Alias', aliases);
+		text += format.array('Alias', aliases.map(o => format.escapedText(o)));
 	}
 
 	return text;
@@ -107,5 +107,5 @@ function claimValueText(store: WikidataEntityStore, value: any, language: string
 		return format.url(reader.label(), reader.url());
 	}
 
-	return String(value);
+	return format.escapedText(String(value));
 }

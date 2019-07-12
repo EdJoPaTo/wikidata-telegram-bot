@@ -1,5 +1,9 @@
 // https://core.telegram.org/bots/api#markdown-style
 
+export function escapedText(text: string): string {
+	return text;
+}
+
 export function bold(text: string): string {
 	return `*${text}*`;
 }

@@ -1,4 +1,4 @@
-import * as format from './markdown';
+import * as format from './html';
 
 export function array(label: string, values: readonly string[], maxValuesShown = 8): string {
 	if (values.length === 0) {
