@@ -1,4 +1,4 @@
-import {getSitelinkData} from 'wikidata-sdk';
+import {getSitelinkData, getImageUrl} from 'wikidata-sdk';
 import {Markup, UrlButton} from 'telegraf';
 import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
@@ -108,4 +108,23 @@ function claimValueText(store: WikidataEntityStore, value: any, language: string
 	}
 
 	return format.escapedText(String(value));
+}
+
+export function image(entity: WikidataEntityReader): {photo?: string; thumb?: string} {
+	const possible = [
+		...entity.claim('P18'), // Image
+		...entity.claim('P154') // Logo image
+	]
+		.filter(o => typeof o === 'string') as string[];
+
+	if (possible.length === 0) {
+		return {};
+	}
+
+	const selected = possible[0];
+
+	return {
+		photo: encodeURI(getImageUrl(selected, 800)),
+		thumb: encodeURI(getImageUrl(selected, 100))
+	};
 }

@@ -7,7 +7,7 @@ import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
 
 import {entitiesInClaimValues} from './wd-helper';
-import {entityWithClaimText, entityButtons} from './format-wd-entity';
+import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
 import * as CLAIMS from './claim-ids';
 
 function genCharArray(charA: string, charZ: string): string[] {
@@ -99,21 +99,20 @@ function createInlineResult(ctx: any, result: SearchResult): InlineQueryResult {
 		{columns: 1}
 	);
 
-	const image = entity.images(800)[0];
-	const thumb = entity.images(100)[0];
+	const {photo, thumb} = image(entity);
 
 	const inlineResult: InlineQueryResult = {
-		type: image ? 'photo' : 'article',
+		type: photo ? 'photo' : 'article',
 		id: result.id,
 		title: result.label,
 		description: result.description,
-		photo_url: image,
-		thumb_url: thumb,
+		photo_url: photo!,
+		thumb_url: thumb!,
 		parse_mode: 'html',
 		reply_markup: keyboard
 	};
 
-	if (image) {
+	if (photo) {
 		inlineResult.caption = text;
 	} else {
 		inlineResult.input_message_content = {
