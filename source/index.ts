@@ -59,6 +59,8 @@ bot.use(new TelegrafWikibase(wdEntityStore, {
 
 bot.use(inlineSearch.bot as any);
 
+bot.hears('/start language', languageMenu.replyMenuMiddleware().middleware());
+
 bot.use(languageMenu.init({
 	backButtonText: (ctx: any) => `🔙 ${ctx.i18n.t('menu.back')}`,
 	mainMenuButtonText: (ctx: any) => `🔝 ${ctx.wd.r('menu.menu').label()}`

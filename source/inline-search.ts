@@ -55,6 +55,8 @@ bot.on('inline_query', async ctx => {
 		.map(o => createInlineResult(ctx, o));
 
 	const options = {
+		switch_pm_text: '🏳️‍🌈 ' + ((ctx as any).wd.r('menu.language') as WikidataEntityReader).label(),
+		switch_pm_parameter: 'language',
 		is_personal: true,
 		cache_time: 20
 	};
