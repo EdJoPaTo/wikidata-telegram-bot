@@ -6,6 +6,11 @@ export const TEXT_INTEREST = [
 	// labels
 	'P1705', // native label
 	'P1448', // official name
+	'P5061', // unit symbol
+	'P246', // element symbol
+	'P1086', // atomic number
+	'P628', // E Number (food additives)
+	'P274', // chemical formula
 	'P487', // unicode character
 
 	// whats it
@@ -14,6 +19,8 @@ export const TEXT_INTEREST = [
 	'P136', // genre
 	'P361', // part of
 	'P366', // use
+	'P1552', // has quality
+	'P111', // measured physical quantity (kelvin measures temperature)
 
 	// meta data
 	'P21', // gender
@@ -34,6 +41,9 @@ export const TEXT_INTEREST = [
 	'P2067', // mass
 	'P2048', // height
 	'P2049', // width
+	'P2101', // melting point
+	'P2102', // boiling point
+	'P2199', // autoignition temperature
 
 	// whats in it
 	'P4330', // contains

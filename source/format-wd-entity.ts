@@ -113,7 +113,9 @@ function claimValueText(store: WikidataEntityStore, value: any, language: string
 export function image(entity: WikidataEntityReader): {photo?: string; thumb?: string} {
 	const possible = [
 		...entity.claim('P18'), // Image
-		...entity.claim('P154') // Logo image
+		...entity.claim('P154'), // Logo image
+		...entity.claim('P5555'), // Schematic illustation
+		...entity.claim('P117') // Chemical structure
 	]
 		.filter(o => typeof o === 'string') as string[];
 
