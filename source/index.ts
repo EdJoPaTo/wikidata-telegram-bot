@@ -15,7 +15,6 @@ const LocalSession = require('telegraf-session-local');
 
 const tokenFilePath = existsSync('/run/secrets') ? '/run/secrets/bot-token.txt' : 'bot-token.txt';
 const token = readFileSync(tokenFilePath, 'utf8').trim();
-const bot = new Telegraf(token);
 
 const localSession = new LocalSession({
 	// Database name/path, where sessions will be located (default: 'sessions.json')
@@ -28,8 +27,6 @@ const localSession = new LocalSession({
 	getSessionKey: (ctx: any) => `${ctx.from.id}`
 });
 
-bot.use(localSession.middleware());
-
 const i18n = new TelegrafI18n({
 	directory: 'locales',
 	defaultLanguage: 'en',
@@ -37,16 +34,10 @@ const i18n = new TelegrafI18n({
 	useSession: true
 });
 
-bot.use(i18n.middleware());
-
 console.time('preload wikidata entity store');
 const wdEntityStore = new WikidataEntityStore({
 	properties: ['info', 'labels', 'descriptions', 'aliases', 'claims', 'sitelinks']
 });
-
-bot.use(new TelegrafWikibase(wdEntityStore, {
-	contextKey: 'wd'
-}).middleware());
 
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
 wdEntityStore.addResourceKeyYaml(wikidataResourceKeyYaml)
@@ -57,6 +48,15 @@ CLAIMS.init(wdEntityStore)
 
 inlineSearch.init(wdEntityStore)
 	.then(() => console.timeLog('preload wikidata entity store', 'presearch inline search'));
+
+const bot = new Telegraf(token);
+bot.use(localSession.middleware());
+bot.use(i18n.middleware());
+
+bot.use(new TelegrafWikibase(wdEntityStore, {
+	contextKey: 'wd'
+}).middleware());
+
 bot.use(inlineSearch.bot as any);
 
 bot.use(languageMenu.init({
