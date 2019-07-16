@@ -1,10 +1,10 @@
 FROM node:12-alpine
 WORKDIR /build
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json tsconfig.json ./
 RUN npm ci
 
-COPY . ./
+COPY source source
 RUN node_modules/.bin/tsc
 
 RUN rm -rf node_modules && npm ci --production
