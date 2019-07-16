@@ -4,6 +4,7 @@
 botfather-settings
 dist
 Dockerfile
+media
 node_modules
 
 # botfiles
