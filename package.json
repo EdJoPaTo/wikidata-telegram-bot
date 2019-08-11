@@ -31,6 +31,7 @@
 	],
 	"dependencies": {
 		"array-filter-unique": "^2.1.0",
+		"got": "^9.6.0",
 		"locale-emoji": "^0.3.0",
 		"source-map-support": "^0.5.12",
 		"telegraf": "^3.30.1",

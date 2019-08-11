@@ -6,7 +6,7 @@ import arrayFilterUnique from 'array-filter-unique';
 import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
 
-import {entitiesInClaimValues} from './wd-helper';
+import {entitiesInClaimValues, getPopularEntities} from './wd-helper';
 import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
 import * as CLAIMS from './claim-ids';
 
@@ -36,6 +36,15 @@ export async function init(store: WikidataEntityStore): Promise<void> {
 /* eslint @typescript-eslint/camelcase: off */
 export const bot = new Composer();
 
+async function getSearchResults(language: string, query: string): Promise<string[]> {
+	if (query) {
+		const results = await search(language, query);
+		return results.map(o => o.id);
+	}
+
+	return getPopularEntities();
+}
+
 bot.on('inline_query', async ctx => {
 	const {query} = ctx.inlineQuery!;
 	const language = (ctx as any).wd.locale();
@@ -45,10 +54,10 @@ bot.on('inline_query', async ctx => {
 
 	const store = (ctx as any).wd.store as WikidataEntityStore;
 
-	const searchResults = await search(language, query || ctx.from!.first_name);
+	const searchResults = await getSearchResults(language, query);
 	console.timeLog(identifier, 'search', searchResults.length);
 
-	await preload(store, searchResults.map(o => o.id));
+	await preload(store, searchResults);
 	console.timeLog(identifier, 'preload');
 
 	const inlineResults = searchResults
@@ -91,13 +100,13 @@ async function preload(store: WikidataEntityStore, entityIds: string[]): Promise
 	await store.preloadQNumbers(...claimEntityIds);
 }
 
-function createInlineResult(ctx: any, result: SearchResult): InlineQueryResult {
-	const entity = ctx.wd.r(result.id) as WikidataEntityReader;
+function createInlineResult(ctx: any, entityId: string): InlineQueryResult {
+	const entity = ctx.wd.r(entityId) as WikidataEntityReader;
 
-	const text = entityWithClaimText(ctx.wd.store, result.id, CLAIMS.TEXT_INTEREST, ctx.wd.locale());
+	const text = entityWithClaimText(ctx.wd.store, entityId, CLAIMS.TEXT_INTEREST, ctx.wd.locale());
 
 	const keyboard = Markup.inlineKeyboard(
-		entityButtons(ctx.wd.store, result.id, ctx.wd.locale()) as any[],
+		entityButtons(ctx.wd.store, entityId, ctx.wd.locale()) as any[],
 		{columns: 1}
 	);
 
@@ -105,9 +114,9 @@ function createInlineResult(ctx: any, result: SearchResult): InlineQueryResult {
 
 	const inlineResult: InlineQueryResult = {
 		type: photo ? 'photo' : 'article',
-		id: result.id,
-		title: result.label,
-		description: result.description,
+		id: entityId,
+		title: entity.label(),
+		description: entity.description(),
 		photo_url: photo!,
 		thumb_url: thumb!,
 		parse_mode: 'html',
