@@ -50,7 +50,7 @@
 		"@typescript-eslint/eslint-plugin": "^1.10.2",
 		"@typescript-eslint/parser": "^1.10.2",
 		"del-cli": "^2.0.0",
-		"eslint-config-xo-typescript": "^0.15.0",
+		"eslint-config-xo-typescript": "^0.16.0",
 		"telegram-typings": "^4.0.0-beta",
 		"ts-node": "^8.3.0",
 		"typescript": "^3.5.2",
@@ -61,6 +61,9 @@
 		"extensions": [
 			"ts"
 		],
-		"rules": {}
+		"rules": {
+			"@typescript-eslint/require-await": "warn",
+			"@typescript-eslint/no-explicit-any": "off"
+		}
 	}
 }

@@ -23,7 +23,7 @@ export function secureIsEntityId(something: any): boolean {
 	return wdk.isEntityId(something);
 }
 
-export async function entitiesInClaimValues(entity: WikidataEntityReader | readonly WikidataEntityReader[], claims: string[]): Promise<string[]> {
+export function entitiesInClaimValues(entity: WikidataEntityReader | readonly WikidataEntityReader[], claims: string[]): string[] {
 	const entities: readonly WikidataEntityReader[] = Array.isArray(entity) ? entity : [entity];
 
 	return claims

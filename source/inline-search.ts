@@ -96,7 +96,7 @@ async function preload(store: WikidataEntityStore, entityIds: string[]): Promise
 
 	const entities = entityIds
 		.map(id => new WikidataEntityReader(store.entity(id)));
-	const claimEntityIds = await entitiesInClaimValues(entities, CLAIMS.TEXT_INTEREST);
+	const claimEntityIds = entitiesInClaimValues(entities, CLAIMS.TEXT_INTEREST);
 	await store.preloadQNumbers(...claimEntityIds);
 }
 
