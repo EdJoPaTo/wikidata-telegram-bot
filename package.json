@@ -47,10 +47,10 @@
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^0.4.0",
 		"@types/node": "^12.0.2",
-		"@typescript-eslint/eslint-plugin": "^1.10.2",
-		"@typescript-eslint/parser": "^1.10.2",
+		"@typescript-eslint/eslint-plugin": "^2.0.0",
+		"@typescript-eslint/parser": "^2.0.0",
 		"del-cli": "^2.0.0",
-		"eslint-config-xo-typescript": "^0.16.0",
+		"eslint-config-xo-typescript": "^0.17.0",
 		"telegram-typings": "^4.0.0-beta",
 		"ts-node": "^8.3.0",
 		"typescript": "^3.5.2",
