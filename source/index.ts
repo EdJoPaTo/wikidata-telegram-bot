@@ -82,4 +82,5 @@ bot.catch((error: any) => {
 	console.error('telegraf error occured', error);
 });
 
-bot.startPolling();
+bot.launch();
+console.log(new Date(), 'Bot started');
