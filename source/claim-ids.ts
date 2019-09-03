@@ -27,6 +27,7 @@ export const TEXT_INTEREST = [
 	'P571', // inception
 	'P577', // publication date
 	'P569', // date of birth
+	'P570', // date of death
 	'P1750', // name day
 	'P106', // occupation
 	'P57', // director
