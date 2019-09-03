@@ -4,7 +4,7 @@ import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
 
 import {secureIsEntityId} from './wd-helper';
-import * as format from './format';
+import {format, array} from './format';
 
 export function entityWithClaimText(store: WikidataEntityStore, entityId: string, claimIds: string[], language = 'en'): string {
 	const entity = new WikidataEntityReader(store.entity(entityId), language);
@@ -32,13 +32,13 @@ function headerText(entity: WikidataEntityReader): string {
 	const description = entity.description();
 	if (description) {
 		text += '\n';
-		text += format.escapedText(description);
+		text += format.escape(description);
 	}
 
 	const aliases = entity.aliases();
 	if (aliases.length > 0) {
 		text += '\n\n';
-		text += format.array('Alias', aliases.map(o => format.escapedText(o)));
+		text += array('Alias', aliases.map(o => format.escape(o)));
 	}
 
 	return text;
@@ -97,7 +97,7 @@ function claimText(store: WikidataEntityStore, entity: WikidataEntityReader, cla
 	const claimValueTexts = claimValues
 		.map(o => claimValueText(store, o, language));
 
-	return format.array(claimLabel, claimValueTexts);
+	return array(claimLabel, claimValueTexts);
 }
 
 function claimValueText(store: WikidataEntityStore, value: any, language: string): string {
@@ -107,7 +107,7 @@ function claimValueText(store: WikidataEntityStore, value: any, language: string
 		return format.url(reader.label(), reader.url());
 	}
 
-	return format.escapedText(String(value));
+	return format.escape(String(value));
 }
 
 export function image(entity: WikidataEntityReader): {photo?: string; thumb?: string} {

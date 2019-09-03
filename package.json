@@ -39,6 +39,7 @@
 		"telegraf-inline-menu": "^3.6.0",
 		"telegraf-session-local": "^1.0.2",
 		"telegraf-wikibase": "^0.2.0",
+		"telegram-format": "^1.0.0",
 		"wikidata-entity-reader": "^1.3.0",
 		"wikidata-entity-store": "^1.1.0",
 		"wikidata-sdk": "^6.7.0",

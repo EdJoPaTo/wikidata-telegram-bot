@@ -1,4 +1,4 @@
-import * as format from './html';
+import {html as format} from 'telegram-format';
 
 export function array(label: string, values: readonly string[], maxValuesShown = 8): string {
 	if (values.length === 0) {
