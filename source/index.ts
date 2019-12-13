@@ -34,20 +34,11 @@ const i18n = new TelegrafI18n({
 	useSession: true
 });
 
-console.time('preload wikidata entity store');
 const wdEntityStore = new WikidataEntityStore({
 	properties: ['info', 'labels', 'descriptions', 'aliases', 'claims', 'sitelinks']
 });
 
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
-wdEntityStore.addResourceKeyYaml(wikidataResourceKeyYaml)
-	.then(() => console.timeLog('preload wikidata entity store', 'wikidata-middleware'));
-
-CLAIMS.init(wdEntityStore)
-	.then(() => console.timeLog('preload wikidata entity store', 'claims of interest'));
-
-inlineSearch.init(wdEntityStore)
-	.then(() => console.timeLog('preload wikidata entity store', 'presearch inline search'));
 
 const bot = new Telegraf(token);
 bot.use(localSession.middleware());
@@ -83,5 +74,20 @@ bot.catch((error: any) => {
 	console.error('telegraf error occured', error);
 });
 
-bot.launch();
-console.log(new Date(), 'Bot started');
+async function startup(): Promise<void> {
+	console.time('preload wikidata entity store');
+
+	await wdEntityStore.addResourceKeyYaml(wikidataResourceKeyYaml);
+	console.timeLog('preload wikidata entity store', 'wikidata-middleware');
+
+	await CLAIMS.init(wdEntityStore);
+	console.timeLog('preload wikidata entity store', 'claims of interest');
+
+	await inlineSearch.init(wdEntityStore);
+	console.timeLog('preload wikidata entity store', 'presearch inline search');
+
+	await bot.launch();
+	console.log(new Date(), 'Bot started as', bot.options.username);
+}
+
+startup();
