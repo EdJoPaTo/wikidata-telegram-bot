@@ -4,8 +4,9 @@
 		"source"
 	],
 	"compilerOptions": {
-		"target": "esnext",
 		"esModuleInterop": true,
-		"outDir": "dist"
+		"outDir": "dist",
+		"sourceMap": true,
+		"target": "es2019"
 	}
 }

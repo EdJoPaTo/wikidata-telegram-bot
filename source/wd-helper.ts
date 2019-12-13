@@ -1,10 +1,7 @@
 import * as wdk from 'wikidata-sdk';
-import WikidataEntityReader from 'wikidata-entity-reader';
 import arrayFilterUnique from 'array-filter-unique';
-
-/* eslint @typescript-eslint/no-var-requires: warn */
-/* eslint @typescript-eslint/no-require-imports: warn */
-const got = require('got');
+import got from 'got';
+import WikidataEntityReader from 'wikidata-entity-reader';
 
 const HOUR_IN_SECONDS = 60 * 60;
 

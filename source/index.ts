@@ -57,7 +57,7 @@ bot.use(new TelegrafWikibase(wdEntityStore, {
 	contextKey: 'wd'
 }).middleware());
 
-bot.use(inlineSearch.bot as any);
+bot.use(inlineSearch.bot.middleware());
 
 bot.hears('/start language', languageMenu.replyMenuMiddleware().middleware());
 
