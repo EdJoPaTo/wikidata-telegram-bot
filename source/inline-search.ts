@@ -82,12 +82,14 @@ bot.on('inline_query', async ctx => {
 });
 
 async function search(language: string, query: string): Promise<SearchResult[]> {
-	const result = await searchEntities({
+	const options = {
 		search: query,
 		language,
+		continue: 0,
 		limit: 10
-	});
+	};
 
+	const result = await searchEntities(options);
 	return result.search;
 }
 
