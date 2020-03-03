@@ -25,7 +25,7 @@ export function entityWithClaimText(store: WikidataEntityStore, entityId: string
 
 function headerText(entity: WikidataEntityReader): string {
 	let text = '';
-	text += format.bold(entity.label());
+	text += format.bold(format.escape(entity.label()));
 	text += ' ';
 	text += format.italic(entity.qNumber());
 
@@ -104,7 +104,7 @@ function claimValueText(store: WikidataEntityStore, value: any, language: string
 	if (secureIsEntityId(value)) {
 		const id = value as string;
 		const reader = new WikidataEntityReader(store.entity(id), language);
-		return format.url(reader.label(), reader.url());
+		return format.url(format.escape(reader.label()), reader.url());
 	}
 
 	return format.escape(String(value));

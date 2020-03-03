@@ -6,7 +6,7 @@ export function array(label: string, values: readonly string[], maxValuesShown =
 	}
 
 	let text = '';
-	text += format.bold(label);
+	text += format.bold(format.escape(label));
 	text += '\n';
 
 	text += values
