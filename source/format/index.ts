@@ -1,5 +1,2 @@
-import {html} from 'telegram-format';
-
-export const format = html;
-
+export * from './format';
 export * from './general';
