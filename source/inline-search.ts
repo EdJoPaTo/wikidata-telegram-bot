@@ -8,6 +8,7 @@ import WikidataEntityStore from 'wikidata-entity-store';
 
 import {entitiesInClaimValues, getPopularEntities} from './wd-helper';
 import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
+import {format} from './format';
 import * as CLAIMS from './claim-ids';
 
 function genCharArray(charA: string, charZ: string): string[] {
@@ -121,7 +122,7 @@ function createInlineResult(ctx: any, entityId: string): InlineQueryResult {
 		description: entity.description(),
 		photo_url: photo!,
 		thumb_url: thumb!,
-		parse_mode: 'html',
+		parse_mode: format.parse_mode,
 		reply_markup: keyboard
 	};
 
@@ -131,7 +132,7 @@ function createInlineResult(ctx: any, entityId: string): InlineQueryResult {
 		inlineResult.input_message_content = {
 			message_text: text,
 			disable_web_page_preview: true,
-			parse_mode: 'html'
+			parse_mode: format.parse_mode
 		};
 	}
 
