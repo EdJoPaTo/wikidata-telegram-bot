@@ -1,5 +1,6 @@
 import {getSitelinkData, getImageUrl} from 'wikidata-sdk';
-import {Markup, UrlButton} from 'telegraf';
+import {Markup} from 'telegraf';
+import {UrlButton} from 'telegraf/typings/markup';
 import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
 

@@ -11,7 +11,7 @@ import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
 import {format} from './format';
 import * as CLAIMS from './claim-ids';
 
-function genCharArray(charA: string, charZ: string): string[] {
+function generateCharArray(charA: string, charZ: string): string[] {
 	const result = [];
 	for (let i = charA.charCodeAt(0); i <= charZ.charCodeAt(0); i++) {
 		result.push(String.fromCharCode(i));
@@ -21,12 +21,12 @@ function genCharArray(charA: string, charZ: string): string[] {
 }
 
 export async function init(store: WikidataEntityStore): Promise<void> {
-	const alphabet = genCharArray('A', 'Z');
-	const resultArrArr = await Promise.all(
+	const alphabet = generateCharArray('A', 'Z');
+	const resultArrayArray = await Promise.all(
 		alphabet.map(async o => search('en', o))
 	);
 
-	const entityIds = resultArrArr
+	const entityIds = resultArrayArray
 		.flat()
 		.map(o => o.id)
 		.filter(arrayFilterUnique());

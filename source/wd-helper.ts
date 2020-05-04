@@ -24,7 +24,7 @@ export function entitiesInClaimValues(entity: WikidataEntityReader | readonly Wi
 	const entities: readonly WikidataEntityReader[] = Array.isArray(entity) ? entity : [entity];
 
 	return claims
-		.flatMap(c => entities.flatMap(e => e.claim(c)))
+		.flatMap(claim => entities.flatMap(entity => entity.claim(claim)))
 		.filter(o => typeof o === 'string')
 		.filter(o => o.startsWith('Q') || o.startsWith('P'))
 		.filter(arrayFilterUnique())

@@ -21,8 +21,8 @@ const localSession = new LocalSession({
 	database: 'persist/sessions.json',
 	// Format of storage/database (default: JSON.stringify / JSON.parse)
 	format: {
-		serialize: (obj: any) => JSON.stringify(obj, null, '\t') + '\n',
-		deserialize: (str: string) => JSON.parse(str)
+		serialize: (input: any) => JSON.stringify(input, null, '\t') + '\n',
+		deserialize: (input: string) => JSON.parse(input)
 	},
 	getSessionKey: (ctx: any) => `${ctx.from.id}`
 });
@@ -90,4 +90,5 @@ async function startup(): Promise<void> {
 	console.log(new Date(), 'Bot started as', bot.options.username);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 startup();

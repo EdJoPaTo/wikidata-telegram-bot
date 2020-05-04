@@ -11,10 +11,10 @@
 		"url": "https://edjopato.de"
 	},
 	"engines": {
-		"node": ">=12"
+		"node": ">=14"
 	},
 	"scripts": {
-		"build": "del dist && tsc",
+		"build": "del-cli dist && tsc",
 		"prepack": "npm run build",
 		"start": "ts-node source/index.ts",
 		"test": "tsc && xo"
@@ -31,10 +31,10 @@
 	],
 	"dependencies": {
 		"array-filter-unique": "^2.1.0",
-		"got": "^10.0.4",
+		"got": "^11.1.0",
 		"locale-emoji": "^0.3.0",
 		"source-map-support": "^0.5.12",
-		"telegraf": "^3.30.1",
+		"telegraf": "^3.38.0",
 		"telegraf-i18n": "^6.5.0",
 		"telegraf-inline-menu": "^4.0.0",
 		"telegraf-session-local": "^1.0.2",
@@ -52,16 +52,14 @@
 		"telegram-typings": "^4.0.0-beta",
 		"ts-node": "^8.3.0",
 		"typescript": "^3.7.3",
-		"xo": "^0.27.2"
+		"xo": "^0.30.0"
 	},
 	"xo": {
-		"extends": "xo-typescript",
-		"extensions": [
-			"ts"
-		],
 		"rules": {
+			"@typescript-eslint/prefer-readonly-parameter-types": "off",
+			"@typescript-eslint/restrict-template-expressions": "off",
 			"prefer-named-capture-group": "off",
-			"@typescript-eslint/restrict-template-expressions": "off"
+			"unicorn/no-fn-reference-in-iterator": "off"
 		}
 	}
 }
