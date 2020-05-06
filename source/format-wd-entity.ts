@@ -103,7 +103,7 @@ function claimText(store: WikidataEntityStore, entity: WikidataEntityReader, cla
 	return array(claimLabel, claimValueTexts);
 }
 
-function claimValueText(store: WikidataEntityStore, value: any, language: string): string {
+function claimValueText(store: WikidataEntityStore, value: unknown, language: string): string {
 	if (secureIsEntityId(value)) {
 		const id = value as string;
 		const reader = new WikidataEntityReader(store.entity(id), language);

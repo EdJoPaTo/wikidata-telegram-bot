@@ -1,11 +1,11 @@
-import TelegrafInlineMenu from 'telegraf-inline-menu';
+import {MenuTemplate} from 'telegraf-inline-menu';
+
+import {Context, backButtons} from './bot-generics';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const localeEmoji = require('locale-emoji');
 
-const menu = new TelegrafInlineMenu(ctx => languageMenuText(ctx));
-
-menu.setCommand(['lang', 'language', 'settings']);
+export const menu = new MenuTemplate<Context>(ctx => languageMenuText(ctx));
 
 function flagString(languageCode: string, useFallbackFlag = false): string {
 	const flag = localeEmoji(languageCode);
@@ -16,26 +16,26 @@ function flagString(languageCode: string, useFallbackFlag = false): string {
 	return flag;
 }
 
-function languageMenuText(ctx: any): string {
+function languageMenuText(ctx: Context): string {
 	const flag = flagString(ctx.wd.locale(), true);
 	return `${flag} ${ctx.wd.r('menu.language').label()}`;
 }
 
-menu.select('lang', (ctx: any) => ctx.wd.availableLocales(0), {
+menu.select('lang', ctx => ctx.wd.availableLocales(0), {
 	columns: 3,
-	textFunc: (_ctx, key) => {
+	buttonText: (_, key) => {
 		const flag = flagString(key);
 		return `${flag} ${key}`;
 	},
-	isSetFunc: (ctx: any, key) => key === ctx.wd.locale(),
-	setFunc: (ctx: any, key) => {
+	isSet: (ctx, key) => key === ctx.wd.locale(),
+	set: (ctx, key) => {
 		ctx.i18n.locale(key);
 		ctx.wd.locale(key);
 	},
-	getCurrentPage: (ctx: any) => ctx.session.page,
-	setPage: (ctx: any, page) => {
+	getCurrentPage: ctx => ctx.session.page,
+	setPage: (ctx, page) => {
 		ctx.session.page = page;
 	}
 });
 
-export default menu;
+menu.manualRow(backButtons);

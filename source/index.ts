@@ -1,13 +1,15 @@
 import {existsSync, readFileSync} from 'fs';
 
-import Telegraf, {Markup, Extra} from 'telegraf';
+import {MenuMiddleware} from 'telegraf-inline-menu';
+import {Telegraf, Markup, Extra} from 'telegraf';
 import TelegrafI18n from 'telegraf-i18n';
 import TelegrafWikibase from 'telegraf-wikibase';
 import WikidataEntityStore from 'wikidata-entity-store';
 
+import {Context} from './bot-generics';
+import {menu as languageMenu} from './language-menu';
 import * as CLAIMS from './claim-ids';
 import * as inlineSearch from './inline-search';
-import languageMenu from './language-menu';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const LocalSession = require('telegraf-session-local');
@@ -39,7 +41,7 @@ const wdEntityStore = new WikidataEntityStore({
 
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
 
-const bot = new Telegraf(token);
+const bot = new Telegraf<Context>(token);
 bot.use(localSession.middleware());
 bot.use(i18n.middleware());
 
@@ -49,14 +51,14 @@ bot.use(new TelegrafWikibase(wdEntityStore, {
 
 bot.use(inlineSearch.bot.middleware());
 
-bot.hears('/start language', languageMenu.replyMenuMiddleware().middleware());
+const languageMenuMiddleware = new MenuMiddleware('/', languageMenu);
 
-bot.use(languageMenu.init({
-	backButtonText: (ctx: any) => `🔙 ${ctx.i18n.t('menu.back')}`,
-	mainMenuButtonText: (ctx: any) => `🔝 ${ctx.wd.r('menu.menu').label()}`
-}));
+bot.command(['lang', 'language', 'settings'], async ctx => languageMenuMiddleware.replyToContext(ctx));
+bot.hears('/start language', async ctx => languageMenuMiddleware.replyToContext(ctx));
 
-bot.command(['start', 'help', 'search'], (ctx: any) => {
+bot.use(languageMenuMiddleware);
+
+bot.command(['start', 'help', 'search'], async ctx => {
 	const text = ctx.i18n.t('help');
 	const keyboard = Markup.inlineKeyboard([
 		Markup.switchToCurrentChatButton('inline search…', ''),

@@ -6,6 +6,7 @@ import arrayFilterUnique from 'array-filter-unique';
 import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
 
+import {Context} from './bot-generics';
 import {entitiesInClaimValues, getPopularEntities} from './wd-helper';
 import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
 import {format} from './format';
@@ -35,7 +36,7 @@ export async function init(store: WikidataEntityStore): Promise<void> {
 }
 
 /* eslint @typescript-eslint/camelcase: off */
-export const bot = new Composer();
+export const bot = new Composer<Context>();
 
 async function getSearchResults(language: string, query: string): Promise<readonly string[]> {
 	if (query) {
@@ -48,24 +49,22 @@ async function getSearchResults(language: string, query: string): Promise<readon
 
 bot.on('inline_query', async ctx => {
 	const {query} = ctx.inlineQuery!;
-	const language = (ctx as any).wd.locale();
+	const language = ctx.wd.locale();
 
 	const identifier = `inline query ${Number(ctx.inlineQuery!.id).toString(36).slice(-4)} ${ctx.from!.id} ${ctx.from!.first_name} ${language} ${query.length} ${query}`;
 	console.time(identifier);
 
-	const store = (ctx as any).wd.store as WikidataEntityStore;
-
 	const searchResults = await getSearchResults(language, query);
 	console.timeLog(identifier, 'search', searchResults.length);
 
-	await preload(store, searchResults);
+	await preload(ctx.wd.store, searchResults);
 	console.timeLog(identifier, 'preload');
 
 	const inlineResults = searchResults
 		.map(o => createInlineResult(ctx, o));
 
 	const options = {
-		switch_pm_text: '🏳️‍🌈 ' + ((ctx as any).wd.r('menu.language') as WikidataEntityReader).label(),
+		switch_pm_text: '🏳️‍🌈 ' + ctx.wd.r('menu.language').label(),
 		switch_pm_parameter: 'language',
 		is_personal: true,
 		cache_time: 20
@@ -102,13 +101,13 @@ async function preload(store: WikidataEntityStore, entityIds: readonly string[])
 	await store.preloadQNumbers(...claimEntityIds);
 }
 
-function createInlineResult(ctx: any, entityId: string): InlineQueryResult {
-	const entity = ctx.wd.r(entityId) as WikidataEntityReader;
+function createInlineResult(ctx: Context, entityId: string): InlineQueryResult {
+	const entity = ctx.wd.r(entityId);
 
 	const text = entityWithClaimText(ctx.wd.store, entityId, CLAIMS.TEXT_INTEREST, ctx.wd.locale());
 
 	const keyboard = Markup.inlineKeyboard(
-		entityButtons(ctx.wd.store, entityId, ctx.wd.locale()) as any[],
+		entityButtons(ctx.wd.store, entityId, ctx.wd.locale()).map(o => o),
 		{columns: 1}
 	);
 
