@@ -1,7 +1,7 @@
 import {Composer, Markup} from 'telegraf';
 import {InlineQueryResult} from 'telegram-typings';
 import {searchEntities} from 'wikidata-sdk-got';
-import {SearchResult} from 'wikidata-sdk';
+import {SearchResult} from 'wikibase-types';
 import arrayFilterUnique from 'array-filter-unique';
 import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
@@ -82,7 +82,7 @@ bot.on('inline_query', async ctx => {
 	], options);
 });
 
-async function search(language: string, query: string): Promise<SearchResult[]> {
+async function search(language: string, query: string): Promise<readonly SearchResult[]> {
 	const options = {
 		search: query,
 		language,
@@ -90,8 +90,7 @@ async function search(language: string, query: string): Promise<SearchResult[]> 
 		limit: 10
 	};
 
-	const result = await searchEntities(options);
-	return result.search;
+	return searchEntities(options);
 }
 
 async function preload(store: WikidataEntityStore, entityIds: string[]): Promise<void> {

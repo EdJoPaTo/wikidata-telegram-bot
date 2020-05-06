@@ -1,4 +1,3 @@
-import {getSitelinkData, getImageUrl} from 'wikidata-sdk';
 import {Markup} from 'telegraf';
 import {UrlButton} from 'telegraf/typings/markup';
 import WikidataEntityReader from 'wikidata-entity-reader';
@@ -6,6 +5,9 @@ import WikidataEntityStore from 'wikidata-entity-store';
 
 import {secureIsEntityId} from './wd-helper';
 import {format, array} from './format';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const wdk = require('wikidata-sdk');
 
 export function entityWithClaimText(store: WikidataEntityStore, entityId: string, claimIds: string[], language = 'en'): string {
 	const entity = new WikidataEntityReader(store.entity(entityId), language);
@@ -56,7 +58,7 @@ export function entityButtons(store: WikidataEntityStore, entityId: string, lang
 
 	const sitelinkButtons: UrlButton[] = entity.allSitelinksInLang()
 		.map(o => Markup.urlButton(
-			getSitelinkData(o).project,
+			wdk.getSitelinkData(o).project,
 			entity.sitelinkUrl(o)!
 		));
 
@@ -127,7 +129,7 @@ export function image(entity: WikidataEntityReader): {photo?: string; thumb?: st
 	const selected = possible[0];
 
 	return {
-		photo: encodeURI(getImageUrl(selected, 800)),
-		thumb: encodeURI(getImageUrl(selected, 100))
+		photo: encodeURI(wdk.getImageUrl(selected, 800)),
+		thumb: encodeURI(wdk.getImageUrl(selected, 100))
 	};
 }

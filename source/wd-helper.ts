@@ -1,7 +1,9 @@
-import * as wdk from 'wikidata-sdk';
 import arrayFilterUnique from 'array-filter-unique';
 import got from 'got';
 import WikidataEntityReader from 'wikidata-entity-reader';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const wdk = require('wikidata-sdk');
 
 const HOUR_IN_SECONDS = 60 * 60;
 
