@@ -2,7 +2,7 @@
 
 import WikidataEntityStore from 'wikidata-entity-store';
 
-export const TEXT_INTEREST = [
+export const TEXT_INTEREST: readonly string[] = [
 	// labels
 	'P1705', // native label
 	'P1448', // official name

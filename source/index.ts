@@ -9,8 +9,7 @@ import * as CLAIMS from './claim-ids';
 import * as inlineSearch from './inline-search';
 import languageMenu from './language-menu';
 
-/* eslint @typescript-eslint/no-var-requires: warn */
-/* eslint @typescript-eslint/no-require-imports: warn */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const LocalSession = require('telegraf-session-local');
 
 const tokenFilePath = existsSync('/run/secrets') ? '/run/secrets/bot-token.txt' : 'bot-token.txt';

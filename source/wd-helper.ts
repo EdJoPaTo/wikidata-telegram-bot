@@ -10,7 +10,7 @@ const HOUR_IN_SECONDS = 60 * 60;
 let popularEntities: string[] = [];
 let popularEntitiesTimestamp = 0;
 
-export function secureIsEntityId(something: any): boolean {
+export function secureIsEntityId(something: unknown): boolean {
 	if (typeof something !== 'string') {
 		return false;
 	}
@@ -22,7 +22,7 @@ export function secureIsEntityId(something: any): boolean {
 	return wdk.isEntityId(something);
 }
 
-export function entitiesInClaimValues(entity: WikidataEntityReader | readonly WikidataEntityReader[], claims: string[]): string[] {
+export function entitiesInClaimValues(entity: WikidataEntityReader | readonly WikidataEntityReader[], claims: readonly string[]): readonly string[] {
 	const entities: readonly WikidataEntityReader[] = Array.isArray(entity) ? entity : [entity];
 
 	return claims
@@ -33,7 +33,7 @@ export function entitiesInClaimValues(entity: WikidataEntityReader | readonly Wi
 		.filter(o => secureIsEntityId(o));
 }
 
-export async function getPopularEntities(): Promise<string[]> {
+export async function getPopularEntities(): Promise<readonly string[]> {
 	const now = Date.now() / 1000;
 	if (popularEntitiesTimestamp < now - HOUR_IN_SECONDS) {
 		popularEntitiesTimestamp = now;

@@ -11,7 +11,7 @@ import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
 import {format} from './format';
 import * as CLAIMS from './claim-ids';
 
-function generateCharArray(charA: string, charZ: string): string[] {
+function generateCharArray(charA: string, charZ: string): readonly string[] {
 	const result = [];
 	for (let i = charA.charCodeAt(0); i <= charZ.charCodeAt(0); i++) {
 		result.push(String.fromCharCode(i));
@@ -37,7 +37,7 @@ export async function init(store: WikidataEntityStore): Promise<void> {
 /* eslint @typescript-eslint/camelcase: off */
 export const bot = new Composer();
 
-async function getSearchResults(language: string, query: string): Promise<string[]> {
+async function getSearchResults(language: string, query: string): Promise<readonly string[]> {
 	if (query) {
 		const results = await search(language, query);
 		return results.map(o => o.id);
@@ -93,7 +93,7 @@ async function search(language: string, query: string): Promise<readonly SearchR
 	return searchEntities(options);
 }
 
-async function preload(store: WikidataEntityStore, entityIds: string[]): Promise<void> {
+async function preload(store: WikidataEntityStore, entityIds: readonly string[]): Promise<void> {
 	await store.preloadQNumbers(...entityIds);
 
 	const entities = entityIds

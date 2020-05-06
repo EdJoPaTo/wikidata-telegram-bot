@@ -1,7 +1,6 @@
 import TelegrafInlineMenu from 'telegraf-inline-menu';
 
-/* eslint @typescript-eslint/no-var-requires: warn */
-/* eslint @typescript-eslint/no-require-imports: warn */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const localeEmoji = require('locale-emoji');
 
 const menu = new TelegrafInlineMenu(ctx => languageMenuText(ctx));

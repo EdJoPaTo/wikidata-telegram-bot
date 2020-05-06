@@ -9,7 +9,7 @@ import {format, array} from './format';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const wdk = require('wikidata-sdk');
 
-export function entityWithClaimText(store: WikidataEntityStore, entityId: string, claimIds: string[], language = 'en'): string {
+export function entityWithClaimText(store: WikidataEntityStore, entityId: string, claimIds: readonly string[], language = 'en'): string {
 	const entity = new WikidataEntityReader(store.entity(entityId), language);
 
 	let text = '';
@@ -47,7 +47,7 @@ function headerText(entity: WikidataEntityReader): string {
 	return text;
 }
 
-export function entityButtons(store: WikidataEntityStore, entityId: string, language: string): UrlButton[] {
+export function entityButtons(store: WikidataEntityStore, entityId: string, language: string): readonly UrlButton[] {
 	const entity = new WikidataEntityReader(store.entity(entityId), language);
 	const buttons: UrlButton[] = [
 		Markup.urlButton(
@@ -79,7 +79,7 @@ export function entityButtons(store: WikidataEntityStore, entityId: string, lang
 	];
 }
 
-function claimUrlButtons(store: WikidataEntityStore, entity: WikidataEntityReader, storeKey: string, language: string, urlModifier: (part: string) => string): UrlButton[] {
+function claimUrlButtons(store: WikidataEntityStore, entity: WikidataEntityReader, storeKey: string, language: string, urlModifier: (part: string) => string): readonly UrlButton[] {
 	const property = new WikidataEntityReader(store.entity(storeKey), language);
 	const claimValues = entity.claim(property.qNumber());
 
