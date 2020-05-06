@@ -87,6 +87,12 @@ async function startup(): Promise<void> {
 	await inlineSearch.init(wdEntityStore);
 	console.timeLog('preload wikidata entity store', 'presearch inline search');
 
+	await bot.telegram.setMyCommands([
+		{command: 'help', description: 'Show help'},
+		{command: 'language', description: 'set your language'},
+		{command: 'settings', description: 'set your language'}
+	]);
+
 	await bot.launch();
 	console.log(new Date(), 'Bot started as', bot.options.username);
 }

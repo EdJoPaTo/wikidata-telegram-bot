@@ -1,3 +1,0 @@
-help - Show help
-language - set your language
-settings - set your language
