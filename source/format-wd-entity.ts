@@ -120,7 +120,7 @@ export function image(entity: WikidataEntityReader): {photo?: string; thumb?: st
 		...entity.claim('P5555'), // Schematic illustation
 		...entity.claim('P117') // Chemical structure
 	]
-		.filter(o => typeof o === 'string') as string[];
+		.filter((o): o is string => typeof o === 'string');
 
 	if (possible.length === 0) {
 		return {};
