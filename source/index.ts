@@ -63,7 +63,7 @@ bot.command(['start', 'help', 'search'], async ctx => {
 	const keyboard = Markup.inlineKeyboard([
 		Markup.switchToCurrentChatButton('inline search…', ''),
 		Markup.urlButton('🦑GitHub', 'https://github.com/EdJoPaTo/wikidata-telegram-bot')
-	] as any[], {columns: 1});
+	], {columns: 1});
 	return ctx.reply(text, Extra.markup(keyboard));
 });
 
