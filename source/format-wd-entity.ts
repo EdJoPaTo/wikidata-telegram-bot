@@ -1,9 +1,9 @@
+import {isItemId, isPropertyId} from 'wikibase-types';
 import {Markup} from 'telegraf';
 import {UrlButton} from 'telegraf/typings/markup';
 import WikidataEntityReader from 'wikidata-entity-reader';
 import WikidataEntityStore from 'wikidata-entity-store';
 
-import {secureIsEntityId} from './wd-helper';
 import {format, array} from './format';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -104,9 +104,8 @@ function claimText(store: WikidataEntityStore, entity: WikidataEntityReader, cla
 }
 
 function claimValueText(store: WikidataEntityStore, value: unknown, language: string): string {
-	if (secureIsEntityId(value)) {
-		const id = value as string;
-		const reader = new WikidataEntityReader(store.entity(id), language);
+	if (isItemId(value) || isPropertyId(value)) {
+		const reader = new WikidataEntityReader(store.entity(value), language);
 		return format.url(format.escape(reader.label()), reader.url());
 	}
 

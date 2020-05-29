@@ -40,7 +40,7 @@
 		"telegraf-session-local": "^1.0.2",
 		"telegraf-wikibase": "^0.4.0",
 		"telegram-format": "^2.0.0",
-		"wikibase-types": "^0.1.0",
+		"wikibase-types": "^0.2.1",
 		"wikidata-entity-reader": "^2.0.0",
 		"wikidata-entity-store": "^3.0.0",
 		"wikidata-sdk": "^7.4.1",
