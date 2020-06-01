@@ -1,7 +1,5 @@
 /* eslint capitalized-comments: off */
 
-import WikidataEntityStore from 'wikidata-entity-store';
-
 export const TEXT_INTEREST: readonly string[] = [
 	// labels
 	'P1705', // native label
@@ -56,7 +54,3 @@ export const TEXT_INTEREST: readonly string[] = [
 	'P460', // said to be the same as
 	'P1659' // see also
 ];
-
-export async function init(store: WikidataEntityStore): Promise<void> {
-	await store.preloadQNumbers(...TEXT_INTEREST);
-}

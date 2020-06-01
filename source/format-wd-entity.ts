@@ -1,23 +1,24 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
 import {Markup} from 'telegraf';
+import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {UrlButton} from 'telegraf/typings/markup';
 import WikidataEntityReader from 'wikidata-entity-reader';
-import WikidataEntityStore from 'wikidata-entity-store';
 
 import {format, array} from './format';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const wdk = require('wikidata-sdk');
 
-export function entityWithClaimText(store: WikidataEntityStore, entityId: string, claimIds: readonly string[], language = 'en'): string {
-	const entity = new WikidataEntityReader(store.entity(entityId), language);
+export async function entityWithClaimText(wb: WikibaseMiddlewareProperty, entityId: string, claimIds: readonly string[]): Promise<string> {
+	const entity = await wb.reader(entityId);
 
 	let text = '';
 	text += headerText(entity);
 	text += '\n\n';
 
-	const claimTextEntries = claimIds
-		.map(o => claimText(store, entity, o, language));
+	const claimTextEntries = await Promise.all(claimIds
+		.map(async o => claimText(wb, entity, o))
+	);
 
 	text += claimTextEntries
 		.filter(o => o)
@@ -47,11 +48,11 @@ function headerText(entity: WikidataEntityReader): string {
 	return text;
 }
 
-export function entityButtons(store: WikidataEntityStore, entityId: string, language: string): readonly UrlButton[] {
-	const entity = new WikidataEntityReader(store.entity(entityId), language);
+export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: string): Promise<readonly UrlButton[]> {
+	const entity = await wb.reader(entityId);
 	const buttons: UrlButton[] = [
 		Markup.urlButton(
-			new WikidataEntityReader(store.entity('buttons.wikidata'), language).label(),
+			(await wb.reader('buttons.wikidata')).label(),
 			entity.url()
 		)
 	];
@@ -65,22 +66,22 @@ export function entityButtons(store: WikidataEntityStore, entityId: string, lang
 	return [
 		...buttons,
 		...sitelinkButtons,
-		...claimUrlButtons(store, entity, 'buttons.website', language, url => url),
-		...claimUrlButtons(store, entity, 'buttons.github', language, part => `https://github.com/${part}`),
-		...claimUrlButtons(store, entity, 'buttons.googlePlayStore', language, part => `https://play.google.com/store/apps/details?id=${part}`),
-		...claimUrlButtons(store, entity, 'buttons.imdb', language, part => `https://www.imdb.com/title/${part}/`),
-		...claimUrlButtons(store, entity, 'buttons.itunes', language, part => `https://itunes.apple.com/app/id${part}/`),
-		...claimUrlButtons(store, entity, 'buttons.sourceCodeRepo', language, url => url),
-		...claimUrlButtons(store, entity, 'buttons.steam', language, part => `https://store.steampowered.com/app/${part}/`),
-		...claimUrlButtons(store, entity, 'buttons.subreddit', language, part => `https://www.reddit.com/r/${part}/`),
-		...claimUrlButtons(store, entity, 'buttons.telegram', language, part => `https://t.me/${part}`),
-		...claimUrlButtons(store, entity, 'buttons.twitter', language, part => `https://twitter.com/${part}`),
-		...claimUrlButtons(store, entity, 'buttons.twitterHashtag', language, part => `https://twitter.com/hashtag/${part}?f=tweets`)
+		...await claimUrlButtons(wb, entity, 'buttons.website', url => url),
+		...await claimUrlButtons(wb, entity, 'buttons.github', part => `https://github.com/${part}`),
+		...await claimUrlButtons(wb, entity, 'buttons.googlePlayStore', part => `https://play.google.com/store/apps/details?id=${part}`),
+		...await claimUrlButtons(wb, entity, 'buttons.imdb', part => `https://www.imdb.com/title/${part}/`),
+		...await claimUrlButtons(wb, entity, 'buttons.itunes', part => `https://itunes.apple.com/app/id${part}/`),
+		...await claimUrlButtons(wb, entity, 'buttons.sourceCodeRepo', url => url),
+		...await claimUrlButtons(wb, entity, 'buttons.steam', part => `https://store.steampowered.com/app/${part}/`),
+		...await claimUrlButtons(wb, entity, 'buttons.subreddit', part => `https://www.reddit.com/r/${part}/`),
+		...await claimUrlButtons(wb, entity, 'buttons.telegram', part => `https://t.me/${part}`),
+		...await claimUrlButtons(wb, entity, 'buttons.twitter', part => `https://twitter.com/${part}`),
+		...await claimUrlButtons(wb, entity, 'buttons.twitterHashtag', part => `https://twitter.com/hashtag/${part}?f=tweets`)
 	];
 }
 
-function claimUrlButtons(store: WikidataEntityStore, entity: WikidataEntityReader, storeKey: string, language: string, urlModifier: (part: string) => string): readonly UrlButton[] {
-	const property = new WikidataEntityReader(store.entity(storeKey), language);
+async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataEntityReader, storeKey: string, urlModifier: (part: string) => string): Promise<readonly UrlButton[]> {
+	const property = await tb.reader(storeKey);
 	const claimValues = entity.claim(property.qNumber());
 
 	const buttons = claimValues.map(o =>
@@ -93,19 +94,20 @@ function claimUrlButtons(store: WikidataEntityStore, entity: WikidataEntityReade
 	return buttons;
 }
 
-function claimText(store: WikidataEntityStore, entity: WikidataEntityReader, claim: string, language: string): string {
-	const claimLabel = new WikidataEntityReader(store.entity(claim), language).label();
+async function claimText(wb: WikibaseMiddlewareProperty, entity: WikidataEntityReader, claim: string): Promise<string> {
+	const claimLabel = (await wb.reader(claim)).label();
 	const claimValues = entity.claim(claim);
 
-	const claimValueTexts = claimValues
-		.map(o => claimValueText(store, o, language));
+	const claimValueTexts = await Promise.all(claimValues
+		.map(async o => claimValueText(wb, o))
+	);
 
 	return array(claimLabel, claimValueTexts);
 }
 
-function claimValueText(store: WikidataEntityStore, value: unknown, language: string): string {
+async function claimValueText(wb: WikibaseMiddlewareProperty, value: unknown): Promise<string> {
 	if (isItemId(value) || isPropertyId(value)) {
-		const reader = new WikidataEntityReader(store.entity(value), language);
+		const reader = await wb.reader(value);
 		return format.url(format.escape(reader.label()), reader.url());
 	}
 

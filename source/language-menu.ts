@@ -5,7 +5,7 @@ import {Context, backButtons} from './bot-generics';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const localeEmoji = require('locale-emoji');
 
-export const menu = new MenuTemplate<Context>(ctx => languageMenuText(ctx));
+export const menu = new MenuTemplate<Context>(languageMenuText);
 
 function flagString(languageCode: string, useFallbackFlag = false): string {
 	const flag = localeEmoji(languageCode);
@@ -16,12 +16,13 @@ function flagString(languageCode: string, useFallbackFlag = false): string {
 	return flag;
 }
 
-function languageMenuText(ctx: Context): string {
+async function languageMenuText(ctx: Context): Promise<string> {
 	const flag = flagString(ctx.wd.locale(), true);
-	return `${flag} ${ctx.wd.r('menu.language').label()}`;
+	const reader = await ctx.wd.reader('menu.language');
+	return `${flag} ${reader.label()}`;
 }
 
-menu.select('lang', ctx => ctx.wd.availableLocales(0), {
+menu.select('lang', async ctx => ctx.wd.availableLocales(0), {
 	columns: 3,
 	buttonText: (_, key) => {
 		const flag = flagString(key);

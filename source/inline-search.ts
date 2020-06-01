@@ -1,39 +1,14 @@
 import {Composer, Markup} from 'telegraf';
 import {InlineQueryResult} from 'telegram-typings';
+import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {searchEntities} from 'wikidata-sdk-got';
 import {SearchResult} from 'wikibase-types';
-import arrayFilterUnique from 'array-filter-unique';
-import WikidataEntityReader from 'wikidata-entity-reader';
-import WikidataEntityStore from 'wikidata-entity-store';
 
 import {Context} from './bot-generics';
 import {entitiesInClaimValues, getPopularEntities} from './wd-helper';
 import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
 import {format} from './format';
 import * as CLAIMS from './claim-ids';
-
-function generateCharArray(charA: string, charZ: string): readonly string[] {
-	const result = [];
-	for (let i = charA.charCodeAt(0); i <= charZ.charCodeAt(0); i++) {
-		result.push(String.fromCharCode(i));
-	}
-
-	return result;
-}
-
-export async function init(store: WikidataEntityStore): Promise<void> {
-	const alphabet = generateCharArray('A', 'Z');
-	const resultArrayArray = await Promise.all(
-		alphabet.map(async o => search('en', o))
-	);
-
-	const entityIds = resultArrayArray
-		.flat()
-		.map(o => o.id)
-		.filter(arrayFilterUnique());
-
-	await preload(store, entityIds);
-}
 
 /* eslint @typescript-eslint/camelcase: off */
 export const bot = new Composer<Context>();
@@ -57,14 +32,15 @@ bot.on('inline_query', async ctx => {
 	const searchResults = await getSearchResults(language, query);
 	console.timeLog(identifier, 'search', searchResults.length);
 
-	await preload(ctx.wd.store, searchResults);
+	await preload(ctx.wd, searchResults);
 	console.timeLog(identifier, 'preload');
 
-	const inlineResults = searchResults
-		.map(o => createInlineResult(ctx, o));
+	const inlineResults = await Promise.all(searchResults
+		.map(async o => createInlineResult(ctx, o))
+	);
 
 	const options = {
-		switch_pm_text: '🏳️‍🌈 ' + ctx.wd.r('menu.language').label(),
+		switch_pm_text: '🏳️‍🌈 ' + (await ctx.wd.reader('menu.language')).label(),
 		switch_pm_parameter: 'language',
 		is_personal: true,
 		cache_time: 20
@@ -92,25 +68,25 @@ async function search(language: string, query: string): Promise<readonly SearchR
 	return searchEntities(options);
 }
 
-async function preload(store: WikidataEntityStore, entityIds: readonly string[]): Promise<void> {
-	await store.preloadQNumbers(...entityIds);
+async function preload(wb: WikibaseMiddlewareProperty, entityIds: readonly string[]): Promise<void> {
+	await wb.preload([...entityIds, ...CLAIMS.TEXT_INTEREST]);
+	const entities = await Promise.all(entityIds
+		.map(async id => wb.reader(id))
+	);
 
-	const entities = entityIds
-		.map(id => new WikidataEntityReader(store.entity(id)));
 	const claimEntityIds = entitiesInClaimValues(entities, CLAIMS.TEXT_INTEREST);
-	await store.preloadQNumbers(...claimEntityIds);
+	await wb.preload(claimEntityIds);
 }
 
-function createInlineResult(ctx: Context, entityId: string): InlineQueryResult {
-	const entity = ctx.wd.r(entityId);
-
-	const text = entityWithClaimText(ctx.wd.store, entityId, CLAIMS.TEXT_INTEREST, ctx.wd.locale());
+async function createInlineResult(ctx: Context, entityId: string): Promise<InlineQueryResult> {
+	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
 	const keyboard = Markup.inlineKeyboard(
-		entityButtons(ctx.wd.store, entityId, ctx.wd.locale()).map(o => o),
+		(await entityButtons(ctx.wd, entityId)).map(o => o),
 		{columns: 1}
 	);
 
+	const entity = await ctx.wd.reader(entityId);
 	const {photo, thumb} = image(entity);
 
 	const inlineResult: InlineQueryResult = {

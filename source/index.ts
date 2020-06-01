@@ -2,13 +2,11 @@ import {existsSync, readFileSync} from 'fs';
 
 import {MenuMiddleware} from 'telegraf-inline-menu';
 import {Telegraf, Markup, Extra} from 'telegraf';
+import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
 import TelegrafI18n from 'telegraf-i18n';
-import TelegrafWikibase from 'telegraf-wikibase';
-import WikidataEntityStore from 'wikidata-entity-store';
 
 import {Context} from './bot-generics';
 import {menu as languageMenu} from './language-menu';
-import * as CLAIMS from './claim-ids';
 import * as inlineSearch from './inline-search';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -35,19 +33,16 @@ const i18n = new TelegrafI18n({
 	useSession: true
 });
 
-const wdEntityStore = new WikidataEntityStore({
-	properties: ['info', 'labels', 'descriptions', 'aliases', 'claims', 'sitelinks']
+const twb = new TelegrafWikibase(new Map(), {
+	contextKey: 'wd'
 });
-
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
+twb.addResourceKeys(resourceKeysFromYaml(wikidataResourceKeyYaml));
 
 const bot = new Telegraf<Context>(token);
 bot.use(localSession.middleware());
 bot.use(i18n.middleware());
-
-bot.use(new TelegrafWikibase(wdEntityStore, {
-	contextKey: 'wd'
-}).middleware());
+bot.use(twb.middleware());
 
 bot.use(inlineSearch.bot.middleware());
 
@@ -76,17 +71,6 @@ bot.catch((error: any) => {
 });
 
 async function startup(): Promise<void> {
-	console.time('preload wikidata entity store');
-
-	await wdEntityStore.addResourceKeyYaml(wikidataResourceKeyYaml);
-	console.timeLog('preload wikidata entity store', 'wikidata-middleware');
-
-	await CLAIMS.init(wdEntityStore);
-	console.timeLog('preload wikidata entity store', 'claims of interest');
-
-	await inlineSearch.init(wdEntityStore);
-	console.timeLog('preload wikidata entity store', 'presearch inline search');
-
 	await bot.telegram.setMyCommands([
 		{command: 'help', description: 'Show help'},
 		{command: 'language', description: 'set your language'},
