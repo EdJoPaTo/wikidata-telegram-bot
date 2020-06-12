@@ -57,15 +57,9 @@ export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: st
 		)
 	];
 
-	const sitelinkButtons: UrlButton[] = entity.allSitelinksInLang()
-		.map(o => Markup.urlButton(
-			wdk.getSitelinkData(o).project,
-			entity.sitelinkUrl(o)!
-		));
-
 	return [
 		...buttons,
-		...sitelinkButtons,
+		...sitelinkButtons(entity),
 		...await claimUrlButtons(wb, entity, 'buttons.website', url => url),
 		...await claimUrlButtons(wb, entity, 'buttons.github', part => `https://github.com/${part}`),
 		...await claimUrlButtons(wb, entity, 'buttons.googlePlayStore', part => `https://play.google.com/store/apps/details?id=${part}`),
@@ -78,6 +72,19 @@ export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: st
 		...await claimUrlButtons(wb, entity, 'buttons.twitter', part => `https://twitter.com/${part}`),
 		...await claimUrlButtons(wb, entity, 'buttons.twitterHashtag', part => `https://twitter.com/hashtag/${part}?f=tweets`)
 	];
+}
+
+function sitelinkButtons(entity: WikidataEntityReader): readonly UrlButton[] {
+	try {
+		return entity.allSitelinksInLang()
+			.map(o => Markup.urlButton(
+				wdk.getSitelinkData(o).project,
+				entity.sitelinkUrl(o)!
+			));
+	} catch (error) {
+		console.error('something failed with sitelinkButtons', error instanceof Error ? error.message : error);
+		return [];
+	}
 }
 
 async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataEntityReader, storeKey: string, urlModifier: (part: string) => string): Promise<readonly UrlButton[]> {
