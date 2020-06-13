@@ -31,7 +31,7 @@ function headerText(entity: WikidataEntityReader): string {
 	let text = '';
 	text += format.bold(format.escape(entity.label()));
 	text += ' ';
-	text += format.italic(entity.qNumber());
+	text += format.monospace(entity.qNumber());
 
 	const description = entity.description();
 	if (description) {
