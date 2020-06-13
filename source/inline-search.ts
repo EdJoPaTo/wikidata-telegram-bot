@@ -5,7 +5,7 @@ import {searchEntities} from 'wikidata-sdk-got';
 import {SearchResult} from 'wikibase-types';
 
 import {Context} from './bot-generics';
-import {entitiesInClaimValues, getPopularEntities} from './wd-helper';
+import {entitiesInClaimValues, getPopularEntities, GOT_OPTIONS} from './wd-helper';
 import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
 import {format} from './format';
 import * as CLAIMS from './claim-ids';
@@ -65,7 +65,7 @@ async function search(language: string, query: string): Promise<readonly SearchR
 		limit: 10
 	};
 
-	return searchEntities(options);
+	return searchEntities(options, GOT_OPTIONS);
 }
 
 async function preload(wb: WikibaseMiddlewareProperty, entityIds: readonly string[]): Promise<void> {

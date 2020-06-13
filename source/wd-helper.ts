@@ -5,6 +5,8 @@ import WikidataEntityReader from 'wikidata-entity-reader';
 
 const HOUR_IN_SECONDS = 60 * 60;
 
+export const GOT_OPTIONS = {headers: {'user-agent': 'EdJoPaTo/wikidata-telegram-bot'}};
+
 let popularEntities: string[] = [];
 let popularEntitiesTimestamp = 0;
 
@@ -22,7 +24,7 @@ export async function getPopularEntities(): Promise<readonly string[]> {
 	if (popularEntitiesTimestamp < now - HOUR_IN_SECONDS) {
 		popularEntitiesTimestamp = now;
 
-		const {body} = await got('https://www.wikidata.org/w/index.php?title=Wikidata:Main_Page/Popular&action=raw');
+		const {body} = await got('https://www.wikidata.org/w/index.php?title=Wikidata:Main_Page/Popular&action=raw', GOT_OPTIONS);
 		const regex = /(Q\d+)/g;
 		let match: RegExpExecArray | null;
 		const results: string[] = [];
