@@ -10,7 +10,6 @@ import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
 import {format} from './format';
 import * as CLAIMS from './claim-ids';
 
-/* eslint @typescript-eslint/camelcase: off */
 export const bot = new Composer<Context>();
 
 async function getSearchResults(language: string, query: string): Promise<readonly string[]> {

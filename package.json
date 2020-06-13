@@ -36,7 +36,7 @@
 		"source-map-support": "^0.5.12",
 		"telegraf": "^3.38.0",
 		"telegraf-i18n": "^6.5.0",
-		"telegraf-inline-menu": "5.0.0-beta.4",
+		"telegraf-inline-menu": "5.0.0-beta.8",
 		"telegraf-session-local": "^1.0.2",
 		"telegraf-wikibase": "^0.5.1",
 		"telegram-format": "^2.0.0",
@@ -52,7 +52,7 @@
 		"telegram-typings": "^4.0.0-beta",
 		"ts-node": "^8.3.0",
 		"typescript": "^3.7.3",
-		"xo": "^0.30.0"
+		"xo": "^0.32.0"
 	},
 	"xo": {
 		"rules": {
