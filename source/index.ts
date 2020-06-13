@@ -5,6 +5,7 @@ import {Telegraf, Markup, Extra} from 'telegraf';
 import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
 import TelegrafI18n from 'telegraf-i18n';
 
+import {bot as locationSearch} from './location-search';
 import {Context} from './bot-generics';
 import {menu as languageMenu} from './language-menu';
 import * as inlineSearch from './inline-search';
@@ -45,6 +46,7 @@ bot.use(i18n.middleware());
 bot.use(twb.middleware());
 
 bot.use(inlineSearch.bot.middleware());
+bot.use(locationSearch.middleware());
 
 const languageMenuMiddleware = new MenuMiddleware('/', languageMenu);
 
@@ -72,6 +74,7 @@ bot.catch((error: any) => {
 
 async function startup(): Promise<void> {
 	await bot.telegram.setMyCommands([
+		{command: 'location', description: 'Show info on how to use the location feature'},
 		{command: 'help', description: 'Show help'},
 		{command: 'language', description: 'set your language'},
 		{command: 'settings', description: 'set your language'}
