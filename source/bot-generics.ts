@@ -6,11 +6,17 @@ import {MiddlewareProperty} from 'telegraf-wikibase';
 export interface Session {
 	__wikibase_language_code?: string;
 	page?: number;
+	locationPage?: number;
+}
+
+export interface State {
+	locationTotalPages?: number;
 }
 
 export interface Context extends TelegrafContext {
 	readonly i18n: I18n;
 	readonly session: Session;
+	readonly state: State;
 	readonly wd: MiddlewareProperty;
 }
 

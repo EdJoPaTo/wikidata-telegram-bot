@@ -1,12 +1,11 @@
-import {sparqlQuerySimplified} from 'wikidata-sdk-got';
-import {Composer, Extra} from 'telegraf';
+import {Composer} from 'telegraf';
+import {html as format} from 'telegram-format';
 import {Location} from 'telegram-typings';
+import {MenuTemplate, Body, MenuMiddleware} from 'telegraf-inline-menu';
+import {sparqlQuerySimplified} from 'wikidata-sdk-got';
 
-import {GOT_OPTIONS} from './wd-helper';
 import {Context} from './bot-generics';
-import {html as format} from 'telegram-format/dist/source';
-
-export const bot = new Composer<Context>();
+import {GOT_OPTIONS} from './wd-helper';
 
 type EntityId = string;
 
@@ -16,6 +15,8 @@ interface Result {
 	readonly location: Readonly<Location>;
 }
 
+const ENTRIES_PER_PAGE = 10;
+
 /**
  * Create query string for everything around that location in the given radius
  * @param location Location (longitude latitude)
@@ -23,18 +24,18 @@ interface Result {
  */
 function createQueryStringForLocation(location: Location, radius: number): string {
 	return `SELECT ?place ?location ?distance WHERE {
-wd:Q27945856 wdt:P625 ?loc .
 SERVICE wikibase:around {
 	?place wdt:P625 ?location.
 	bd:serviceParam wikibase:center "Point(${location.longitude} ${location.latitude})"^^geo:wktLiteral .
 	bd:serviceParam wikibase:radius "${radius}" .
 	bd:serviceParam wikibase:distance ?distance.
 }
-} ORDER BY ?dist`;
+}`;
 }
 
 async function queryLocation(location: Location, radius: number): Promise<Result[]> {
-	const raw = await sparqlQuerySimplified(createQueryStringForLocation(location, radius), GOT_OPTIONS);
+	const query = createQueryStringForLocation(location, radius);
+	const raw = await sparqlQuerySimplified(query, GOT_OPTIONS);
 	const result = raw.map(queryJsonEntryToResult);
 	return result;
 }
@@ -51,26 +52,10 @@ function queryJsonEntryToResult(rawJson: any): Result {
 	};
 }
 
-bot.command('location', async ctx => {
-	// Verschwörhaus
-	const results = await queryLocation({longitude: 9.990333333, latitude: 48.396472222}, 1);
-	let text = '';
-	text += ctx.i18n.t('location').trim();
-	text += '\n\n';
-	text += await createResultsString(ctx, results);
-	return ctx.replyWithHTML(text, Extra.webPreview(false) as any);
-});
-
-bot.on('location', async ctx => {
-	const location = ctx.message!.location!;
-	const results = await queryLocation(location, 3);
-	const text = await createResultsString(ctx, results);
-	return ctx.replyWithHTML(text, Extra.webPreview(false) as any);
-});
-
-async function createResultsString(ctx: Context, results: readonly Result[]): Promise<string> {
-	const relevant = [...results].sort((a, b) => a.distance - b.distance).slice(0, 16);
-	await ctx.wd.preload(relevant.map(o => o.place));
+async function createResultsString(ctx: Context, results: readonly Result[], pageZeroBased: number): Promise<string> {
+	const relevant = [...results]
+		.sort((a, b) => a.distance - b.distance)
+		.slice(pageZeroBased * ENTRIES_PER_PAGE, (pageZeroBased + 1) * ENTRIES_PER_PAGE);
 
 	const parts = await Promise.all(relevant.map(async o => entryString(ctx, o)));
 	const text = parts.join('\n\n');
@@ -105,3 +90,41 @@ function formatDistance(distance: number): string {
 
 	return distance.toFixed(3) + ' km';
 }
+
+async function menuBody(ctx: Context, path: string): Promise<Body> {
+	const [longitude, latitude] = path.split('/')[0].split(':').slice(1).map(o => Number(o));
+	const results = await queryLocation({longitude, latitude}, 3);
+	await ctx.wd.preload(results.map(o => o.place));
+	ctx.state.locationTotalPages = results.length / ENTRIES_PER_PAGE;
+	const text = await createResultsString(ctx, results, ctx.session.locationPage ?? 0);
+	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true};
+}
+
+const menu = new MenuTemplate<Context>(menuBody);
+
+menu.pagination('page', {
+	getTotalPages: ctx => ctx.state.locationTotalPages ?? 1,
+	getCurrentPage: ctx => (ctx.session.locationPage ?? 0) + 1,
+	setPage: (ctx, page) => {
+		ctx.session.locationPage = page - 1;
+	}
+});
+
+export const bot = new Composer<Context>();
+
+const menuMiddleware = new MenuMiddleware(/^location:([.\d]+):([.\d]+)\//, menu);
+bot.use(menuMiddleware.middleware());
+
+bot.command('location', async ctx => {
+	ctx.session.locationPage = 0;
+	await ctx.reply(ctx.i18n.t('location'));
+	// Verschwörhaus
+	return menuMiddleware.replyToContext(ctx, 'location:9.990333333:48.396472222/');
+});
+
+bot.on('location', async ctx => {
+	ctx.session.locationPage = 0;
+	const location = ctx.message!.location!;
+	const path = `location:${location.longitude}:${location.latitude}/`;
+	return menuMiddleware.replyToContext(ctx, path);
+});
