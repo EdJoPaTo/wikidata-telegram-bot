@@ -4,6 +4,7 @@ import {MenuMiddleware} from 'telegraf-inline-menu';
 import {Telegraf, Markup, Extra} from 'telegraf';
 import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
 import TelegrafI18n from 'telegraf-i18n';
+import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 
 import {bot as locationSearch} from './location-search';
 import {Context} from './bot-generics';
@@ -44,6 +45,10 @@ const bot = new Telegraf<Context>(token);
 bot.use(localSession.middleware());
 bot.use(i18n.middleware());
 bot.use(twb.middleware());
+
+if (process.env.NODE_ENV !== 'production') {
+	bot.use(generateUpdateMiddleware());
+}
 
 bot.use(inlineSearch.bot.middleware());
 bot.use(locationSearch.middleware());
