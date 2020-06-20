@@ -6,10 +6,11 @@ import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
 import TelegrafI18n from 'telegraf-i18n';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 
+import {bot as hearsEntity} from './hears-entity';
+import {bot as inlineSearch} from './inline-search';
 import {bot as locationSearch} from './location-search';
 import {Context} from './bot-generics';
 import {menu as languageMenu} from './language-menu';
-import * as inlineSearch from './inline-search';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const LocalSession = require('telegraf-session-local');
@@ -52,7 +53,8 @@ if (process.env.NODE_ENV !== 'production') {
 	bot.use(generateUpdateMiddleware());
 }
 
-bot.use(inlineSearch.bot.middleware());
+bot.use(hearsEntity.middleware());
+bot.use(inlineSearch.middleware());
 bot.use(locationSearch.middleware());
 
 const languageMenuMiddleware = new MenuMiddleware('/', languageMenu);
