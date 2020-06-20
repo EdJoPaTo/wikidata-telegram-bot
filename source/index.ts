@@ -35,8 +35,10 @@ const i18n = new TelegrafI18n({
 	useSession: true
 });
 
-const twb = new TelegrafWikibase(new Map(), {
-	contextKey: 'wd'
+const twb = new TelegrafWikibase({
+	contextKey: 'wd',
+	logQueriedEntityIds: process.env.NODE_ENV !== 'production',
+	userAgent: 'EdJoPaTo/wikidata-telegram-bot'
 });
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
 twb.addResourceKeys(resourceKeysFromYaml(wikidataResourceKeyYaml));
