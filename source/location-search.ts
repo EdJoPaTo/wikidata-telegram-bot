@@ -71,7 +71,7 @@ async function entryString(ctx: Context, result: Result): Promise<string> {
 	text += '  ';
 	text += format.bold(format.escape(reader.label()));
 	text += '  ';
-	text += format.url(reader.qNumber(), reader.url());
+	text += '/' + reader.qNumber();
 
 	const placeDescription = reader.description();
 	if (placeDescription) {
