@@ -36,10 +36,10 @@
 		"source-map-support": "^0.5.12",
 		"telegraf": "^3.38.0",
 		"telegraf-i18n": "^6.5.0",
-		"telegraf-inline-menu": "^5.0.0-beta.9",
+		"telegraf-inline-menu": "^5.1.0",
 		"telegraf-middleware-console-time": "^1.1.0",
-		"telegraf-session-local": "^1.0.2",
-		"telegraf-wikibase": "^0.7.0",
+		"telegraf-session-local": "^2.0.0",
+		"telegraf-wikibase": "^0.9.0",
 		"telegram-format": "^2.0.0",
 		"wikibase-types": "^0.2.1",
 		"wikidata-entity-reader": "^2.0.0",
@@ -51,9 +51,9 @@
 		"@types/node": "^14.0.5",
 		"del-cli": "^3.0.0",
 		"telegram-typings": "^4.0.0-beta",
-		"ts-node": "^8.3.0",
-		"typescript": "^3.7.3",
-		"xo": "^0.32.0"
+		"ts-node": "^9.0.0",
+		"typescript": "^4.0.2",
+		"xo": "^0.33.1"
 	},
 	"xo": {
 		"rules": {
