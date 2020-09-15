@@ -1,5 +1,5 @@
-import {Composer, Markup} from 'telegraf';
-import {InlineQueryResult} from 'telegram-typings';
+import {Composer} from 'telegraf';
+import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'typegram';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {searchEntities} from 'wikidata-sdk-got';
 import {SearchResult} from 'wikibase-types';
@@ -77,37 +77,45 @@ async function preload(wb: WikibaseMiddlewareProperty, entityIds: readonly strin
 	await wb.preload(claimEntityIds);
 }
 
-async function createInlineResult(ctx: Context, entityId: string): Promise<InlineQueryResult> {
+async function createInlineResult(ctx: Context, entityId: string): Promise<InlineQueryResultArticle | InlineQueryResultPhoto> {
 	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
-	const keyboard = Markup.inlineKeyboard(
-		(await entityButtons(ctx.wd, entityId)).map(o => o),
-		{columns: 1}
-	);
+	const keyboard: InlineKeyboardMarkup = {
+		inline_keyboard: (await entityButtons(ctx.wd, entityId)).map(o => [o])
+	};
 
 	const entity = await ctx.wd.reader(entityId);
 	const {photo, thumb} = image(entity);
 
-	const inlineResult: InlineQueryResult = {
-		type: photo ? 'photo' : 'article',
+	const inlineResultBase = {
 		id: entityId,
 		title: entity.label(),
 		description: entity.description(),
-		photo_url: photo!,
-		thumb_url: thumb!,
 		parse_mode: format.parse_mode,
 		reply_markup: keyboard
 	};
 
-	if (photo) {
-		inlineResult.caption = text;
-	} else {
-		inlineResult.input_message_content = {
+	if (photo && thumb) {
+		const inlineResult: InlineQueryResultPhoto = {
+			type: 'photo',
+			...inlineResultBase,
+			photo_url: photo,
+			thumb_url: thumb,
+			caption: text
+		};
+
+		return inlineResult;
+	}
+
+	const inlineResult: InlineQueryResultArticle = {
+		type: 'article',
+		...inlineResultBase,
+		input_message_content: {
 			message_text: text,
 			disable_web_page_preview: true,
 			parse_mode: format.parse_mode
-		};
-	}
+		}
+	};
 
 	return inlineResult;
 }

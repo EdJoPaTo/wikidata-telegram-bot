@@ -1,6 +1,6 @@
 import {Composer} from 'telegraf';
 import {html as format} from 'telegram-format';
-import {Location} from 'telegram-typings';
+import {Location} from 'typegram';
 import {MenuTemplate, Body, MenuMiddleware} from 'telegraf-inline-menu';
 import {sparqlQuerySimplified} from 'wikidata-sdk-got';
 
