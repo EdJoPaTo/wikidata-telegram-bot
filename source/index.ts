@@ -12,6 +12,8 @@ import {bot as locationSearch} from './location-search';
 import {Context} from './bot-generics';
 import {menu as languageMenu} from './language-menu';
 
+process.title = 'wikidata-tgbot';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const LocalSession = require('telegraf-session-local');
 
