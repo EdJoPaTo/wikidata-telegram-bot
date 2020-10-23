@@ -81,7 +81,7 @@ function sitelinkButtons(entity: WikidataEntityReader): readonly UrlButton[] {
 				wdk.getSitelinkData(o).project,
 				entity.sitelinkUrl(o)!
 			));
-	} catch (error) {
+	} catch (error: unknown) {
 		console.error('something failed with sitelinkButtons', error instanceof Error ? error.message : error);
 		return [];
 	}
