@@ -4,7 +4,6 @@
 		"source"
 	],
 	"compilerOptions": {
-		"esModuleInterop": true,
 		"outDir": "dist",
 		"sourceMap": true,
 		"target": "es2019"

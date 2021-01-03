@@ -1,10 +1,11 @@
 import {existsSync, readFileSync} from 'fs';
 
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
+import {I18n as TelegrafI18n} from '@edjopato/telegraf-i18n';
 import {MenuMiddleware} from 'telegraf-inline-menu';
 import {Telegraf, Markup, Extra} from 'telegraf';
 import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
-import {I18n as TelegrafI18n} from '@edjopato/telegraf-i18n';
+import * as LocalSession from 'telegraf-session-local';
 
 import {bot as hearsEntity} from './hears-entity';
 import {bot as inlineSearch} from './inline-search';
@@ -14,9 +15,6 @@ import {menu as languageMenu} from './language-menu';
 
 process.title = 'wikidata-tgbot';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const LocalSession = require('telegraf-session-local');
-
 const tokenFilePath = existsSync('/run/secrets') ? '/run/secrets/bot-token.txt' : 'bot-token.txt';
 const token = readFileSync(tokenFilePath, 'utf8').trim();
 
@@ -25,10 +23,10 @@ const localSession = new LocalSession({
 	database: 'persist/sessions.json',
 	// Format of storage/database (default: JSON.stringify / JSON.parse)
 	format: {
-		serialize: (input: any) => JSON.stringify(input, null, '\t') + '\n',
-		deserialize: (input: string) => JSON.parse(input)
+		serialize: input => JSON.stringify(input, null, '\t') + '\n',
+		deserialize: input => JSON.parse(input)
 	},
-	getSessionKey: (ctx: any) => `${ctx.from.id}`
+	getSessionKey: ctx => String(ctx.from?.id)
 });
 
 const i18n = new TelegrafI18n({
