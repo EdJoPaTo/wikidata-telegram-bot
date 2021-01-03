@@ -11,7 +11,7 @@ let popularEntities: string[] = [];
 let popularEntitiesTimestamp = 0;
 
 export function entitiesInClaimValues(entity: WikidataEntityReader | readonly WikidataEntityReader[], claims: readonly string[]): readonly string[] {
-	const entities: readonly WikidataEntityReader[] = Array.isArray(entity) ? entity : [entity];
+	const entities: readonly WikidataEntityReader[] = Array.isArray(entity) ? entity : ([entity] as WikidataEntityReader[]);
 
 	return claims
 		.flatMap(claim => entities.flatMap(entity => entity.claim(claim)))
@@ -30,7 +30,7 @@ export async function getPopularEntities(): Promise<readonly string[]> {
 		const results: string[] = [];
 
 		while ((match = regex.exec(body)) !== null) {
-			results.push(match[1]);
+			results.push(match[1]!);
 		}
 
 		popularEntities = results;

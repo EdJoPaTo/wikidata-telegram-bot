@@ -9,7 +9,7 @@ import * as CLAIMS from './claim-ids';
 export const bot = new Composer<Context>();
 
 bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
-	const entityId = ctx.match![1].toUpperCase();
+	const entityId = ctx.match![1]!.toUpperCase();
 	const entity = await ctx.wd.reader(entityId);
 
 	const claimEntityIds = entitiesInClaimValues(entity, CLAIMS.TEXT_INTEREST);

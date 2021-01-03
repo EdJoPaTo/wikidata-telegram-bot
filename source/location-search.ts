@@ -48,7 +48,7 @@ function queryJsonEntryToResult(rawJson: any): Result {
 	return {
 		place: rawJson.place,
 		distance: rawJson.distance,
-		location: {longitude, latitude}
+		location: {longitude: longitude!, latitude: latitude!}
 	};
 }
 
@@ -92,8 +92,8 @@ function formatDistance(distance: number): string {
 }
 
 async function menuBody(ctx: Context, path: string): Promise<Body> {
-	const [longitude, latitude] = path.split('/')[0].split(':').slice(1).map(o => Number(o));
-	const results = await queryLocation({longitude, latitude}, 3);
+	const [longitude, latitude] = path.split('/')[0]!.split(':').slice(1).map(o => Number(o));
+	const results = await queryLocation({longitude: longitude!, latitude: latitude!}, 3);
 	await ctx.wd.preload(results.map(o => o.place));
 	ctx.state.locationTotalPages = results.length / ENTRIES_PER_PAGE;
 	const text = await createResultsString(ctx, results, ctx.session.locationPage ?? 0);
