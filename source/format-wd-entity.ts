@@ -93,7 +93,7 @@ async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataE
 
 	const buttons = claimValues.map(o =>
 		Markup.urlButton(
-			`${property.label()}${claimValues.length > 1 ? ` ${o}` : ''}`,
+			`${property.label()}${claimValues.length > 1 ? ` ${String(o)}` : ''}`,
 			urlModifier(o)
 		)
 	);

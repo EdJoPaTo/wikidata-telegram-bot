@@ -58,9 +58,7 @@
 	"xo": {
 		"rules": {
 			"@typescript-eslint/prefer-readonly-parameter-types": "off",
-			"@typescript-eslint/restrict-template-expressions": "off",
-			"prefer-named-capture-group": "off",
-			"unicorn/no-array-callback-reference": "off"
+			"prefer-named-capture-group": "off"
 		}
 	}
 }

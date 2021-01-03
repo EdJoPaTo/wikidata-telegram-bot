@@ -36,7 +36,7 @@ SERVICE wikibase:around {
 async function queryLocation(location: Location, radius: number): Promise<Result[]> {
 	const query = createQueryStringForLocation(location, radius);
 	const raw = await sparqlQuerySimplified(query, GOT_OPTIONS);
-	const result = raw.map(queryJsonEntryToResult);
+	const result = raw.map(o => queryJsonEntryToResult(o));
 	return result;
 }
 
