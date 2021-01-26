@@ -3,7 +3,7 @@ import {existsSync, readFileSync} from 'fs';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n as TelegrafI18n} from '@edjopato/telegraf-i18n';
 import {MenuMiddleware} from 'telegraf-inline-menu';
-import {Telegraf, Markup, Extra} from 'telegraf';
+import {Telegraf, Markup} from 'telegraf';
 import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
 import * as LocalSession from 'telegraf-session-local';
 
@@ -15,8 +15,12 @@ import {menu as languageMenu} from './language-menu';
 
 process.title = 'wikidata-tgbot';
 
-const tokenFilePath = existsSync('/run/secrets') ? '/run/secrets/bot-token.txt' : 'bot-token.txt';
-const token = readFileSync(tokenFilePath, 'utf8').trim();
+const token = (existsSync('/run/secrets/bot-token.txt') && readFileSync('/run/secrets/bot-token.txt', 'utf8').trim()) ||
+	(existsSync('bot-token.txt') && readFileSync('bot-token.txt', 'utf8').trim()) ||
+	process.env.BOT_TOKEN;
+if (!token) {
+	throw new Error('You have to provide the bot-token from @BotFather via file (bot-token.txt) or environment variable (BOT_TOKEN)');
+}
 
 const localSession = new LocalSession({
 	// Database name/path, where sessions will be located (default: 'sessions.json')
@@ -67,10 +71,10 @@ bot.use(languageMenuMiddleware);
 bot.command(['start', 'help', 'search'], async ctx => {
 	const text = ctx.i18n.t('help');
 	const keyboard = Markup.inlineKeyboard([
-		Markup.switchToCurrentChatButton('inline search…', ''),
-		Markup.urlButton('🦑GitHub', 'https://github.com/EdJoPaTo/wikidata-telegram-bot')
+		Markup.button.switchToCurrentChat('inline search…', ''),
+		Markup.button.url('🦑GitHub', 'https://github.com/EdJoPaTo/wikidata-telegram-bot')
 	], {columns: 1});
-	return ctx.reply(text, Extra.markup(keyboard));
+	return ctx.reply(text, keyboard);
 });
 
 bot.catch((error: any) => {
@@ -90,7 +94,7 @@ async function startup(): Promise<void> {
 	]);
 
 	await bot.launch();
-	console.log(new Date(), 'Bot started as', bot.options.username);
+	console.log(new Date(), 'Bot started as', bot.botInfo?.username);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

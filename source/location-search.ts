@@ -124,7 +124,7 @@ bot.command('location', async ctx => {
 
 bot.on('location', async ctx => {
 	ctx.session.locationPage = 0;
-	const location = ctx.message!.location!;
+	const {location} = ctx.message;
 	const path = `location:${location.longitude}:${location.latitude}/`;
 	return menuMiddleware.replyToContext(ctx, path);
 });

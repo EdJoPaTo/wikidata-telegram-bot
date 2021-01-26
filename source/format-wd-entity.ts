@@ -1,7 +1,6 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
 import {Markup} from 'telegraf';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
-import {UrlButton} from 'telegraf/typings/markup';
 import WikidataEntityReader from 'wikidata-entity-reader';
 
 import {format, array} from './format';
@@ -48,10 +47,10 @@ function headerText(entity: WikidataEntityReader): string {
 	return text;
 }
 
-export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: string): Promise<readonly UrlButton[]> {
+export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: string) {
 	const entity = await wb.reader(entityId);
-	const buttons: UrlButton[] = [
-		Markup.urlButton(
+	const buttons = [
+		Markup.button.url(
 			(await wb.reader('buttons.wikidata')).label(),
 			entity.url()
 		)
@@ -74,10 +73,10 @@ export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: st
 	];
 }
 
-function sitelinkButtons(entity: WikidataEntityReader): readonly UrlButton[] {
+function sitelinkButtons(entity: WikidataEntityReader) {
 	try {
 		return entity.allSitelinksInLang()
-			.map(o => Markup.urlButton(
+			.map(o => Markup.button.url(
 				wdk.getSitelinkData(o).project,
 				entity.sitelinkUrl(o)!
 			));
@@ -87,12 +86,12 @@ function sitelinkButtons(entity: WikidataEntityReader): readonly UrlButton[] {
 	}
 }
 
-async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataEntityReader, storeKey: string, urlModifier: (part: string) => string): Promise<readonly UrlButton[]> {
+async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataEntityReader, storeKey: string, urlModifier: (part: string) => string) {
 	const property = await tb.reader(storeKey);
 	const claimValues = entity.claim(property.qNumber());
 
 	const buttons = claimValues.map(o =>
-		Markup.urlButton(
+		Markup.button.url(
 			`${property.label()}${claimValues.length > 1 ? ` ${String(o)}` : ''}`,
 			urlModifier(o)
 		)
