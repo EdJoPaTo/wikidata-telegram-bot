@@ -3,14 +3,6 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    versioning-strategy: increase-if-necessary
-    commit-message:
-      prefix: "chore(npm):"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
