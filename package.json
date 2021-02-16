@@ -15,20 +15,9 @@
 	},
 	"scripts": {
 		"build": "del-cli dist && tsc",
-		"prepack": "npm run build",
 		"start": "ts-node source/index.ts",
-		"test": "tsc && xo"
+		"test": "tsc --sourceMap && xo"
 	},
-	"main": "dist",
-	"types": "dist",
-	"files": [
-		"dist",
-		"!*.test.*"
-	],
-	"keywords": [
-		"wikidata",
-		"telegram"
-	],
 	"dependencies": {
 		"@edjopato/telegraf-i18n": "^0.2.0",
 		"array-filter-unique": "^2.1.0",
