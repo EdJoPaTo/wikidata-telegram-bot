@@ -25,7 +25,7 @@ bot.on('inline_query', async ctx => {
 	const {query} = ctx.inlineQuery;
 	const language = ctx.wd.locale();
 
-	const identifier = `inline query ${Number(ctx.inlineQuery.id).toString(36).slice(-4)} ${ctx.from!.id} ${ctx.from!.first_name} ${language} ${query.length} ${query}`;
+	const identifier = `inline query ${Number(ctx.inlineQuery.id).toString(36).slice(-4)} ${ctx.from.id} ${ctx.from.first_name} ${language} ${query.length} ${query}`;
 	console.time(identifier);
 
 	const searchResults = await getSearchResults(language, query);
