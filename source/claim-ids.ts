@@ -1,4 +1,4 @@
-/* eslint capitalized-comments: off */
+/* eslint-disable capitalized-comments */
 
 export const TEXT_INTEREST: readonly string[] = [
 	// labels
