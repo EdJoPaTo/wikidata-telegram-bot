@@ -10,13 +10,13 @@
 		"email": "wikidata-telegram-bot@edjopato.de",
 		"url": "https://edjopato.de"
 	},
-	"engines": {
-		"node": ">=14"
-	},
 	"scripts": {
 		"build": "del-cli dist && tsc",
 		"start": "ts-node source/index.ts",
 		"test": "tsc --sourceMap && xo"
+	},
+	"engines": {
+		"node": ">=14"
 	},
 	"dependencies": {
 		"@edjopato/telegraf-i18n": "^0.2.0",
