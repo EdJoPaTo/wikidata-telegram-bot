@@ -77,6 +77,7 @@ function sitelinkButtons(entity: WikidataEntityReader) {
 	try {
 		return entity.allSitelinksInLang()
 			.map(o => Markup.button.url(
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				wdk.getSitelinkData(o).project,
 				entity.sitelinkUrl(o)!
 			));
@@ -88,7 +89,7 @@ function sitelinkButtons(entity: WikidataEntityReader) {
 
 async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataEntityReader, storeKey: string, urlModifier: (part: string) => string) {
 	const property = await tb.reader(storeKey);
-	const claimValues = entity.claim(property.qNumber());
+	const claimValues = entity.claim(property.qNumber()) as string[];
 
 	const buttons = claimValues.map(o =>
 		Markup.button.url(
@@ -136,7 +137,9 @@ export function image(entity: WikidataEntityReader): {photo?: string; thumb?: st
 	const selected = possible[0];
 
 	return {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		photo: encodeURI(wdk.getImageUrl(selected, 800)),
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		thumb: encodeURI(wdk.getImageUrl(selected, 100))
 	};
 }
