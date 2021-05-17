@@ -43,12 +43,19 @@
 		"ts-node": "^9.0.0",
 		"typegram": "^3.1.3",
 		"typescript": "^4.2.3",
-		"xo": "^0.39.1"
+		"xo": "^0.40.1"
 	},
 	"xo": {
 		"rules": {
 			"@typescript-eslint/no-non-null-assertion": "off",
+			"@typescript-eslint/no-require-imports": "off",
+			"@typescript-eslint/no-unsafe-assignment": "off",
+			"@typescript-eslint/no-unsafe-call": "off",
+			"@typescript-eslint/no-unsafe-member-access":"off",
+			"@typescript-eslint/no-unsafe-return": "off",
 			"@typescript-eslint/prefer-readonly-parameter-types": "off",
+			"unicorn/prefer-module": "off",
+			"unicorn/prefer-node-protocol": "off",
 			"prefer-named-capture-group": "off"
 		}
 	}
