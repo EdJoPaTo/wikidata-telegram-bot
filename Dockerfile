@@ -20,6 +20,8 @@ VOLUME /app/persist
 
 ENV NODE_ENV=production
 
+RUN apk upgrade --no-cache
+
 COPY --from=packages /build/node_modules ./node_modules
 COPY locales locales
 COPY wikidata-items.yaml ./
