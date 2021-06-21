@@ -1,7 +1,7 @@
 {
 	"name": "wikidata-telegram-bot",
 	"private": true,
-	"version": "1.6.6",
+	"version": "1.6.7",
 	"description": "Quick Look on Wikidata Entities via Telegram",
 	"license": "MIT",
 	"repository": "EdJoPaTo/wikidata-telegram-bot",
@@ -51,7 +51,7 @@
 			"@typescript-eslint/no-require-imports": "off",
 			"@typescript-eslint/no-unsafe-assignment": "off",
 			"@typescript-eslint/no-unsafe-call": "off",
-			"@typescript-eslint/no-unsafe-member-access":"off",
+			"@typescript-eslint/no-unsafe-member-access": "off",
 			"@typescript-eslint/no-unsafe-return": "off",
 			"@typescript-eslint/prefer-readonly-parameter-types": "off",
 			"unicorn/prefer-module": "off",
