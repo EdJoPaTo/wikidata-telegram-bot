@@ -2,7 +2,7 @@ import {existsSync, readFileSync} from 'fs';
 import * as process from 'process';
 
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
-import {I18n as TelegrafI18n} from '@edjopato/telegraf-i18n';
+import {I18n} from '@grammyjs/i18n';
 import {MenuMiddleware} from 'telegraf-inline-menu';
 import {Telegraf, Markup} from 'telegraf';
 import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
@@ -34,7 +34,7 @@ const localSession = new LocalSession<Session>({
 	getSessionKey: ctx => String(ctx.from?.id),
 });
 
-const i18n = new TelegrafI18n({
+const i18n = new I18n({
 	directory: 'locales',
 	defaultLanguage: 'en',
 	defaultLanguageOnMissing: true,
