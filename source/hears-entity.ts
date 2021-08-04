@@ -19,7 +19,7 @@ bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
 
 	const keyboard = Markup.inlineKeyboard(
 		(await entityButtons(ctx.wd, entityId)).map(o => o),
-		{columns: 1}
+		{columns: 1},
 	);
 
 	const {photo} = image(entity);
@@ -28,13 +28,13 @@ bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
 		return ctx.replyWithPhoto(photo, {
 			caption: text,
 			parse_mode: format.parse_mode,
-			...keyboard
+			...keyboard,
 		});
 	}
 
 	return ctx.reply(text, {
 		disable_web_page_preview: true,
 		parse_mode: format.parse_mode,
-		...keyboard
+		...keyboard,
 	});
 });

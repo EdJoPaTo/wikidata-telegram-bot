@@ -1,4 +1,5 @@
 import {existsSync, readFileSync} from 'fs';
+import * as process from 'process';
 
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n as TelegrafI18n} from '@edjopato/telegraf-i18n';
@@ -10,40 +11,40 @@ import * as LocalSession from 'telegraf-session-local';
 import {bot as hearsEntity} from './hears-entity';
 import {bot as inlineSearch} from './inline-search';
 import {bot as locationSearch} from './location-search';
-import {Context} from './bot-generics';
+import {Context, Session} from './bot-generics';
 import {menu as languageMenu} from './language-menu';
 
-process.title = 'wikidata-tgbot';
+(process as any).title = 'wikidata-tgbot';
 
-const token = (existsSync('/run/secrets/bot-token.txt') && readFileSync('/run/secrets/bot-token.txt', 'utf8').trim()) ||
-	(existsSync('bot-token.txt') && readFileSync('bot-token.txt', 'utf8').trim()) ||
-	process.env['BOT_TOKEN'];
+const token = (existsSync('/run/secrets/bot-token.txt') && readFileSync('/run/secrets/bot-token.txt', 'utf8').trim())
+	|| (existsSync('bot-token.txt') && readFileSync('bot-token.txt', 'utf8').trim())
+	|| process.env['BOT_TOKEN'];
 if (!token) {
 	throw new Error('You have to provide the bot-token from @BotFather via file (bot-token.txt) or environment variable (BOT_TOKEN)');
 }
 
-const localSession = new LocalSession({
+const localSession = new LocalSession<Session>({
 	// Database name/path, where sessions will be located (default: 'sessions.json')
 	database: 'persist/sessions.json',
 	// Format of storage/database (default: JSON.stringify / JSON.parse)
 	format: {
 		serialize: input => JSON.stringify(input, null, '\t') + '\n',
-		deserialize: input => JSON.parse(input)
+		deserialize: input => JSON.parse(input) as Session,
 	},
-	getSessionKey: ctx => String(ctx.from?.id)
+	getSessionKey: ctx => String(ctx.from?.id),
 });
 
 const i18n = new TelegrafI18n({
 	directory: 'locales',
 	defaultLanguage: 'en',
 	defaultLanguageOnMissing: true,
-	useSession: true
+	useSession: true,
 });
 
 const twb = new TelegrafWikibase({
 	contextKey: 'wd',
 	logQueriedEntityIds: process.env['NODE_ENV'] !== 'production',
-	userAgent: 'EdJoPaTo/wikidata-telegram-bot'
+	userAgent: 'EdJoPaTo/wikidata-telegram-bot',
 });
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
 twb.addResourceKeys(resourceKeysFromYaml(wikidataResourceKeyYaml));
@@ -72,7 +73,7 @@ bot.command(['start', 'help', 'search'], async ctx => {
 	const text = ctx.i18n.t('help');
 	const keyboard = Markup.inlineKeyboard([
 		Markup.button.switchToCurrentChat('inline search…', ''),
-		Markup.button.url('🦑GitHub', 'https://github.com/EdJoPaTo/wikidata-telegram-bot')
+		Markup.button.url('🦑GitHub', 'https://github.com/EdJoPaTo/wikidata-telegram-bot'),
 	], {columns: 1});
 	return ctx.reply(text, keyboard);
 });
@@ -90,7 +91,7 @@ async function startup(): Promise<void> {
 		{command: 'location', description: 'Show info on how to use the location feature'},
 		{command: 'help', description: 'Show help'},
 		{command: 'language', description: 'set your language'},
-		{command: 'settings', description: 'set your language'}
+		{command: 'settings', description: 'set your language'},
 	]);
 
 	await bot.launch();

@@ -52,5 +52,5 @@ export const TEXT_INTEREST: readonly string[] = [
 
 	// also interesting
 	'P460', // said to be the same as
-	'P1659' // see also
+	'P1659', // see also
 ];

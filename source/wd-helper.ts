@@ -10,16 +10,16 @@ export const GOT_OPTIONS = {headers: {'user-agent': 'EdJoPaTo/wikidata-telegram-
 let popularEntities: string[] = [];
 let popularEntitiesTimestamp = 0;
 
-export function entitiesInClaimValues(entity: WikidataEntityReader | readonly WikidataEntityReader[], claims: readonly string[]): readonly string[] {
+export function entitiesInClaimValues(entity: WikidataEntityReader | readonly WikidataEntityReader[], claims: readonly string[]) {
 	const entities: readonly WikidataEntityReader[] = Array.isArray(entity) ? entity : ([entity] as WikidataEntityReader[]);
 
 	return claims
-		.flatMap(claim => entities.flatMap(entity => entity.claim(claim)))
+		.flatMap(claim => entities.flatMap(entity => entity.claim(claim) as readonly unknown[]))
 		.filter((o): o is string => isItemId(o) || isPropertyId(o))
 		.filter(arrayFilterUnique());
 }
 
-export async function getPopularEntities(): Promise<readonly string[]> {
+export async function getPopularEntities() {
 	const now = Date.now() / 1000;
 	if (popularEntitiesTimestamp < now - HOUR_IN_SECONDS) {
 		popularEntitiesTimestamp = now;

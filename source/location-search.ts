@@ -40,15 +40,15 @@ async function queryLocation(location: Location, radius: number): Promise<Result
 	return result;
 }
 
-function queryJsonEntryToResult(rawJson: any): Result {
-	const [longitude, latitude] = (rawJson.location as string)
+function queryJsonEntryToResult(rawJson: Record<string, unknown>): Result {
+	const [longitude, latitude] = String(rawJson['location'])
 		.slice(6, -1)
 		.split(' ')
 		.map(o => Number(o));
 	return {
-		place: rawJson.place,
-		distance: rawJson.distance,
-		location: {longitude: longitude!, latitude: latitude!}
+		place: String(rawJson['place']),
+		distance: Number(rawJson['distance']),
+		location: {longitude: longitude!, latitude: latitude!},
 	};
 }
 
@@ -107,7 +107,7 @@ menu.pagination('page', {
 	getCurrentPage: ctx => (ctx.session.locationPage ?? 0) + 1,
 	setPage: (ctx, page) => {
 		ctx.session.locationPage = page - 1;
-	}
+	},
 });
 
 export const bot = new Composer<Context>();

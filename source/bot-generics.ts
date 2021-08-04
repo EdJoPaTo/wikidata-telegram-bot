@@ -22,5 +22,5 @@ export interface Context extends TelegrafContext {
 
 export const backButtons = createBackMainMenuButtons<Context>(
 	ctx => `🔙 ${ctx.i18n.t('menu.back')}`,
-	async ctx => `🔝 ${(await ctx.wd.reader('menu.menu')).label()}`
+	async ctx => `🔝 ${(await ctx.wd.reader('menu.menu')).label()}`,
 );

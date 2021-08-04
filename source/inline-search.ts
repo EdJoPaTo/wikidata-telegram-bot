@@ -1,3 +1,5 @@
+import * as process from 'process';
+
 import {Composer} from 'telegraf';
 import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'typegram';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
@@ -35,14 +37,14 @@ bot.on('inline_query', async ctx => {
 	console.timeLog(identifier, 'preload');
 
 	const inlineResults = await Promise.all(searchResults
-		.map(async o => createInlineResult(ctx, o))
+		.map(async o => createInlineResult(ctx, o)),
 	);
 
 	const options = {
 		switch_pm_text: '🏳️‍🌈 ' + (await ctx.wd.reader('menu.language')).label(),
 		switch_pm_parameter: 'language',
 		is_personal: true,
-		cache_time: 20
+		cache_time: 20,
 	};
 
 	if (process.env['NODE_ENV'] !== 'production') {
@@ -52,7 +54,7 @@ bot.on('inline_query', async ctx => {
 	console.timeEnd(identifier);
 
 	return ctx.answerInlineQuery([
-		...inlineResults
+		...inlineResults,
 	], options);
 });
 
@@ -61,7 +63,7 @@ async function search(language: string, query: string): Promise<readonly SearchR
 		search: query,
 		language,
 		continue: 0,
-		limit: 10
+		limit: 10,
 	};
 
 	return searchEntities(options, GOT_OPTIONS);
@@ -70,7 +72,7 @@ async function search(language: string, query: string): Promise<readonly SearchR
 async function preload(wb: WikibaseMiddlewareProperty, entityIds: readonly string[]): Promise<void> {
 	await wb.preload([...entityIds, ...CLAIMS.TEXT_INTEREST]);
 	const entities = await Promise.all(entityIds
-		.map(async id => wb.reader(id))
+		.map(async id => wb.reader(id)),
 	);
 
 	const claimEntityIds = entitiesInClaimValues(entities, CLAIMS.TEXT_INTEREST);
@@ -81,7 +83,7 @@ async function createInlineResult(ctx: Context, entityId: string): Promise<Inlin
 	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
 	const keyboard: InlineKeyboardMarkup = {
-		inline_keyboard: (await entityButtons(ctx.wd, entityId)).map(o => [o])
+		inline_keyboard: (await entityButtons(ctx.wd, entityId)).map(o => [o]),
 	};
 
 	const entity = await ctx.wd.reader(entityId);
@@ -92,7 +94,7 @@ async function createInlineResult(ctx: Context, entityId: string): Promise<Inlin
 		title: entity.label(),
 		description: entity.description(),
 		parse_mode: format.parse_mode,
-		reply_markup: keyboard
+		reply_markup: keyboard,
 	};
 
 	if (photo && thumb) {
@@ -101,7 +103,7 @@ async function createInlineResult(ctx: Context, entityId: string): Promise<Inlin
 			...inlineResultBase,
 			photo_url: photo,
 			thumb_url: thumb,
-			caption: text
+			caption: text,
 		};
 
 		return inlineResult;
@@ -113,8 +115,8 @@ async function createInlineResult(ctx: Context, entityId: string): Promise<Inlin
 		input_message_content: {
 			message_text: text,
 			disable_web_page_preview: true,
-			parse_mode: format.parse_mode
-		}
+			parse_mode: format.parse_mode,
+		},
 	};
 
 	return inlineResult;

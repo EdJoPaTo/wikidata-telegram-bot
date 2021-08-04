@@ -5,7 +5,7 @@ import WikidataEntityReader from 'wikidata-entity-reader';
 
 import {format, array} from './format';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
 const wdk = require('wikidata-sdk');
 
 export async function entityWithClaimText(wb: WikibaseMiddlewareProperty, entityId: string, claimIds: readonly string[]): Promise<string> {
@@ -16,7 +16,7 @@ export async function entityWithClaimText(wb: WikibaseMiddlewareProperty, entity
 	text += '\n\n';
 
 	const claimTextEntries = await Promise.all(claimIds
-		.map(async o => claimText(wb, entity, o))
+		.map(async o => claimText(wb, entity, o)),
 	);
 
 	text += claimTextEntries
@@ -52,8 +52,8 @@ export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: st
 	const buttons = [
 		Markup.button.url(
 			(await wb.reader('buttons.wikidata')).label(),
-			entity.url()
-		)
+			entity.url(),
+		),
 	];
 
 	return [
@@ -69,7 +69,7 @@ export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: st
 		...await claimUrlButtons(wb, entity, 'buttons.subreddit', part => `https://www.reddit.com/r/${part}/`),
 		...await claimUrlButtons(wb, entity, 'buttons.telegram', part => `https://t.me/${part}`),
 		...await claimUrlButtons(wb, entity, 'buttons.twitter', part => `https://twitter.com/${part}`),
-		...await claimUrlButtons(wb, entity, 'buttons.twitterHashtag', part => `https://twitter.com/hashtag/${part}?f=tweets`)
+		...await claimUrlButtons(wb, entity, 'buttons.twitterHashtag', part => `https://twitter.com/hashtag/${part}?f=tweets`),
 	];
 }
 
@@ -77,9 +77,8 @@ function sitelinkButtons(entity: WikidataEntityReader) {
 	try {
 		return entity.allSitelinksInLang()
 			.map(o => Markup.button.url(
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				wdk.getSitelinkData(o).project,
-				entity.sitelinkUrl(o)!
+				entity.sitelinkUrl(o)!,
 			));
 	} catch (error: unknown) {
 		console.error('something failed with sitelinkButtons', error instanceof Error ? error.message : error);
@@ -94,8 +93,8 @@ async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataE
 	const buttons = claimValues.map(o =>
 		Markup.button.url(
 			`${property.label()}${claimValues.length > 1 ? ` ${String(o)}` : ''}`,
-			urlModifier(o)
-		)
+			urlModifier(o),
+		),
 	);
 
 	return buttons;
@@ -106,7 +105,7 @@ async function claimText(wb: WikibaseMiddlewareProperty, entity: WikidataEntityR
 	const claimValues = entity.claim(claim);
 
 	const claimValueTexts = await Promise.all(claimValues
-		.map(async o => claimValueText(wb, o))
+		.map(async o => claimValueText(wb, o)),
 	);
 
 	return array(claimLabel, claimValueTexts);
@@ -123,10 +122,10 @@ async function claimValueText(wb: WikibaseMiddlewareProperty, value: unknown): P
 
 export function image(entity: WikidataEntityReader): {photo?: string; thumb?: string} {
 	const possible = [
-		...entity.claim('P18'), // Image
-		...entity.claim('P154'), // Logo image
-		...entity.claim('P5555'), // Schematic illustation
-		...entity.claim('P117') // Chemical structure
+		...entity.claim('P18') as readonly string[], // Image
+		...entity.claim('P154') as readonly string[], // Logo image
+		...entity.claim('P5555') as readonly string[], // Schematic illustation
+		...entity.claim('P117') as readonly string[], // Chemical structure
 	]
 		.filter((o): o is string => typeof o === 'string');
 
@@ -137,9 +136,7 @@ export function image(entity: WikidataEntityReader): {photo?: string; thumb?: st
 	const selected = possible[0];
 
 	return {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		photo: encodeURI(wdk.getImageUrl(selected, 800)),
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		thumb: encodeURI(wdk.getImageUrl(selected, 100))
+		thumb: encodeURI(wdk.getImageUrl(selected, 100)),
 	};
 }
