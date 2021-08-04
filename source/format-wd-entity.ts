@@ -1,7 +1,7 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
 import {Markup} from 'telegraf';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
-import WikidataEntityReader from 'wikidata-entity-reader';
+import {WikibaseEntityReader} from 'wikidata-entity-reader';
 
 import {format, array} from './format';
 
@@ -26,7 +26,7 @@ export async function entityWithClaimText(wb: WikibaseMiddlewareProperty, entity
 	return text;
 }
 
-function headerText(entity: WikidataEntityReader): string {
+function headerText(entity: WikibaseEntityReader): string {
 	let text = '';
 	text += format.bold(format.escape(entity.label()));
 	text += ' ';
@@ -73,7 +73,7 @@ export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: st
 	];
 }
 
-function sitelinkButtons(entity: WikidataEntityReader) {
+function sitelinkButtons(entity: WikibaseEntityReader) {
 	try {
 		return entity.allSitelinksInLang()
 			.map(o => Markup.button.url(
@@ -86,7 +86,7 @@ function sitelinkButtons(entity: WikidataEntityReader) {
 	}
 }
 
-async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataEntityReader, storeKey: string, urlModifier: (part: string) => string) {
+async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikibaseEntityReader, storeKey: string, urlModifier: (part: string) => string) {
 	const property = await tb.reader(storeKey);
 	const claimValues = entity.claim(property.qNumber()) as string[];
 
@@ -100,7 +100,7 @@ async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikidataE
 	return buttons;
 }
 
-async function claimText(wb: WikibaseMiddlewareProperty, entity: WikidataEntityReader, claim: string): Promise<string> {
+async function claimText(wb: WikibaseMiddlewareProperty, entity: WikibaseEntityReader, claim: string): Promise<string> {
 	const claimLabel = (await wb.reader(claim)).label();
 	const claimValues = entity.claim(claim);
 
@@ -120,7 +120,7 @@ async function claimValueText(wb: WikibaseMiddlewareProperty, value: unknown): P
 	return format.escape(String(value));
 }
 
-export function image(entity: WikidataEntityReader): {photo?: string; thumb?: string} {
+export function image(entity: WikibaseEntityReader): {photo?: string; thumb?: string} {
 	const possible = [
 		...entity.claim('P18') as readonly string[], // Image
 		...entity.claim('P154') as readonly string[], // Logo image

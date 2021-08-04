@@ -1,7 +1,7 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
+import {WikibaseEntityReader} from 'wikidata-entity-reader';
 import arrayFilterUnique from 'array-filter-unique';
 import got from 'got';
-import WikidataEntityReader from 'wikidata-entity-reader';
 
 const HOUR_IN_SECONDS = 60 * 60;
 
@@ -10,11 +10,11 @@ export const GOT_OPTIONS = {headers: {'user-agent': 'EdJoPaTo/wikidata-telegram-
 let popularEntities: string[] = [];
 let popularEntitiesTimestamp = 0;
 
-export function entitiesInClaimValues(entity: WikidataEntityReader | readonly WikidataEntityReader[], claims: readonly string[]) {
-	const entities: readonly WikidataEntityReader[] = Array.isArray(entity) ? entity : ([entity] as WikidataEntityReader[]);
+export function entitiesInClaimValues(entity: WikibaseEntityReader | readonly WikibaseEntityReader[], claims: readonly string[]) {
+	const entities: readonly WikibaseEntityReader[] = Array.isArray(entity) ? entity : ([entity] as WikibaseEntityReader[]);
 
 	return claims
-		.flatMap(claim => entities.flatMap(entity => entity.claim(claim) as readonly unknown[]))
+		.flatMap(claim => entities.flatMap(entity => entity.claim(claim)))
 		.filter((o): o is string => isItemId(o) || isPropertyId(o))
 		.filter(arrayFilterUnique());
 }
