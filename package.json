@@ -37,7 +37,7 @@
 		"wikidata-sdk-got": "^2.0.0"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^1.0.1",
+		"@sindresorhus/tsconfig": "^2.0.0",
 		"@types/node": "^16.4.9",
 		"del-cli": "^4.0.0",
 		"ts-node": "^10.0.0",
