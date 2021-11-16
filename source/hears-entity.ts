@@ -1,4 +1,4 @@
-import {Composer} from 'telegraf';
+import {Composer} from 'grammy';
 
 import {Context} from './bot-generics';
 import {entitiesInClaimValues} from './wd-helper';

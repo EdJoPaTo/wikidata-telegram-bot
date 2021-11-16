@@ -21,14 +21,14 @@
 	},
 	"dependencies": {
 		"@grammyjs/i18n": "^0.3.0",
+		"@satont/grammy-file-storage": "^1.0.0",
 		"array-filter-unique": "^2.1.0",
 		"got": "^11.1.0",
+		"grammy": "^1.4.0",
+		"grammy-inline-menu": "^7.0.2",
 		"locale-emoji": "^0.3.0",
 		"source-map-support": "^0.5.12",
-		"telegraf": "^4.1.1",
-		"telegraf-inline-menu": "^6.0.0",
 		"telegraf-middleware-console-time": "^2.0.0",
-		"telegraf-session-local": "^2.0.0",
 		"telegraf-wikibase": "^0.11.0",
 		"telegram-format": "^2.0.0",
 		"wikibase-types": "^0.2.1",
@@ -37,6 +37,7 @@
 		"wikidata-sdk-got": "^2.0.0"
 	},
 	"devDependencies": {
+		"@grammyjs/types": "^2.3.1",
 		"@sindresorhus/tsconfig": "^2.0.0",
 		"@types/node": "^16.4.9",
 		"del-cli": "^4.0.0",

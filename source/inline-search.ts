@@ -1,6 +1,6 @@
 import * as process from 'process';
 
-import {Composer} from 'telegraf';
+import {Composer} from 'grammy';
 import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'typegram';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {searchEntities} from 'wikidata-sdk-got';

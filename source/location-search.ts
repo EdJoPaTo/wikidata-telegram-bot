@@ -1,7 +1,7 @@
-import {Composer} from 'telegraf';
+import {Composer} from 'grammy';
 import {html as format} from 'telegram-format';
 import {Location} from 'typegram';
-import {MenuTemplate, Body, MenuMiddleware} from 'telegraf-inline-menu';
+import {MenuTemplate, Body, MenuMiddleware} from 'grammy-inline-menu';
 import {sparqlQuerySimplified} from 'wikidata-sdk-got';
 
 import {Context} from './bot-generics';
@@ -122,7 +122,7 @@ bot.command('location', async ctx => {
 	return menuMiddleware.replyToContext(ctx, 'location:9.990333333:48.396472222/');
 });
 
-bot.on('location', async ctx => {
+bot.on('message:location', async ctx => {
 	ctx.session.locationPage = 0;
 	const {location} = ctx.message;
 	const path = `location:${location.longitude}:${location.latitude}/`;

@@ -1,5 +1,5 @@
-import {Context as BaseContext} from 'telegraf';
-import {createBackMainMenuButtons} from 'telegraf-inline-menu';
+import {Context as BaseContext} from 'grammy';
+import {createBackMainMenuButtons} from 'grammy-inline-menu';
 import {I18nContext} from '@grammyjs/i18n';
 import {MiddlewareProperty} from 'telegraf-wikibase';
 

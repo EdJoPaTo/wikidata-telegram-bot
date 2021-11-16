@@ -1,12 +1,12 @@
 import {readFileSync} from 'fs';
 import * as process from 'process';
 
+import {Bot, session} from 'grammy';
+import {FileAdapter } from '@satont/grammy-file-storage';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n} from '@grammyjs/i18n';
-import {MenuMiddleware} from 'telegraf-inline-menu';
-import {Telegraf} from 'telegraf';
+import {MenuMiddleware} from 'grammy-inline-menu';
 import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
-import * as LocalSession from 'telegraf-session-local';
 
 import {bot as hearsEntity} from './hears-entity';
 import {bot as inlineSearch} from './inline-search';
@@ -20,17 +20,6 @@ const token = process.env['BOT_TOKEN'];
 if (!token) {
 	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)');
 }
-
-const localSession = new LocalSession<Session>({
-	// Database name/path, where sessions will be located (default: 'sessions.json')
-	database: 'persist/sessions.json',
-	// Format of storage/database (default: JSON.stringify / JSON.parse)
-	format: {
-		serialize: input => JSON.stringify(input, null, '\t') + '\n',
-		deserialize: input => JSON.parse(input) as Session,
-	},
-	getSessionKey: ctx => String(ctx.from?.id),
-});
 
 const i18n = new I18n({
 	directory: 'locales',
@@ -47,8 +36,29 @@ const twb = new TelegrafWikibase({
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
 twb.addResourceKeys(resourceKeysFromYaml(wikidataResourceKeyYaml));
 
-const bot = new Telegraf<Context>(token);
-bot.use(localSession.middleware());
+const bot = new Bot<Context>(token);
+
+bot.use(session({
+	initial: (): Session => ({}),
+	storage: new FileAdapter({dirName: 'persist/sessions/'}),
+	getSessionKey: ctx => {
+		// TODO: remove once https://github.com/grammyjs/grammY/pull/89 is released
+		const chatInstance = ctx.chat?.id ??
+			ctx.callbackQuery?.chat_instance ??
+			ctx.from?.id;
+		return chatInstance?.toString();
+	},
+}));
+
+bot.use((ctx, next) => {
+	if (!ctx.state) {
+		// @ts-expect-error set readonly property
+		ctx.state = {};
+	}
+
+	return next();
+})
+
 bot.use(i18n.middleware());
 bot.use(twb.middleware());
 
@@ -85,19 +95,22 @@ bot.catch((error: any) => {
 		return;
 	}
 
-	console.error('telegraf error occured', error);
+	console.error('BOT ERROR', error);
 });
 
 async function startup(): Promise<void> {
-	await bot.telegram.setMyCommands([
+	await bot.api.setMyCommands([
 		{command: 'location', description: 'Show info on how to use the location feature'},
 		{command: 'help', description: 'Show help'},
 		{command: 'language', description: 'set your language'},
 		{command: 'settings', description: 'set your language'},
 	]);
 
-	await bot.launch();
-	console.log(new Date(), 'Bot started as', bot.botInfo?.username);
+	await bot.start({
+		onStart: (botInfo) => {
+			console.log(new Date(), 'Bot starts as', botInfo.username);
+		}
+	});
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
