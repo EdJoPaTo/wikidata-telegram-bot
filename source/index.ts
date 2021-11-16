@@ -16,11 +16,9 @@ import {menu as languageMenu} from './language-menu';
 
 (process as any).title = 'wikidata-tgbot';
 
-const token = (existsSync('/run/secrets/bot-token.txt') && readFileSync('/run/secrets/bot-token.txt', 'utf8').trim())
-	|| (existsSync('bot-token.txt') && readFileSync('bot-token.txt', 'utf8').trim())
-	|| process.env['BOT_TOKEN'];
+const token = process.env['BOT_TOKEN'];
 if (!token) {
-	throw new Error('You have to provide the bot-token from @BotFather via file (bot-token.txt) or environment variable (BOT_TOKEN)');
+	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)');
 }
 
 const localSession = new LocalSession<Session>({
