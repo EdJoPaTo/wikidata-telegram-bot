@@ -1,4 +1,4 @@
-import {existsSync, readFileSync} from 'fs';
+import {readFileSync} from 'fs';
 import * as process from 'process';
 
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
