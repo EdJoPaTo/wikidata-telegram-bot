@@ -4,7 +4,7 @@ import * as process from 'process';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n} from '@grammyjs/i18n';
 import {MenuMiddleware} from 'telegraf-inline-menu';
-import {Telegraf, Markup} from 'telegraf';
+import {Telegraf} from 'telegraf';
 import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
 import * as LocalSession from 'telegraf-session-local';
 
@@ -71,11 +71,15 @@ bot.use(languageMenuMiddleware);
 
 bot.command(['start', 'help', 'search'], async ctx => {
 	const text = ctx.i18n.t('help');
-	const keyboard = Markup.inlineKeyboard([
-		Markup.button.switchToCurrentChat('inline search…', ''),
-		Markup.button.url('🦑GitHub', 'https://github.com/EdJoPaTo/wikidata-telegram-bot'),
-	], {columns: 1});
-	return ctx.reply(text, keyboard);
+	return ctx.reply(text, {
+		reply_markup: {inline_keyboard: [[{
+			text: 'inline search…',
+			switch_inline_query_current_chat: '',
+		}], [{
+			text: '🦑GitHub',
+			url: 'https://github.com/EdJoPaTo/wikidata-telegram-bot',
+		}]]},
+	});
 });
 
 bot.catch((error: any) => {

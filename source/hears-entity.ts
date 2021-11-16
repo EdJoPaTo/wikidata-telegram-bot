@@ -1,4 +1,4 @@
-import {Composer, Markup} from 'telegraf';
+import {Composer} from 'telegraf';
 
 import {Context} from './bot-generics';
 import {entitiesInClaimValues} from './wd-helper';
@@ -17,10 +17,7 @@ bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
 
 	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
-	const keyboard = Markup.inlineKeyboard(
-		(await entityButtons(ctx.wd, entityId)).map(o => o),
-		{columns: 1},
-	);
+	const inline_keyboard = (await entityButtons(ctx.wd, entityId)).map(o => [o]);
 
 	const {photo} = image(entity);
 
@@ -28,13 +25,13 @@ bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
 		return ctx.replyWithPhoto(photo, {
 			caption: text,
 			parse_mode: format.parse_mode,
-			...keyboard,
+			reply_markup: {inline_keyboard},
 		});
 	}
 
 	return ctx.reply(text, {
 		disable_web_page_preview: true,
 		parse_mode: format.parse_mode,
-		...keyboard,
+		reply_markup: {inline_keyboard},
 	});
 });

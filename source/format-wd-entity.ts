@@ -1,5 +1,4 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
-import {Markup} from 'telegraf';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {WikibaseEntityReader} from 'wikidata-entity-reader';
 
@@ -49,12 +48,10 @@ function headerText(entity: WikibaseEntityReader): string {
 
 export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: string) {
 	const entity = await wb.reader(entityId);
-	const buttons = [
-		Markup.button.url(
-			(await wb.reader('buttons.wikidata')).label(),
-			entity.url(),
-		),
-	];
+	const buttons = [{
+		text: (await wb.reader('buttons.wikidata')).label(),
+		url: entity.url(),
+	}];
 
 	return [
 		...buttons,
@@ -76,10 +73,10 @@ export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: st
 function sitelinkButtons(entity: WikibaseEntityReader) {
 	try {
 		return entity.allSitelinksInLang()
-			.map(o => Markup.button.url(
-				wdk.getSitelinkData(o).project,
-				entity.sitelinkUrl(o)!,
-			));
+			.map(o => ({
+				text: wdk.getSitelinkData(o).project as string,
+				url: entity.sitelinkUrl(o)!,
+			}));
 	} catch (error: unknown) {
 		console.error('something failed with sitelinkButtons', error instanceof Error ? error.message : error);
 		return [];
@@ -90,12 +87,10 @@ async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikibaseE
 	const property = await tb.reader(storeKey);
 	const claimValues = entity.claim(property.qNumber()) as string[];
 
-	const buttons = claimValues.map(o =>
-		Markup.button.url(
-			`${property.label()}${claimValues.length > 1 ? ` ${String(o)}` : ''}`,
-			urlModifier(o),
-		),
-	);
+	const buttons = claimValues.map(o => ({
+		text: `${property.label()}${claimValues.length > 1 ? ` ${String(o)}` : ''}`,
+		url: urlModifier(o),
+	}));
 
 	return buttons;
 }
