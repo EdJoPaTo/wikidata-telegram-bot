@@ -2,7 +2,7 @@ import {readFileSync} from 'fs';
 import * as process from 'process';
 
 import {Bot, session} from 'grammy';
-import {FileAdapter } from '@satont/grammy-file-storage';
+import {FileAdapter} from '@satont/grammy-file-storage';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n} from '@grammyjs/i18n';
 import {MenuMiddleware} from 'grammy-inline-menu';
@@ -43,21 +43,21 @@ bot.use(session({
 	storage: new FileAdapter({dirName: 'persist/sessions/'}),
 	getSessionKey: ctx => {
 		// TODO: remove once https://github.com/grammyjs/grammY/pull/89 is released
-		const chatInstance = ctx.chat?.id ??
-			ctx.callbackQuery?.chat_instance ??
-			ctx.from?.id;
+		const chatInstance = ctx.chat?.id
+			?? ctx.callbackQuery?.chat_instance
+			?? ctx.from?.id;
 		return chatInstance?.toString();
 	},
 }));
 
-bot.use((ctx, next) => {
+bot.use(async (ctx, next) => {
 	if (!ctx.state) {
 		// @ts-expect-error set readonly property
 		ctx.state = {};
 	}
 
 	return next();
-})
+});
 
 bot.use(i18n.middleware());
 bot.use(twb.middleware());
@@ -107,9 +107,9 @@ async function startup(): Promise<void> {
 	]);
 
 	await bot.start({
-		onStart: (botInfo) => {
+		onStart: botInfo => {
 			console.log(new Date(), 'Bot starts as', botInfo.username);
-		}
+		},
 	});
 }
 
