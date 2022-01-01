@@ -1,6 +1,6 @@
 import {Composer} from 'grammy';
 import {html as format} from 'telegram-format';
-import {Location} from 'typegram';
+import {Location} from '@grammyjs/types';
 import {MenuTemplate, Body, MenuMiddleware} from 'grammy-inline-menu';
 import {sparqlQuerySimplified} from 'wikidata-sdk-got';
 

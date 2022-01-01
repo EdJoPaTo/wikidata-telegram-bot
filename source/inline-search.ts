@@ -1,7 +1,7 @@
 import * as process from 'process';
 
 import {Composer} from 'grammy';
-import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'typegram';
+import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from '@grammyjs/types';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {searchEntities} from 'wikidata-sdk-got';
 import {SearchResult} from 'wikibase-types';
@@ -41,6 +41,7 @@ bot.on('inline_query', async ctx => {
 	);
 
 	const options = {
+		// eslint-disable-next-line unicorn/no-await-expression-member
 		switch_pm_text: '🏳️‍🌈 ' + (await ctx.wd.reader('menu.language')).label(),
 		switch_pm_parameter: 'language',
 		is_personal: true,
@@ -82,8 +83,9 @@ async function preload(wb: WikibaseMiddlewareProperty, entityIds: readonly strin
 async function createInlineResult(ctx: Context, entityId: string): Promise<InlineQueryResultArticle | InlineQueryResultPhoto> {
 	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
+	const buttons = await entityButtons(ctx.wd, entityId);
 	const keyboard: InlineKeyboardMarkup = {
-		inline_keyboard: (await entityButtons(ctx.wd, entityId)).map(o => [o]),
+		inline_keyboard: buttons.map(o => [o]),
 	};
 
 	const entity = await ctx.wd.reader(entityId);

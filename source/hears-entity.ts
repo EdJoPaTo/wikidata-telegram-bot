@@ -17,7 +17,8 @@ bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
 
 	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
-	const inline_keyboard = (await entityButtons(ctx.wd, entityId)).map(o => [o]);
+	const buttons = await entityButtons(ctx.wd, entityId);
+	const inline_keyboard = buttons.map(o => [o]);
 
 	const {photo} = image(entity);
 

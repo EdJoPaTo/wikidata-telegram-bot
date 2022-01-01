@@ -48,8 +48,9 @@ function headerText(entity: WikibaseEntityReader): string {
 
 export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: string) {
 	const entity = await wb.reader(entityId);
+	const buttonTextReader = await wb.reader('buttons.wikidata');
 	const buttons = [{
-		text: (await wb.reader('buttons.wikidata')).label(),
+		text: buttonTextReader.label(),
 		url: entity.url(),
 	}];
 
@@ -96,7 +97,8 @@ async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikibaseE
 }
 
 async function claimText(wb: WikibaseMiddlewareProperty, entity: WikibaseEntityReader, claim: string): Promise<string> {
-	const claimLabel = (await wb.reader(claim)).label();
+	const claimReader = await wb.reader(claim);
+	const claimLabel = claimReader.label();
 	const claimValues = entity.claim(claim);
 
 	const claimValueTexts = await Promise.all(claimValues

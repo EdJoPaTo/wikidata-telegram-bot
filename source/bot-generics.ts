@@ -22,5 +22,8 @@ export interface Context extends BaseContext {
 
 export const backButtons = createBackMainMenuButtons<Context>(
 	ctx => `🔙 ${ctx.i18n.t('menu.back')}`,
-	async ctx => `🔝 ${(await ctx.wd.reader('menu.menu')).label()}`,
+	async ctx => {
+		const labelReader = await ctx.wd.reader('menu.menu');
+		return `🔝 ${labelReader.label()}`;
+	},
 );
