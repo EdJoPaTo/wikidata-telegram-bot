@@ -26,4 +26,4 @@ COPY locales locales
 COPY wikidata-items.yaml ./
 COPY --from=builder /build/dist ./
 
-CMD node -r source-map-support/register index.js
+CMD node --enable-source-maps index.js
