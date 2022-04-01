@@ -26,6 +26,7 @@ export async function getPopularEntities() {
 
 		const {body} = await got('https://www.wikidata.org/w/index.php?title=Wikidata:Main_Page/Popular&action=raw', GOT_OPTIONS);
 		const regex = /(Q\d+)/g;
+		// eslint-disable-next-line @typescript-eslint/ban-types
 		let match: RegExpExecArray | null;
 		const results: string[] = [];
 

@@ -41,7 +41,7 @@ const bot = new Bot<Context>(token);
 bot.use(session({
 	initial: (): Session => ({}),
 	storage: new FileAdapter({dirName: 'persist/sessions/'}),
-	getSessionKey: ctx => {
+	getSessionKey(ctx) {
 		// TODO: remove once https://github.com/grammyjs/grammY/pull/89 is released
 		const chatInstance = ctx.chat?.id
 			?? ctx.callbackQuery?.chat_instance
@@ -107,7 +107,7 @@ async function startup(): Promise<void> {
 	]);
 
 	await bot.start({
-		onStart: botInfo => {
+		onStart(botInfo) {
 			console.log(new Date(), 'Bot starts as', botInfo.username);
 		},
 	});

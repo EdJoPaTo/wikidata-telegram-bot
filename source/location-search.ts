@@ -105,7 +105,7 @@ const menu = new MenuTemplate<Context>(menuBody);
 menu.pagination('page', {
 	getTotalPages: ctx => ctx.state.locationTotalPages ?? 1,
 	getCurrentPage: ctx => (ctx.session.locationPage ?? 0) + 1,
-	setPage: (ctx, page) => {
+	setPage(ctx, page) {
 		ctx.session.locationPage = page - 1;
 	},
 });
