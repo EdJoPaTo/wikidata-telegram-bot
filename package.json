@@ -32,7 +32,7 @@
 		"telegram-format": "^2.0.0",
 		"wikibase-types": "^0.2.1",
 		"wikidata-entity-reader": "^3.0.0",
-		"wikidata-sdk": "^7.4.1",
+		"wikidata-sdk": "^8.0.0",
 		"wikidata-sdk-got": "^2.0.0"
 	},
 	"devDependencies": {
