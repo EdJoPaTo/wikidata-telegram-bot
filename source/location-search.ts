@@ -44,7 +44,7 @@ function queryJsonEntryToResult(rawJson: Record<string, unknown>): Result {
 	const [longitude, latitude] = String(rawJson['location'])
 		.slice(6, -1)
 		.split(' ')
-		.map(o => Number(o));
+		.map(Number);
 	return {
 		place: String(rawJson['place']),
 		distance: Number(rawJson['distance']),
@@ -92,7 +92,7 @@ function formatDistance(distance: number): string {
 }
 
 async function menuBody(ctx: Context, path: string): Promise<Body> {
-	const [longitude, latitude] = path.split('/')[0]!.split(':').slice(1).map(o => Number(o));
+	const [longitude, latitude] = path.split('/')[0]!.split(':').slice(1).map(Number);
 	const results = await queryLocation({longitude: longitude!, latitude: latitude!}, 3);
 	await ctx.wd.preload(results.map(o => o.place));
 	ctx.state.locationTotalPages = results.length / ENTRIES_PER_PAGE;

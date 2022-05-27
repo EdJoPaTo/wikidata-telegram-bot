@@ -19,7 +19,7 @@ export async function entityWithClaimText(wb: WikibaseMiddlewareProperty, entity
 	);
 
 	text += claimTextEntries
-		.filter(o => o)
+		.filter(Boolean)
 		.join('\n\n');
 
 	return text;
