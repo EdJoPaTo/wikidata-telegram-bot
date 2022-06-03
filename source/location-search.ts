@@ -4,8 +4,8 @@ import {Location} from '@grammyjs/types';
 import {MenuTemplate, Body, MenuMiddleware} from 'grammy-inline-menu';
 import {sparqlQuerySimplified} from 'wikidata-sdk-got';
 
-import {Context} from './bot-generics';
-import {GOT_OPTIONS} from './wd-helper';
+import {Context} from './bot-generics.js';
+import {GOT_OPTIONS} from './wd-helper.js';
 
 type EntityId = string;
 

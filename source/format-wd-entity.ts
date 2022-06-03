@@ -2,7 +2,7 @@ import {isItemId, isPropertyId} from 'wikibase-types';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {WikibaseEntityReader} from 'wikidata-entity-reader';
 
-import {format, array} from './format';
+import {format, array} from './format/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
 const wdk = require('wikidata-sdk');

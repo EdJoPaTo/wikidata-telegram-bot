@@ -1,4 +1,4 @@
-import * as process from 'process';
+import * as process from 'node:process';
 
 import {Composer} from 'grammy';
 import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from '@grammyjs/types';
@@ -6,11 +6,11 @@ import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibas
 import {searchEntities} from 'wikidata-sdk-got';
 import {SearchResult} from 'wikibase-types';
 
-import {Context} from './bot-generics';
-import {entitiesInClaimValues, getPopularEntities, GOT_OPTIONS} from './wd-helper';
-import {entityWithClaimText, entityButtons, image} from './format-wd-entity';
-import {format} from './format';
-import * as CLAIMS from './claim-ids';
+import {Context} from './bot-generics.js';
+import {entitiesInClaimValues, getPopularEntities, GOT_OPTIONS} from './wd-helper.js';
+import {entityWithClaimText, entityButtons, image} from './format-wd-entity.js';
+import {format} from './format/index.js';
+import * as CLAIMS from './claim-ids.js';
 
 export const bot = new Composer<Context>();
 

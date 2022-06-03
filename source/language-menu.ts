@@ -1,6 +1,6 @@
 import {MenuTemplate} from 'grammy-inline-menu';
 
-import {Context, backButtons} from './bot-generics';
+import {Context, backButtons} from './bot-generics.js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
 const localeEmoji = require('locale-emoji');

@@ -47,15 +47,7 @@
 		"rules": {
 			"@typescript-eslint/naming-convention": "off",
 			"@typescript-eslint/no-unsafe-call": "off",
-			"@typescript-eslint/no-unsafe-member-access": "off",
-			"@typescript-eslint/prefer-readonly-parameter-types": "off",
-			"node/prefer-global/process": "off",
-			"prefer-named-capture-group": "off",
-			"unicorn/prefer-node-protocol": "off",
-			"import/extensions": [
-				"error",
-				"never"
-			]
+			"node/prefer-global/process": "off"
 		}
 	}
 }

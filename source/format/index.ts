@@ -1,2 +1,2 @@
-export * from './format';
-export * from './general';
+export * from './format.js';
+export * from './general.js';

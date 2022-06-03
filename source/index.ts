@@ -1,5 +1,5 @@
-import {readFileSync} from 'fs';
-import * as process from 'process';
+import {readFileSync} from 'node:fs';
+import * as process from 'node:process';
 
 import {Bot, session} from 'grammy';
 import {FileAdapter} from '@grammyjs/storage-file';
@@ -8,11 +8,11 @@ import {I18n} from '@grammyjs/i18n';
 import {MenuMiddleware} from 'grammy-inline-menu';
 import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
 
-import {bot as hearsEntity} from './hears-entity';
-import {bot as inlineSearch} from './inline-search';
-import {bot as locationSearch} from './location-search';
-import {Context, Session} from './bot-generics';
-import {menu as languageMenu} from './language-menu';
+import {bot as hearsEntity} from './hears-entity.js';
+import {bot as inlineSearch} from './inline-search.js';
+import {bot as locationSearch} from './location-search.js';
+import {Context, Session} from './bot-generics.js';
+import {menu as languageMenu} from './language-menu.js';
 
 (process as any).title = 'wikidata-tgbot';
 
