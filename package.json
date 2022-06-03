@@ -22,7 +22,7 @@
 	"dependencies": {
 		"@grammyjs/i18n": "^0.5.0",
 		"@satont/grammy-file-storage": "^1.1.1",
-		"array-filter-unique": "^2.1.0",
+		"array-filter-unique": "^3.0.0",
 		"got": "^11.1.0",
 		"grammy": "^1.4.0",
 		"grammy-inline-menu": "^7.0.2",
