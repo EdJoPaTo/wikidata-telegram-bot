@@ -2,7 +2,7 @@ import {readFileSync} from 'fs';
 import * as process from 'process';
 
 import {Bot, session} from 'grammy';
-import {FileAdapter} from '@satont/grammy-file-storage';
+import {FileAdapter} from '@grammyjs/storage-file';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n} from '@grammyjs/i18n';
 import {MenuMiddleware} from 'grammy-inline-menu';

@@ -17,3 +17,5 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "got"
         update-types: ["version-update:semver-major"]
+      - dependency-name: "array-filter-unique"
+        update-types: ["version-update:semver-major"]
