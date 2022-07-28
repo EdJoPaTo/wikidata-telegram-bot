@@ -1,13 +1,15 @@
 .*
 *.md
 **/*.test.*
+**/test.*
 botfather-settings
 coverage
 dist
 Dockerfile
-media
 node_modules
 test
+
+media
 
 # botfiles
 persist
