@@ -1,7 +1,7 @@
 import * as process from 'node:process';
 
 import {Composer} from 'grammy';
-import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from '@grammyjs/types';
+import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'grammy/types';
 import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {searchEntities} from 'wikidata-sdk-got';
 import {SearchResult} from 'wikibase-types';
