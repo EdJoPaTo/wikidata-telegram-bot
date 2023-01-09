@@ -1,12 +1,12 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
 import {type WikibaseEntityReader} from 'wikidata-entity-reader';
 import arrayFilterUnique from 'array-filter-unique';
-import got from 'got';
 
 const HOUR_IN_SECONDS = 60 * 60;
 
+const USER_AGENT = 'github.com/EdJoPaTo/wikidata-telegram-bot';
 export const GOT_OPTIONS = {
-	headers: {'user-agent': 'EdJoPaTo/wikidata-telegram-bot'},
+	headers: {'user-agent': USER_AGENT},
 };
 
 let popularEntities: string[] = [];
@@ -31,10 +31,17 @@ export async function getPopularEntities() {
 	if (popularEntitiesTimestamp < now - HOUR_IN_SECONDS) {
 		popularEntitiesTimestamp = now;
 
-		const {body} = await got(
+		const headers = new Headers();
+		headers.set('user-agent', USER_AGENT);
+
+		const response = await fetch(
 			'https://www.wikidata.org/w/index.php?title=Wikidata:Main_Page/Popular&action=raw',
-			GOT_OPTIONS,
+			{
+				headers,
+			},
 		);
+		const body = await response.text();
+
 		const regex = /(Q\d+)/g;
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		let match: RegExpExecArray | null;
