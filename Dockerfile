@@ -26,4 +26,5 @@ COPY locales locales
 COPY wikidata-items.yaml ./
 COPY --from=builder /build/dist ./
 
-CMD node --enable-source-maps index.js
+ENTRYPOINT ["node", "--enable-source-maps"]
+CMD ["index.js"]
