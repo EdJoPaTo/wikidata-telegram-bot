@@ -6,19 +6,21 @@ import {FileAdapter} from '@grammyjs/storage-file';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n} from '@grammyjs/i18n';
 import {MenuMiddleware} from 'grammy-inline-menu';
-import {TelegrafWikibase, resourceKeysFromYaml} from 'telegraf-wikibase';
+import {resourceKeysFromYaml, TelegrafWikibase} from 'telegraf-wikibase';
 
 import {bot as hearsEntity} from './hears-entity.js';
 import {bot as inlineSearch} from './inline-search.js';
 import {bot as locationSearch} from './location-search.js';
-import {Context, Session} from './bot-generics.js';
+import {type Context, type Session} from './bot-generics.js';
 import {menu as languageMenu} from './language-menu.js';
 
 (process as any).title = 'wikidata-tgbot';
 
 const token = process.env['BOT_TOKEN'];
 if (!token) {
-	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)');
+	throw new Error(
+		'You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)',
+	);
 }
 
 const i18n = new I18n({
@@ -72,21 +74,29 @@ bot.use(locationSearch.middleware());
 
 const languageMenuMiddleware = new MenuMiddleware('/', languageMenu);
 
-bot.command(['lang', 'language', 'settings'], async ctx => languageMenuMiddleware.replyToContext(ctx));
-bot.hears('/start language', async ctx => languageMenuMiddleware.replyToContext(ctx));
+bot.command(
+	['lang', 'language', 'settings'],
+	async ctx => languageMenuMiddleware.replyToContext(ctx),
+);
+bot.hears(
+	'/start language',
+	async ctx => languageMenuMiddleware.replyToContext(ctx),
+);
 
 bot.use(languageMenuMiddleware);
 
 bot.command(['start', 'help', 'search'], async ctx => {
 	const text = ctx.i18n.t('help');
 	return ctx.reply(text, {
-		reply_markup: {inline_keyboard: [[{
-			text: 'inline search…',
-			switch_inline_query_current_chat: '',
-		}], [{
-			text: '🦑GitHub',
-			url: 'https://github.com/EdJoPaTo/wikidata-telegram-bot',
-		}]]},
+		reply_markup: {
+			inline_keyboard: [[{
+				text: 'inline search…',
+				switch_inline_query_current_chat: '',
+			}], [{
+				text: '🦑GitHub',
+				url: 'https://github.com/EdJoPaTo/wikidata-telegram-bot',
+			}]],
+		},
 	});
 });
 
@@ -100,7 +110,10 @@ bot.catch((error: any) => {
 
 async function startup(): Promise<void> {
 	await bot.api.setMyCommands([
-		{command: 'location', description: 'Show info on how to use the location feature'},
+		{
+			command: 'location',
+			description: 'Show info on how to use the location feature',
+		},
 		{command: 'help', description: 'Show help'},
 		{command: 'language', description: 'set your language'},
 		{command: 'settings', description: 'set your language'},

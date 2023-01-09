@@ -1,20 +1,23 @@
 import * as process from 'node:process';
 
 import {Composer} from 'grammy';
-import {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'grammy/types';
-import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
+import type {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'grammy/types';
+import {type MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {searchEntities} from 'wikidata-sdk-got';
-import {SearchResult} from 'wikibase-types';
+import {type SearchResult} from 'wikibase-types';
 
-import {Context} from './bot-generics.js';
+import {type Context} from './bot-generics.js';
 import {entitiesInClaimValues, getPopularEntities, GOT_OPTIONS} from './wd-helper.js';
-import {entityWithClaimText, entityButtons, image} from './format-wd-entity.js';
+import {entityButtons, entityWithClaimText, image} from './format-wd-entity.js';
 import {format} from './format/index.js';
 import * as CLAIMS from './claim-ids.js';
 
 export const bot = new Composer<Context>();
 
-async function getSearchResults(language: string, query: string): Promise<readonly string[]> {
+async function getSearchResults(
+	language: string,
+	query: string,
+): Promise<readonly string[]> {
 	if (query) {
 		const results = await search(language, query);
 		return results.map(o => o.id);
@@ -36,8 +39,8 @@ bot.on('inline_query', async ctx => {
 	await preload(ctx.wd, searchResults);
 	console.timeLog(identifier, 'preload');
 
-	const inlineResults = await Promise.all(searchResults
-		.map(async o => createInlineResult(ctx, o)),
+	const inlineResults = await Promise.all(
+		searchResults.map(async o => createInlineResult(ctx, o)),
 	);
 
 	const options = {
@@ -59,7 +62,10 @@ bot.on('inline_query', async ctx => {
 	], options);
 });
 
-async function search(language: string, query: string): Promise<readonly SearchResult[]> {
+async function search(
+	language: string,
+	query: string,
+): Promise<readonly SearchResult[]> {
 	const options = {
 		search: query,
 		language,
@@ -70,17 +76,23 @@ async function search(language: string, query: string): Promise<readonly SearchR
 	return searchEntities(options, GOT_OPTIONS);
 }
 
-async function preload(wb: WikibaseMiddlewareProperty, entityIds: readonly string[]): Promise<void> {
+async function preload(
+	wb: WikibaseMiddlewareProperty,
+	entityIds: readonly string[],
+): Promise<void> {
 	await wb.preload([...entityIds, ...CLAIMS.TEXT_INTEREST]);
-	const entities = await Promise.all(entityIds
-		.map(async id => wb.reader(id)),
+	const entities = await Promise.all(
+		entityIds.map(async id => wb.reader(id)),
 	);
 
 	const claimEntityIds = entitiesInClaimValues(entities, CLAIMS.TEXT_INTEREST);
 	await wb.preload(claimEntityIds);
 }
 
-async function createInlineResult(ctx: Context, entityId: string): Promise<InlineQueryResultArticle | InlineQueryResultPhoto> {
+async function createInlineResult(
+	ctx: Context,
+	entityId: string,
+): Promise<InlineQueryResultArticle | InlineQueryResultPhoto> {
 	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
 	const buttons = await entityButtons(ctx.wd, entityId);

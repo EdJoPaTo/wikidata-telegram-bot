@@ -1,24 +1,24 @@
-import {Context as BaseContext} from 'grammy';
+import {type Context as BaseContext} from 'grammy';
 import {createBackMainMenuButtons} from 'grammy-inline-menu';
-import {I18nContext} from '@grammyjs/i18n';
-import {MiddlewareProperty} from 'telegraf-wikibase';
+import {type I18nContext} from '@grammyjs/i18n';
+import {type MiddlewareProperty} from 'telegraf-wikibase';
 
-export interface Session {
+export type Session = {
 	__wikibase_language_code?: string;
 	page?: number;
 	locationPage?: number;
-}
+};
 
-export interface State {
+export type State = {
 	locationTotalPages?: number;
-}
+};
 
-export interface Context extends BaseContext {
+export type Context = BaseContext & {
 	readonly i18n: I18nContext;
 	readonly session: Session;
 	readonly state: State;
 	readonly wd: MiddlewareProperty;
-}
+};
 
 export const backButtons = createBackMainMenuButtons<Context>(
 	ctx => `🔙 ${ctx.i18n.t('menu.back')}`,

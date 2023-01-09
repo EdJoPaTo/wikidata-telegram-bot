@@ -1,6 +1,10 @@
 import {format} from './format.js';
 
-export function array(label: string, values: readonly string[], maxValuesShown = 8): string {
+export function array(
+	label: string,
+	values: readonly string[],
+	maxValuesShown = 8,
+): string {
 	if (values.length === 0) {
 		return '';
 	}

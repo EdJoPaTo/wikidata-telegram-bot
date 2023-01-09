@@ -1,13 +1,17 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
-import {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
-import {WikibaseEntityReader} from 'wikidata-entity-reader';
+import {type MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
+import {type WikibaseEntityReader} from 'wikidata-entity-reader';
 
-import {format, array} from './format/index.js';
+import {array, format} from './format/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
 const wdk = require('wikidata-sdk');
 
-export async function entityWithClaimText(wb: WikibaseMiddlewareProperty, entityId: string, claimIds: readonly string[]): Promise<string> {
+export async function entityWithClaimText(
+	wb: WikibaseMiddlewareProperty,
+	entityId: string,
+	claimIds: readonly string[],
+): Promise<string> {
 	const entity = await wb.reader(entityId);
 
 	let text = '';
@@ -15,8 +19,7 @@ export async function entityWithClaimText(wb: WikibaseMiddlewareProperty, entity
 	text += '\n\n';
 
 	const claimTextEntries = await Promise.all(claimIds
-		.map(async o => claimText(wb, entity, o)),
-	);
+		.map(async o => claimText(wb, entity, o)));
 
 	text += claimTextEntries
 		.filter(Boolean)
@@ -46,7 +49,10 @@ function headerText(entity: WikibaseEntityReader): string {
 	return text;
 }
 
-export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: string) {
+export async function entityButtons(
+	wb: WikibaseMiddlewareProperty,
+	entityId: string,
+) {
 	const entity = await wb.reader(entityId);
 	const buttonTextReader = await wb.reader('buttons.wikidata');
 	const buttons = [{
@@ -79,12 +85,20 @@ function sitelinkButtons(entity: WikibaseEntityReader) {
 				url: entity.sitelinkUrl(o)!,
 			}));
 	} catch (error: unknown) {
-		console.error('something failed with sitelinkButtons', error instanceof Error ? error.message : error);
+		console.error(
+			'something failed with sitelinkButtons',
+			error instanceof Error ? error.message : error,
+		);
 		return [];
 	}
 }
 
-async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikibaseEntityReader, storeKey: string, urlModifier: (part: string) => string) {
+async function claimUrlButtons(
+	tb: WikibaseMiddlewareProperty,
+	entity: WikibaseEntityReader,
+	storeKey: string,
+	urlModifier: (part: string) => string,
+) {
 	const property = await tb.reader(storeKey);
 	const claimValues = entity.claim(property.qNumber()) as string[];
 
@@ -96,19 +110,25 @@ async function claimUrlButtons(tb: WikibaseMiddlewareProperty, entity: WikibaseE
 	return buttons;
 }
 
-async function claimText(wb: WikibaseMiddlewareProperty, entity: WikibaseEntityReader, claim: string): Promise<string> {
+async function claimText(
+	wb: WikibaseMiddlewareProperty,
+	entity: WikibaseEntityReader,
+	claim: string,
+): Promise<string> {
 	const claimReader = await wb.reader(claim);
 	const claimLabel = claimReader.label();
 	const claimValues = entity.claim(claim);
 
 	const claimValueTexts = await Promise.all(claimValues
-		.map(async o => claimValueText(wb, o)),
-	);
+		.map(async o => claimValueText(wb, o)));
 
 	return array(claimLabel, claimValueTexts);
 }
 
-async function claimValueText(wb: WikibaseMiddlewareProperty, value: unknown): Promise<string> {
+async function claimValueText(
+	wb: WikibaseMiddlewareProperty,
+	value: unknown,
+): Promise<string> {
 	if (isItemId(value) || isPropertyId(value)) {
 		const reader = await wb.reader(value);
 		return format.url(format.escape(reader.label()), reader.url());
@@ -117,7 +137,9 @@ async function claimValueText(wb: WikibaseMiddlewareProperty, value: unknown): P
 	return format.escape(String(value));
 }
 
-export function image(entity: WikibaseEntityReader): {photo?: string; thumb?: string} {
+export function image(
+	entity: WikibaseEntityReader,
+): {photo?: string; thumb?: string} {
 	const possible = [
 		...entity.claim('P18') as readonly string[], // Image
 		...entity.claim('P154') as readonly string[], // Logo image

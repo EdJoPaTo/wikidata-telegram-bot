@@ -1,8 +1,8 @@
 import {Composer} from 'grammy';
 
-import {Context} from './bot-generics.js';
+import {type Context} from './bot-generics.js';
 import {entitiesInClaimValues} from './wd-helper.js';
-import {entityWithClaimText, entityButtons, image} from './format-wd-entity.js';
+import {entityButtons, entityWithClaimText, image} from './format-wd-entity.js';
 import {format} from './format/index.js';
 import * as CLAIMS from './claim-ids.js';
 
@@ -15,7 +15,11 @@ bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
 	const claimEntityIds = entitiesInClaimValues(entity, CLAIMS.TEXT_INTEREST);
 	await ctx.wd.preload([...claimEntityIds, ...CLAIMS.TEXT_INTEREST]);
 
-	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
+	const text = await entityWithClaimText(
+		ctx.wd,
+		entityId,
+		CLAIMS.TEXT_INTEREST,
+	);
 
 	const buttons = await entityButtons(ctx.wd, entityId);
 	const inline_keyboard = buttons.map(o => [o]);

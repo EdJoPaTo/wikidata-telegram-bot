@@ -1,19 +1,19 @@
 import {Composer} from 'grammy';
 import {html as format} from 'telegram-format';
-import {Location} from 'grammy/types';
-import {MenuTemplate, Body, MenuMiddleware} from 'grammy-inline-menu';
+import type {Location} from 'grammy/types';
+import {type Body, MenuMiddleware, MenuTemplate} from 'grammy-inline-menu';
 import {sparqlQuerySimplified} from 'wikidata-sdk-got';
 
-import {Context} from './bot-generics.js';
+import {type Context} from './bot-generics.js';
 import {GOT_OPTIONS} from './wd-helper.js';
 
 type EntityId = string;
 
-interface Result {
+type Result = {
 	readonly place: EntityId;
 	readonly distance: number;
 	readonly location: Readonly<Location>;
-}
+};
 
 const ENTRIES_PER_PAGE = 10;
 
@@ -22,7 +22,10 @@ const ENTRIES_PER_PAGE = 10;
  * @param location Location (longitude latitude)
  * @param radius Radius in kilometer
  */
-function createQueryStringForLocation(location: Location, radius: number): string {
+function createQueryStringForLocation(
+	location: Location,
+	radius: number,
+): string {
 	return `SELECT ?place ?location ?distance WHERE {
 SERVICE wikibase:around {
 	?place wdt:P625 ?location.
@@ -33,7 +36,10 @@ SERVICE wikibase:around {
 }`;
 }
 
-async function queryLocation(location: Location, radius: number): Promise<Result[]> {
+async function queryLocation(
+	location: Location,
+	radius: number,
+): Promise<Result[]> {
 	const query = createQueryStringForLocation(location, radius);
 	const raw = await sparqlQuerySimplified(query, GOT_OPTIONS);
 	const result = raw.map(o => queryJsonEntryToResult(o));
@@ -52,12 +58,21 @@ function queryJsonEntryToResult(rawJson: Record<string, unknown>): Result {
 	};
 }
 
-async function createResultsString(ctx: Context, results: readonly Result[], pageZeroBased: number): Promise<string> {
+async function createResultsString(
+	ctx: Context,
+	results: readonly Result[],
+	pageZeroBased: number,
+): Promise<string> {
 	const relevant = [...results]
 		.sort((a, b) => a.distance - b.distance)
-		.slice(pageZeroBased * ENTRIES_PER_PAGE, (pageZeroBased + 1) * ENTRIES_PER_PAGE);
+		.slice(
+			pageZeroBased * ENTRIES_PER_PAGE,
+			(pageZeroBased + 1) * ENTRIES_PER_PAGE,
+		);
 
-	const parts = await Promise.all(relevant.map(async o => entryString(ctx, o)));
+	const parts = await Promise.all(
+		relevant.map(async o => entryString(ctx, o)),
+	);
 	const text = parts.join('\n\n');
 	return text;
 }
