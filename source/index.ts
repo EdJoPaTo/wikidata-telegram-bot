@@ -11,8 +11,8 @@ import {resourceKeysFromYaml, TelegrafWikibase} from 'telegraf-wikibase';
 import {bot as hearsEntity} from './hears-entity.js';
 import {bot as inlineSearch} from './inline-search.js';
 import {bot as locationSearch} from './location-search.js';
-import {type Context, type Session} from './bot-generics.js';
 import {menu as languageMenu} from './language-menu.js';
+import {type Context, type Session} from './bot-generics.js';
 
 (process as any).title = 'wikidata-tgbot';
 
@@ -23,10 +23,9 @@ if (!token) {
 	);
 }
 
-const i18n = new I18n({
+export const i18n = new I18n({
+	defaultLocale: 'en',
 	directory: 'locales',
-	defaultLanguage: 'en',
-	defaultLanguageOnMissing: true,
 	useSession: true,
 });
 
@@ -86,7 +85,7 @@ bot.hears(
 bot.use(languageMenuMiddleware);
 
 bot.command(['start', 'help', 'search'], async ctx => {
-	const text = ctx.i18n.t('help');
+	const text = ctx.t('help');
 	return ctx.reply(text, {
 		reply_markup: {
 			inline_keyboard: [[{

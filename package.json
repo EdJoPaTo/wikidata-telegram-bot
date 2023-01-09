@@ -19,7 +19,7 @@
 		"node": ">=18"
 	},
 	"dependencies": {
-		"@grammyjs/i18n": "^0.5.0",
+		"@grammyjs/i18n": "^1.0.1",
 		"@grammyjs/storage-file": "^2.0.0",
 		"array-filter-unique": "^2.1.0",
 		"grammy": "^1.10.1",

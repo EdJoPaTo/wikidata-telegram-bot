@@ -132,7 +132,7 @@ bot.use(menuMiddleware.middleware());
 
 bot.command('location', async ctx => {
 	ctx.session.locationPage = 0;
-	await ctx.reply(ctx.i18n.t('location'));
+	await ctx.reply(ctx.t('location'));
 	// Verschwörhaus
 	return menuMiddleware.replyToContext(ctx, 'location:9.990333333:48.396472222/');
 });
