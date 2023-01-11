@@ -14,14 +14,14 @@
 		"start": "tsc --sourceMap && node --enable-source-maps dist/index.js",
 		"test": "tsc --sourceMap && xo"
 	},
-	"type": "commonjs",
+	"type": "module",
 	"engines": {
 		"node": ">=18"
 	},
 	"dependencies": {
 		"@grammyjs/i18n": "^1.0.1",
 		"@grammyjs/storage-file": "^2.0.0",
-		"array-filter-unique": "^2.1.0",
+		"array-filter-unique": "^3.0.2",
 		"grammy": "^1.10.1",
 		"grammy-inline-menu": "^8.0.0",
 		"locale-emoji": "^0.3.0",

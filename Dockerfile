@@ -21,6 +21,7 @@ RUN apk upgrade --no-cache
 WORKDIR /app
 VOLUME /app/persist
 
+COPY package.json ./
 COPY --from=packages /build/node_modules ./node_modules
 COPY locales locales
 COPY wikidata-items.yaml ./

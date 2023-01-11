@@ -1,11 +1,10 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
 import {type MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import {type WikibaseEntityReader} from 'wikidata-entity-reader';
+// @ts-expect-error there are no types
+import wdk from 'wikidata-sdk';
 
 import {array, format} from './format/index.js';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
-const wdk = require('wikidata-sdk');
 
 export async function entityWithClaimText(
 	wb: WikibaseMiddlewareProperty,

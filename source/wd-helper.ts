@@ -1,6 +1,6 @@
+import {arrayFilterUnique} from 'array-filter-unique';
 import {isItemId, isPropertyId} from 'wikibase-types';
 import {type WikibaseEntityReader} from 'wikidata-entity-reader';
-import arrayFilterUnique from 'array-filter-unique';
 
 const HOUR_IN_SECONDS = 60 * 60;
 
