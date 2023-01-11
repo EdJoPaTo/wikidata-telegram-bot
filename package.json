@@ -43,6 +43,7 @@
 		"rules": {
 			"@typescript-eslint/naming-convention": "off",
 			"@typescript-eslint/no-unsafe-call": "off",
+			"n/prefer-global/process": "off",
 			"unicorn/prefer-top-level-await": "off"
 		}
 	}

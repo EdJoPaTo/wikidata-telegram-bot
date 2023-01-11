@@ -1,5 +1,4 @@
 import {readFileSync} from 'node:fs';
-import * as process from 'node:process';
 
 import {Bot, session} from 'grammy';
 import {FileAdapter} from '@grammyjs/storage-file';
