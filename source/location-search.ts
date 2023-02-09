@@ -139,8 +139,8 @@ bot.use(menuMiddleware.middleware());
 bot.command('location', async ctx => {
 	ctx.session.locationPage = 0;
 	await ctx.reply(ctx.t('location'));
-	// Verschwörhaus
-	return menuMiddleware.replyToContext(ctx, 'location:9.990333333:48.396472222/');
+	// Hamburger Michel
+	return menuMiddleware.replyToContext(ctx, 'location:9.978889:53.548333/');
 });
 
 bot.on('message:location', async ctx => {

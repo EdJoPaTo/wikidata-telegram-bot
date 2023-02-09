@@ -9,4 +9,4 @@ location =
   You can send a location via Telegram to get relevant Wikidata Items around that location.
   Tip: If you do not send your actual location neither this bot nor wikidata will get your actual location.
 
-  This is an example result if you are at the Verschwörhaus, Ulm, Germany:
+  This is an example result if you are at the St. Michaelis Church, Hamburg, Germany:
