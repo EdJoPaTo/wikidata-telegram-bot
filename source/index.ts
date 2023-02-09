@@ -98,7 +98,8 @@ bot.command(['start', 'help', 'search'], async ctx => {
 	});
 });
 
-bot.catch((error: any) => {
+// eslint-disable-next-line unicorn/prefer-top-level-await
+bot.catch(error => {
 	if (error.message.startsWith('400: Bad Request: query is too old')) {
 		return;
 	}
@@ -106,23 +107,18 @@ bot.catch((error: any) => {
 	console.error('BOT ERROR', error);
 });
 
-async function startup(): Promise<void> {
-	await bot.api.setMyCommands([
-		{
-			command: 'location',
-			description: 'Show info on how to use the location feature',
-		},
-		{command: 'help', description: 'Show help'},
-		{command: 'language', description: 'set your language'},
-		{command: 'settings', description: 'set your language'},
-	]);
+await bot.api.setMyCommands([
+	{
+		command: 'location',
+		description: 'Show info on how to use the location feature',
+	},
+	{command: 'help', description: 'Show help'},
+	{command: 'language', description: 'set your language'},
+	{command: 'settings', description: 'set your language'},
+]);
 
-	await bot.start({
-		onStart(botInfo) {
-			console.log(new Date(), 'Bot starts as', botInfo.username);
-		},
-	});
-}
-
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-startup();
+await bot.start({
+	onStart(botInfo) {
+		console.log(new Date(), 'Bot starts as', botInfo.username);
+	},
+});

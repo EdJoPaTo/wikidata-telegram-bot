@@ -7,6 +7,7 @@ import {backButtons, type Context} from './bot-generics.js';
 export const menu = new MenuTemplate<Context>(languageMenuText);
 
 function flagString(languageCode: string, useFallbackFlag = false) {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 	const flag = localeEmoji(languageCode) as string;
 	if (!flag && useFallbackFlag) {
 		return '🏳️‍🌈';
