@@ -11,7 +11,7 @@ import {bot as hearsEntity} from './hears-entity.js';
 import {bot as inlineSearch} from './inline-search.js';
 import {bot as locationSearch} from './location-search.js';
 import {menu as languageMenu} from './language-menu.js';
-import {type Context, type Session} from './bot-generics.js';
+import type {Context, Session} from './bot-generics.js';
 
 (process as any).title = 'wikidata-tgbot';
 

@@ -2,15 +2,14 @@ import * as process from 'node:process';
 
 import {Composer} from 'grammy';
 import type {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'grammy/types';
-import {type MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
-import {searchEntities} from 'wikidata-sdk-got';
-import {type SearchResult} from 'wikibase-types';
+import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
+import type {SearchResult} from 'wikibase-types';
 
-import {type Context} from './bot-generics.js';
-import {entitiesInClaimValues, getPopularEntities, GOT_OPTIONS} from './wd-helper.js';
+import {entitiesInClaimValues, getPopularEntities, searchEntities} from './wd-helper.js';
 import {entityButtons, entityWithClaimText, image} from './format-wd-entity.js';
 import {format} from './format/index.js';
 import * as CLAIMS from './claim-ids.js';
+import type {Context} from './bot-generics.js';
 
 export const bot = new Composer<Context>();
 
@@ -66,14 +65,12 @@ async function search(
 	language: string,
 	query: string,
 ): Promise<readonly SearchResult[]> {
-	const options = {
+	return searchEntities({
 		search: query,
 		language,
 		continue: 0,
 		limit: 10,
-	};
-
-	return searchEntities(options, GOT_OPTIONS);
+	});
 }
 
 async function preload(

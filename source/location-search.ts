@@ -1,11 +1,10 @@
 import {Composer} from 'grammy';
 import {html as format} from 'telegram-format';
-import type {Location} from 'grammy/types';
 import {type Body, MenuMiddleware, MenuTemplate} from 'grammy-inline-menu';
-import {sparqlQuerySimplified} from 'wikidata-sdk-got';
+import type {Location} from 'grammy/types';
 
-import {type Context} from './bot-generics.js';
-import {GOT_OPTIONS} from './wd-helper.js';
+import {sparqlQuerySimplified} from './wd-helper.js';
+import type {Context} from './bot-generics.js';
 
 type EntityId = string;
 
@@ -41,7 +40,7 @@ async function queryLocation(
 	radius: number,
 ): Promise<Result[]> {
 	const query = createQueryStringForLocation(location, radius);
-	const raw = await sparqlQuerySimplified(query, GOT_OPTIONS);
+	const raw = await sparqlQuerySimplified(query);
 	const result = raw.map(o => queryJsonEntryToResult(o));
 	return result;
 }
@@ -108,11 +107,18 @@ function formatDistance(distance: number): string {
 
 async function menuBody(ctx: Context, path: string): Promise<Body> {
 	const [longitude, latitude] = path.split('/')[0]!.split(':').slice(1).map(Number);
-	const results = await queryLocation({longitude: longitude!, latitude: latitude!}, 3);
+	const results = await queryLocation({
+		longitude: longitude!,
+		latitude: latitude!,
+	}, 3);
 	await ctx.wd.preload(results.map(o => o.place));
 	ctx.state.locationTotalPages = results.length / ENTRIES_PER_PAGE;
 	const text = await createResultsString(ctx, results, ctx.session.locationPage ?? 0);
-	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true};
+	return {
+		text,
+		parse_mode: format.parse_mode,
+		disable_web_page_preview: true,
+	};
 }
 
 const menu = new MenuTemplate<Context>(menuBody);

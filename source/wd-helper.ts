@@ -1,13 +1,16 @@
 import {arrayFilterUnique} from 'array-filter-unique';
-import {isItemId, isPropertyId} from 'wikibase-types';
-import {type WikibaseEntityReader} from 'wikidata-entity-reader';
+import {isItemId, isPropertyId, type SparqlResults, type SearchResult, type SparqlValueType} from 'wikibase-types';
+import {wdk} from 'wikibase-sdk/wikidata.org';
+import type {WikibaseEntityReader} from 'wikidata-entity-reader';
+
+type Wbk = typeof wdk;
 
 const HOUR_IN_SECONDS = 60 * 60;
 
 const USER_AGENT = 'github.com/EdJoPaTo/wikidata-telegram-bot';
-export const GOT_OPTIONS = {
-	headers: {'user-agent': USER_AGENT},
-};
+const FETCH_HEADERS = new Headers();
+FETCH_HEADERS.set('user-agent', USER_AGENT);
+const FETCH_OPTIONS = {headers: FETCH_HEADERS};
 
 let popularEntities: string[] = [];
 let popularEntitiesTimestamp = 0;
@@ -55,4 +58,22 @@ export async function getPopularEntities() {
 	}
 
 	return popularEntities;
+}
+
+type SearchEntitiesOptions = Parameters<Wbk['searchEntities']>[0];
+export async function searchEntities(options: SearchEntitiesOptions) {
+	const url = wdk.searchEntities(options) as string;
+	const response = await fetch(url, FETCH_OPTIONS);
+	const body = await response.json() as {search: SearchResult[]};
+	return body.search;
+}
+
+export async function sparqlQuerySimplified(
+	query: string,
+): Promise<ReadonlyArray<Record<string, SparqlValueType>>> {
+	const url = wdk.sparqlQuery(query) as string;
+	const response = await fetch(url, FETCH_OPTIONS);
+	const body = await response.json() as SparqlResults;
+	const simplified = wdk.simplify.sparqlResults(body) as ReadonlyArray<Record<string, SparqlValueType>>;
+	return simplified;
 }

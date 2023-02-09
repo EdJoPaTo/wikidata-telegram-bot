@@ -1,8 +1,7 @@
 import {isItemId, isPropertyId} from 'wikibase-types';
-import {type MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
-import {type WikibaseEntityReader} from 'wikidata-entity-reader';
-// @ts-expect-error there are no types
-import wdk from 'wikidata-sdk';
+import {wdk} from 'wikibase-sdk/wikidata.org';
+import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
+import type {WikibaseEntityReader} from 'wikidata-entity-reader';
 
 import {array, format} from './format/index.js';
 
@@ -80,7 +79,7 @@ function sitelinkButtons(entity: WikibaseEntityReader) {
 	try {
 		return entity.allSitelinksInLang()
 			.map(o => ({
-				text: wdk.getSitelinkData(o).project as string,
+				text: wdk.getSitelinkData(o).project,
 				url: entity.sitelinkUrl(o)!,
 			}));
 	} catch (error: unknown) {
@@ -151,7 +150,7 @@ export function image(
 		return {};
 	}
 
-	const selected = possible[0];
+	const selected = possible[0]!;
 
 	return {
 		photo: encodeURI(wdk.getImageUrl(selected, 800)),
