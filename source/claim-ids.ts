@@ -1,6 +1,6 @@
 /* eslint-disable capitalized-comments */
 
-export const TEXT_INTEREST: readonly string[] = [
+export const TEXT_INTEREST = [
 	// labels
 	'P1705', // native label
 	'P1448', // official name
@@ -53,4 +53,4 @@ export const TEXT_INTEREST: readonly string[] = [
 	// also interesting
 	'P460', // said to be the same as
 	'P1659', // see also
-];
+] as const;
