@@ -66,13 +66,20 @@ export async function entityButtons(
 		...await claimUrlButtons(wb, entity, 'buttons.googlePlayStore', part => `https://play.google.com/store/apps/details?id=${part}`),
 		...await claimUrlButtons(wb, entity, 'buttons.imdb', part => `https://www.imdb.com/title/${part}/`),
 		...await claimUrlButtons(wb, entity, 'buttons.itunes', part => `https://itunes.apple.com/app/id${part}/`),
+		...await claimUrlButtons(wb, entity, 'buttons.mastodon', mastodonUrl),
 		...await claimUrlButtons(wb, entity, 'buttons.sourceCodeRepo', url => url),
 		...await claimUrlButtons(wb, entity, 'buttons.steam', part => `https://store.steampowered.com/app/${part}/`),
 		...await claimUrlButtons(wb, entity, 'buttons.subreddit', part => `https://www.reddit.com/r/${part}/`),
 		...await claimUrlButtons(wb, entity, 'buttons.telegram', part => `https://t.me/${part}`),
 		...await claimUrlButtons(wb, entity, 'buttons.twitter', part => `https://twitter.com/${part}`),
 		...await claimUrlButtons(wb, entity, 'buttons.twitterHashtag', part => `https://twitter.com/hashtag/${part}?f=tweets`),
+		...await claimUrlButtons(wb, entity, 'buttons.youtubeChannel', part => `https://www.youtube.com/channel/${part}`),
 	];
+}
+
+function mastodonUrl(value: string): string {
+	const [username, domain] = value.split('@');
+	return `https://${domain!}/@${username!}`;
 }
 
 function sitelinkButtons(entity: WikibaseEntityReader) {
@@ -92,12 +99,12 @@ function sitelinkButtons(entity: WikibaseEntityReader) {
 }
 
 async function claimUrlButtons(
-	tb: WikibaseMiddlewareProperty,
+	wb: WikibaseMiddlewareProperty,
 	entity: WikibaseEntityReader,
 	storeKey: string,
 	urlModifier: (part: string) => string,
 ) {
-	const property = await tb.reader(storeKey);
+	const property = await wb.reader(storeKey);
 	const claimValues = entity.claim(property.qNumber()) as string[];
 
 	const buttons = claimValues.map(o => ({
