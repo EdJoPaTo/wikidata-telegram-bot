@@ -1,4 +1,4 @@
-import {isItemId, isPropertyId} from 'wikibase-types';
+import {isItemId, isPropertyId} from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
 import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import type {WikibaseEntityReader} from 'wikidata-entity-reader';
@@ -134,7 +134,7 @@ async function claimValueText(
 	wb: WikibaseMiddlewareProperty,
 	value: unknown,
 ): Promise<string> {
-	if (isItemId(value) || isPropertyId(value)) {
+	if (typeof value === 'string' && (isItemId(value) || isPropertyId(value))) {
 		const reader = await wb.reader(value);
 		return format.url(format.escape(reader.label()), reader.url());
 	}

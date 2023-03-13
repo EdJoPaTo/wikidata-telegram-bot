@@ -3,7 +3,7 @@ import * as process from 'node:process';
 import {Composer} from 'grammy';
 import type {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'grammy/types';
 import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
-import type {SearchResult} from 'wikibase-types';
+import type {SearchResult} from 'wikibase-sdk';
 
 import {entitiesInClaimValues, getPopularEntities, searchEntities} from './wd-helper.js';
 import {entityButtons, entityWithClaimText, image} from './format-wd-entity.js';

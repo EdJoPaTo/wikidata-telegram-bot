@@ -1,5 +1,5 @@
 import {arrayFilterUnique} from 'array-filter-unique';
-import {isItemId, isPropertyId, type SparqlResults, type SearchResult, type SparqlValueType} from 'wikibase-types';
+import {isItemId, isPropertyId, type SearchResult, simplifySparqlResults, type SparqlResults, type SparqlValueType} from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
 import type {WikibaseEntityReader} from 'wikidata-entity-reader';
 
@@ -25,7 +25,8 @@ export function entitiesInClaimValues(
 
 	return claims
 		.flatMap(claim => entities.flatMap(entity => entity.claim(claim)))
-		.filter((o): o is string => isItemId(o) || isPropertyId(o))
+		.filter((o): o is string => typeof o === 'string')
+		.filter(o => isItemId(o) || isPropertyId(o))
 		.filter(arrayFilterUnique());
 }
 
@@ -62,7 +63,7 @@ export async function getPopularEntities() {
 
 type SearchEntitiesOptions = Parameters<Wbk['searchEntities']>[0];
 export async function searchEntities(options: SearchEntitiesOptions) {
-	const url = wdk.searchEntities(options) as string;
+	const url = wdk.searchEntities(options);
 	const response = await fetch(url, FETCH_OPTIONS);
 	const body = await response.json() as {search: SearchResult[]};
 	return body.search;
@@ -71,9 +72,9 @@ export async function searchEntities(options: SearchEntitiesOptions) {
 export async function sparqlQuerySimplified(
 	query: string,
 ): Promise<ReadonlyArray<Record<string, SparqlValueType>>> {
-	const url = wdk.sparqlQuery(query) as string;
+	const url = wdk.sparqlQuery(query);
 	const response = await fetch(url, FETCH_OPTIONS);
 	const body = await response.json() as SparqlResults;
-	const simplified = wdk.simplify.sparqlResults(body) as ReadonlyArray<Record<string, SparqlValueType>>;
+	const simplified = simplifySparqlResults(body) as ReadonlyArray<Record<string, SparqlValueType>>;
 	return simplified;
 }
