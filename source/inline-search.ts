@@ -113,7 +113,7 @@ async function createInlineResult(
 			type: 'photo',
 			...inlineResultBase,
 			photo_url: photo,
-			thumb_url: thumb,
+			thumbnail_url: thumb,
 			caption: text,
 		};
 
