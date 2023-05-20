@@ -70,7 +70,7 @@ export async function entityButtons(
 		...await claimUrlButtons(wb, entity, 'buttons.sourceCodeRepo', url => url),
 		...await claimUrlButtons(wb, entity, 'buttons.steam', part => `https://store.steampowered.com/app/${part}/`),
 		...await claimUrlButtons(wb, entity, 'buttons.subreddit', part => `https://www.reddit.com/r/${part}/`),
-		...await claimUrlButtons(wb, entity, 'buttons.telegram', part => `https://t.me/${part}`),
+		...await claimUrlButtons(wb, entity, 'buttons.telegram', part => `https://telegram.me/${part}`),
 		...await claimUrlButtons(wb, entity, 'buttons.twitter', part => `https://twitter.com/${part}`),
 		...await claimUrlButtons(wb, entity, 'buttons.twitterHashtag', part => `https://twitter.com/hashtag/${part}?f=tweets`),
 		...await claimUrlButtons(wb, entity, 'buttons.youtubeChannel', part => `https://www.youtube.com/channel/${part}`),
