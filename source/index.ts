@@ -1,12 +1,10 @@
 import {readFileSync} from 'node:fs';
-
 import {Bot, session} from 'grammy';
 import {FileAdapter} from '@grammyjs/storage-file';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {I18n} from '@grammyjs/i18n';
 import {MenuMiddleware} from 'grammy-inline-menu';
 import {resourceKeysFromYaml, TelegrafWikibase} from 'telegraf-wikibase';
-
 import {bot as hearsEntity} from './hears-entity.js';
 import {bot as inlineSearch} from './inline-search.js';
 import {bot as locationSearch} from './location-search.js';

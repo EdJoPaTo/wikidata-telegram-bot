@@ -2,7 +2,6 @@ import {Composer} from 'grammy';
 import {html as format} from 'telegram-format';
 import {type Body, MenuMiddleware, MenuTemplate} from 'grammy-inline-menu';
 import type {Location} from 'grammy/types';
-
 import {sparqlQuerySimplified} from './wd-helper.js';
 import type {Context} from './bot-generics.js';
 

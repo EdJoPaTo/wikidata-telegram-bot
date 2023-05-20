@@ -1,7 +1,6 @@
 import {MenuTemplate} from 'grammy-inline-menu';
 // @ts-expect-error there are no types
 import localeEmoji from 'locale-emoji';
-
 import {backButtons, type Context} from './bot-generics.js';
 
 export const menu = new MenuTemplate<Context>(languageMenuText);

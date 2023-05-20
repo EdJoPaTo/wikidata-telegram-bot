@@ -2,7 +2,6 @@ import {isItemId, isPropertyId, type PropertyId} from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
 import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import type {WikibaseEntityReader} from 'wikidata-entity-reader';
-
 import {array, format} from './format/index.js';
 
 export async function entityWithClaimText(

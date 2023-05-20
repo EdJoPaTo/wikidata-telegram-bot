@@ -1,5 +1,4 @@
 import {Composer} from 'grammy';
-
 import {entitiesInClaimValues} from './wd-helper.js';
 import {entityButtons, entityWithClaimText, image} from './format-wd-entity.js';
 import {format} from './format/index.js';
