@@ -1,5 +1,7 @@
 /* eslint-disable capitalized-comments */
 
+import {PropertyId} from 'wikibase-sdk';
+
 export const TEXT_INTEREST = [
 	// labels
 	'P1705', // native label
@@ -53,4 +55,4 @@ export const TEXT_INTEREST = [
 	// also interesting
 	'P460', // said to be the same as
 	'P1659', // see also
-] as const;
+] as const satisfies readonly PropertyId[];

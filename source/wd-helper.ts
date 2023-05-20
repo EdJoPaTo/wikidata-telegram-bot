@@ -1,5 +1,5 @@
 import {arrayFilterUnique} from 'array-filter-unique';
-import {isItemId, isPropertyId, type SearchResult, simplifySparqlResults, type SparqlResults, type SparqlValueType} from 'wikibase-sdk';
+import {isItemId, isPropertyId, type PropertyId, type SearchResult, simplifySparqlResults, type SparqlResults, type SparqlValueType} from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
 import type {WikibaseEntityReader} from 'wikidata-entity-reader';
 
@@ -17,7 +17,7 @@ let popularEntitiesTimestamp = 0;
 
 export function entitiesInClaimValues(
 	entity: WikibaseEntityReader | readonly WikibaseEntityReader[],
-	claims: readonly string[],
+	claims: readonly PropertyId[],
 ) {
 	const entities: readonly WikibaseEntityReader[] = Array.isArray(entity)
 		? entity

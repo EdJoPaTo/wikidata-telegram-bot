@@ -1,4 +1,4 @@
-import {isItemId, isPropertyId} from 'wikibase-sdk';
+import {isItemId, isPropertyId, type PropertyId} from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
 import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import type {WikibaseEntityReader} from 'wikidata-entity-reader';
@@ -8,7 +8,7 @@ import {array, format} from './format/index.js';
 export async function entityWithClaimText(
 	wb: WikibaseMiddlewareProperty,
 	entityId: string,
-	claimIds: readonly string[],
+	claimIds: readonly PropertyId[],
 ): Promise<string> {
 	const entity = await wb.reader(entityId);
 
@@ -118,7 +118,7 @@ async function claimUrlButtons(
 async function claimText(
 	wb: WikibaseMiddlewareProperty,
 	entity: WikibaseEntityReader,
-	claim: string,
+	claim: PropertyId,
 ): Promise<string> {
 	const claimReader = await wb.reader(claim);
 	const claimLabel = claimReader.label();
