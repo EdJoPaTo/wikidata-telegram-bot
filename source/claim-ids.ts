@@ -1,6 +1,6 @@
 /* eslint-disable capitalized-comments */
 
-import {PropertyId} from 'wikibase-sdk';
+import type {PropertyId} from 'wikibase-sdk';
 
 export const TEXT_INTEREST = [
 	// labels
