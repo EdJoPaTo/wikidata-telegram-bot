@@ -36,6 +36,7 @@ export const TEXT_INTEREST = [
 	// physical quantities
 	'P131', // located in administrative entity
 	'P6375', // street adress
+	'P625', // coordinate location
 	'P38', // currency
 	'P1082', // population
 	'P2046', // area,
