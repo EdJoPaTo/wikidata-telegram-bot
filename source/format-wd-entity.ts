@@ -1,8 +1,8 @@
-import {isItemId, isPropertyId, type PropertyId} from 'wikibase-sdk';
+import {type PropertyId, type SnakValue, wikibaseTimeToSimpleDay} from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
-import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
-import type {WikibaseEntityReader} from 'wikidata-entity-reader';
+import type {MiddlewareProperty as WikibaseMiddlewareProperty, WikibaseEntityReader} from 'telegraf-wikibase';
 import {array, format} from './format/index.js';
+import {unreachable} from './javascript-helper.js';
 
 export async function entityWithClaimText(
 	wb: WikibaseMiddlewareProperty,
@@ -104,7 +104,8 @@ async function claimUrlButtons(
 	urlModifier: (part: string) => string,
 ) {
 	const property = await wb.reader(storeKey);
-	const claimValues = entity.claim(property.qNumber()) as string[];
+	const pId = property.qNumber() as PropertyId;
+	const claimValues = entity.claimValues(pId).map(o => String(o.value));
 
 	const buttons = claimValues.map(o => ({
 		text: `${property.label()}${claimValues.length > 1 ? ` ${String(o)}` : ''}`,
@@ -121,7 +122,7 @@ async function claimText(
 ): Promise<string> {
 	const claimReader = await wb.reader(claim);
 	const claimLabel = claimReader.label();
-	const claimValues = entity.claim(claim);
+	const claimValues = entity.claimValues(claim);
 
 	const claimValueTexts = await Promise.all(claimValues
 		.map(async o => claimValueText(wb, o)));
@@ -131,25 +132,64 @@ async function claimText(
 
 async function claimValueText(
 	wb: WikibaseMiddlewareProperty,
-	value: unknown,
+	s: SnakValue,
 ): Promise<string> {
-	if (typeof value === 'string' && (isItemId(value) || isPropertyId(value))) {
-		const reader = await wb.reader(value);
+	if (s.type === 'wikibase-entityid') {
+		const reader = await wb.reader(s.value.id);
 		return format.url(format.escape(reader.label()), reader.url());
 	}
 
-	return format.escape(String(value));
+	if (s.type === 'string') {
+		return format.escape(s.value);
+	}
+
+	if (s.type === 'monolingualtext') {
+		return format.monospace(s.value.language) + ': '
+			+ format.escape(s.value.text);
+	}
+
+	if (s.type === 'quantity') {
+		const amount = format.escape(s.value.amount);
+		const unit = await formatUnit(wb, s.value.unit);
+		return unit ? `${amount} ${unit}` : amount;
+	}
+
+	if (s.type === 'time') {
+		return format.escape(wikibaseTimeToSimpleDay(s.value));
+	}
+
+	if (s.type === 'globecoordinate') {
+		return format.monospace(`${s.value.latitude},${s.value.longitude}`);
+	}
+
+	unreachable(s);
+}
+
+async function formatUnit(wb: WikibaseMiddlewareProperty, unit: string) {
+	// Special case: This is like factor 1, it does nothing.
+	if (unit === '1') {
+		return false;
+	}
+
+	const entity = /Q\d+$/.exec(unit);
+	if (!entity) {
+		return format.escape(unit);
+	}
+
+	const reader = await wb.reader(entity[0]);
+	return format.url(format.escape(reader.label()), reader.url());
 }
 
 export function image(
 	entity: WikibaseEntityReader,
 ): {photo?: string; thumb?: string} {
 	const possible = [
-		...entity.claim('P18') as readonly string[], // Image
-		...entity.claim('P154') as readonly string[], // Logo image
-		...entity.claim('P5555') as readonly string[], // Schematic illustation
-		...entity.claim('P117') as readonly string[], // Chemical structure
+		...entity.claimValues('P18'), // Image
+		...entity.claimValues('P154'), // Logo image
+		...entity.claimValues('P5555'), // Schematic illustation
+		...entity.claimValues('P117'), // Chemical structure
 	]
+		.map(o => o.value)
 		.filter((o): o is string => typeof o === 'string');
 
 	if (possible.length === 0) {

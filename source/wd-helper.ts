@@ -1,7 +1,7 @@
 import {arrayFilterUnique} from 'array-filter-unique';
-import {isItemId, isPropertyId, type PropertyId, type SearchResult, simplifySparqlResults, type SparqlResults, type SparqlValueType} from 'wikibase-sdk';
+import {type EntityId, isEntityId, type PropertyId, type SearchResult, simplifySparqlResults, type SnakValue, type SparqlResults, type SparqlValueType} from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
-import type {WikibaseEntityReader} from 'wikidata-entity-reader';
+import type {WikibaseEntityReader} from 'telegraf-wikibase';
 
 type Wbk = typeof wdk;
 
@@ -16,18 +16,28 @@ let popularEntities: string[] = [];
 let popularEntitiesTimestamp = 0;
 
 export function entitiesInClaimValues(
-	entity: WikibaseEntityReader | readonly WikibaseEntityReader[],
+	entities: readonly WikibaseEntityReader[],
 	claims: readonly PropertyId[],
 ) {
-	const entities: readonly WikibaseEntityReader[] = Array.isArray(entity)
-		? entity
-		: ([entity] as WikibaseEntityReader[]);
-
 	return claims
-		.flatMap(claim => entities.flatMap(entity => entity.claim(claim)))
-		.filter((o): o is string => typeof o === 'string')
-		.filter(o => isItemId(o) || isPropertyId(o))
+		.flatMap(claim => entities.flatMap(entity => entity.claimValues(claim)))
+		.flatMap(value => entitiesInSnakValue(value))
 		.filter(arrayFilterUnique());
+}
+
+function entitiesInSnakValue(claim: SnakValue): EntityId[] {
+	if (claim.type === 'wikibase-entityid') {
+		return [claim.value.id];
+	}
+
+	if (claim.type === 'quantity') {
+		const entity = /Q\d+$/.exec(claim.value.unit)?.[0];
+		if (entity && isEntityId(entity)) {
+			return [entity];
+		}
+	}
+
+	return [];
 }
 
 export async function getPopularEntities() {
@@ -46,13 +56,13 @@ export async function getPopularEntities() {
 		);
 		const body = await response.text();
 
-		const regex = /(Q\d+)/g;
+		const regex = /Q\d+/g;
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		let match: RegExpExecArray | null;
 		const results: string[] = [];
 
 		while ((match = regex.exec(body)) !== null) {
-			results.push(match[1]!);
+			results.push(match[0]!);
 		}
 
 		popularEntities = results;
