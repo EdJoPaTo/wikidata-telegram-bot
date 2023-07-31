@@ -34,7 +34,15 @@ const twb = new TelegrafWikibase({
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
 twb.addResourceKeys(resourceKeysFromYaml(wikidataResourceKeyYaml));
 
-const bot = new Bot<Context>(token);
+const baseBot = new Bot<Context>(token);
+
+const bot = baseBot.errorBoundary(async ({error}) => {
+	if (error instanceof Error && error.message.startsWith('400: Bad Request: query is too old')) {
+		return;
+	}
+
+	console.error('BOT ERROR', error);
+});
 
 bot.use(session({
 	initial: (): Session => ({}),
@@ -96,16 +104,7 @@ bot.command(['start', 'help', 'search'], async ctx => {
 	});
 });
 
-// eslint-disable-next-line unicorn/prefer-top-level-await
-bot.catch(error => {
-	if (error.message.startsWith('400: Bad Request: query is too old')) {
-		return;
-	}
-
-	console.error('BOT ERROR', error);
-});
-
-await bot.api.setMyCommands([
+await baseBot.api.setMyCommands([
 	{
 		command: 'location',
 		description: 'Show info on how to use the location feature',
@@ -115,7 +114,7 @@ await bot.api.setMyCommands([
 	{command: 'settings', description: 'set your language'},
 ]);
 
-await bot.start({
+await baseBot.start({
 	onStart(botInfo) {
 		console.log(new Date(), 'Bot starts as', botInfo.username);
 	},
