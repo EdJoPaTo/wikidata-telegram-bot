@@ -168,6 +168,9 @@ export function image(
 	const possible = [
 		...entity.claimValues('P18'), // Image
 		...entity.claimValues('P154'), // Logo image
+		...entity.claimValues('P94'), // Coat of arms
+		...entity.claimValues('P41'), // Flag image
+		...entity.claimValues('P242'), // Locator map image
 		...entity.claimValues('P5555'), // Schematic illustation
 		...entity.claimValues('P117'), // Chemical structure
 	]
