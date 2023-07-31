@@ -2,7 +2,8 @@ import {type PropertyId, type SnakValue, wikibaseTimeToSimpleDay} from 'wikibase
 import {wdk} from 'wikibase-sdk/wikidata.org';
 import type {MiddlewareProperty as WikibaseMiddlewareProperty, WikibaseEntityReader} from 'telegraf-wikibase';
 import {array, format} from './format/index.js';
-import {unreachable} from './javascript-helper.js';
+import {typedEntries, unreachable} from './javascript-helper.js';
+import * as CLAIMS from './claim-ids.js';
 
 export async function entityWithClaimText(
 	wb: WikibaseMiddlewareProperty,
@@ -57,28 +58,27 @@ export async function entityButtons(
 		url: entity.url(),
 	}];
 
+	const claimButtons = await Promise.all(
+		typedEntries(CLAIMS.BUTTON_INTEREST).map(
+			async ([propertyId, urlModifier]) => {
+				const property = await wb.reader(propertyId);
+				return entity.claimValues(propertyId)
+					.map(o => String(o.value))
+					.map((o, _i, array) => ({
+						text: `${property.label()}${
+							array.length > 1 ? ` ${String(o)}` : ''
+						}`,
+						url: urlModifier(o),
+					}));
+			},
+		),
+	);
+
 	return [
 		...buttons,
 		...sitelinkButtons(entity),
-		...await claimUrlButtons(wb, entity, 'buttons.website', url => url),
-		...await claimUrlButtons(wb, entity, 'buttons.github', part => `https://github.com/${part}`),
-		...await claimUrlButtons(wb, entity, 'buttons.googlePlayStore', part => `https://play.google.com/store/apps/details?id=${part}`),
-		...await claimUrlButtons(wb, entity, 'buttons.imdb', part => `https://www.imdb.com/title/${part}/`),
-		...await claimUrlButtons(wb, entity, 'buttons.itunes', part => `https://itunes.apple.com/app/id${part}/`),
-		...await claimUrlButtons(wb, entity, 'buttons.mastodon', mastodonUrl),
-		...await claimUrlButtons(wb, entity, 'buttons.sourceCodeRepo', url => url),
-		...await claimUrlButtons(wb, entity, 'buttons.steam', part => `https://store.steampowered.com/app/${part}/`),
-		...await claimUrlButtons(wb, entity, 'buttons.subreddit', part => `https://www.reddit.com/r/${part}/`),
-		...await claimUrlButtons(wb, entity, 'buttons.telegram', part => `https://telegram.me/${part}`),
-		...await claimUrlButtons(wb, entity, 'buttons.twitter', part => `https://twitter.com/${part}`),
-		...await claimUrlButtons(wb, entity, 'buttons.twitterHashtag', part => `https://twitter.com/hashtag/${part}?f=tweets`),
-		...await claimUrlButtons(wb, entity, 'buttons.youtubeChannel', part => `https://www.youtube.com/channel/${part}`),
+		...claimButtons.flat(),
 	];
-}
-
-function mastodonUrl(value: string): string {
-	const [username, domain] = value.split('@');
-	return `https://${domain!}/@${username!}`;
 }
 
 function sitelinkButtons(entity: WikibaseEntityReader) {
@@ -95,24 +95,6 @@ function sitelinkButtons(entity: WikibaseEntityReader) {
 		);
 		return [];
 	}
-}
-
-async function claimUrlButtons(
-	wb: WikibaseMiddlewareProperty,
-	entity: WikibaseEntityReader,
-	storeKey: string,
-	urlModifier: (part: string) => string,
-) {
-	const property = await wb.reader(storeKey);
-	const pId = property.qNumber() as PropertyId;
-	const claimValues = entity.claimValues(pId).map(o => String(o.value));
-
-	const buttons = claimValues.map(o => ({
-		text: `${property.label()}${claimValues.length > 1 ? ` ${String(o)}` : ''}`,
-		url: urlModifier(o),
-	}));
-
-	return buttons;
 }
 
 async function claimText(

@@ -57,3 +57,29 @@ export const TEXT_INTEREST = [
 	'P460', // said to be the same as
 	'P1659', // see also
 ] as const satisfies readonly PropertyId[];
+
+export const BUTTON_INTEREST: Readonly<Record<PropertyId, ((value: string) => string)>> = {
+	P856: url => url, // official website
+	P4033: mastodonUrl,
+	P345: part => `https://www.imdb.com/title/${part}/`,
+	P1733: part => `https://store.steampowered.com/app/${part}/`,
+	P2397: part => `https://www.youtube.com/channel/${part}`,
+	P3984: part => `https://www.reddit.com/r/${part}/`,
+	P3861: part => `https://itunes.apple.com/app/id${part}/`,
+	P3418: part => `https://play.google.com/store/apps/details?id=${part}`,
+	P1324: url => url, // source code repository URL
+	P2037: part => `https://github.com/${part}`,
+	P3789: part => `https://telegram.me/${part}`,
+	P2002: part => `https://twitter.com/${part}`,
+	P2572: part => `https://twitter.com/hashtag/${part}?f=tweets`,
+};
+
+function mastodonUrl(value: string): string {
+	const [username, domain] = value.split('@');
+	return `https://${domain!}/@${username!}`;
+}
+
+export const ALL: readonly PropertyId[] = [
+	...TEXT_INTEREST,
+	...Object.keys(BUTTON_INTEREST) as PropertyId[],
+];

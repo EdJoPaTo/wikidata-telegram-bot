@@ -75,7 +75,7 @@ async function preload(
 	wb: WikibaseMiddlewareProperty,
 	entityIds: readonly string[],
 ): Promise<void> {
-	await wb.preload([...entityIds, ...CLAIMS.TEXT_INTEREST]);
+	await wb.preload([...entityIds, ...CLAIMS.ALL]);
 	const entities = await Promise.all(
 		entityIds.map(async id => wb.reader(id)),
 	);

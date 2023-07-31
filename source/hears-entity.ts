@@ -12,7 +12,7 @@ bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
 	const entity = await ctx.wd.reader(entityId);
 
 	const claimEntityIds = entitiesInClaimValues([entity], CLAIMS.TEXT_INTEREST);
-	await ctx.wd.preload([...claimEntityIds, ...CLAIMS.TEXT_INTEREST]);
+	await ctx.wd.preload([...claimEntityIds, ...CLAIMS.ALL]);
 
 	const text = await entityWithClaimText(
 		ctx.wd,
