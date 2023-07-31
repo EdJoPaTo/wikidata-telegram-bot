@@ -6,6 +6,7 @@ export const TEXT_INTEREST = [
 	// labels
 	'P1705', // native label
 	'P1448', // official name
+	'P1813', // short name
 	'P5061', // unit symbol
 	'P246', // element symbol
 	'P1086', // atomic number
@@ -24,14 +25,25 @@ export const TEXT_INTEREST = [
 
 	// meta data
 	'P21', // gender
+	'P6553', // personal pronoun
 	'P571', // inception
+	'P575', // time of discovery or invention
 	'P577', // publication date
 	'P569', // date of birth
 	'P570', // date of death
 	'P1750', // name day
+
+	// health
+	'P1995', // health specialty
+	'P689', // afflicts
+	'P780', // symptoms and signs
+
+	// human relation
 	'P106', // occupation
+	'P800', // notable work
 	'P57', // director
 	'P161', // cast
+	'P102', // member of political party
 
 	// physical quantities
 	'P131', // located in administrative entity
@@ -39,8 +51,9 @@ export const TEXT_INTEREST = [
 	'P625', // coordinate location
 	'P38', // currency
 	'P1082', // population
-	'P2046', // area,
+	'P2046', // area
 	'P2067', // mass
+	'P2044', // elevation above sea level
 	'P2048', // height
 	'P2049', // width
 	'P2101', // melting point
@@ -49,9 +62,11 @@ export const TEXT_INTEREST = [
 
 	// whats in it
 	'P4330', // contains
+	'P2283', // uses
 	'P527', // has part
 	'P2670', // has parts of the class
 	'P186', // material used
+	'P1535', // used by
 
 	// also interesting
 	'P460', // said to be the same as
