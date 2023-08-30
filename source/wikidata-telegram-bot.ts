@@ -1,3 +1,4 @@
+import {env} from 'node:process';
 import {readFileSync} from 'node:fs';
 import {Bot, session} from 'grammy';
 import {FileAdapter} from '@grammyjs/storage-file';
@@ -11,9 +12,7 @@ import {bot as locationSearch} from './location-search.js';
 import {menu as languageMenu} from './language-menu.js';
 import type {Context, Session} from './bot-generics.js';
 
-(process as any).title = 'wikidata-tgbot';
-
-const token = process.env['BOT_TOKEN'];
+const token = env['BOT_TOKEN'];
 if (!token) {
 	throw new Error(
 		'You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)',
@@ -28,7 +27,7 @@ export const i18n = new I18n({
 
 const twb = new TelegrafWikibase({
 	contextKey: 'wd',
-	logQueriedEntityIds: process.env['NODE_ENV'] !== 'production',
+	logQueriedEntityIds: env['NODE_ENV'] !== 'production',
 	userAgent: 'EdJoPaTo/wikidata-telegram-bot',
 });
 const wikidataResourceKeyYaml = readFileSync('wikidata-items.yaml', 'utf8');
@@ -68,7 +67,7 @@ bot.use(async (ctx, next) => {
 bot.use(i18n.middleware());
 bot.use(twb.middleware());
 
-if (process.env['NODE_ENV'] !== 'production') {
+if (env['NODE_ENV'] !== 'production') {
 	bot.use(generateUpdateMiddleware());
 }
 
