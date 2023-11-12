@@ -38,8 +38,7 @@
 	},
 	"xo": {
 		"rules": {
-			"@typescript-eslint/naming-convention": "off",
-			"n/file-extension-in-import": "off"
+			"@typescript-eslint/naming-convention": "off"
 		}
 	}
 }
