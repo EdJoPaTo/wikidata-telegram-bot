@@ -104,7 +104,7 @@ async function createInlineResult(
 		description: entity.description(),
 		parse_mode: format.parse_mode,
 		reply_markup: keyboard,
-	};
+	} as const satisfies Partial<InlineQueryResultPhoto>;
 
 	if (photo && thumb) {
 		const inlineResult: InlineQueryResultPhoto = {
