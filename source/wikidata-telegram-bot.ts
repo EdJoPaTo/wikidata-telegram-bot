@@ -1,16 +1,16 @@
-import {env} from 'node:process';
 import {readFileSync} from 'node:fs';
-import {Bot, session} from 'grammy';
-import {FileAdapter} from '@grammyjs/storage-file';
-import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
+import {env} from 'node:process';
 import {I18n} from '@grammyjs/i18n';
+import {FileAdapter} from '@grammyjs/storage-file';
+import {Bot, session} from 'grammy';
 import {MenuMiddleware} from 'grammy-inline-menu';
+import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {resourceKeysFromYaml, TelegrafWikibase} from 'telegraf-wikibase';
+import type {Context, Session} from './bot-generics.js';
 import {bot as hearsEntity} from './hears-entity.js';
 import {bot as inlineSearch} from './inline-search.js';
-import {bot as locationSearch} from './location-search.js';
 import {menu as languageMenu} from './language-menu.js';
-import type {Context, Session} from './bot-generics.js';
+import {bot as locationSearch} from './location-search.js';
 
 const token = env['BOT_TOKEN'];
 if (!token) {
@@ -36,7 +36,10 @@ twb.addResourceKeys(resourceKeysFromYaml(wikidataResourceKeyYaml));
 const baseBot = new Bot<Context>(token);
 
 const bot = baseBot.errorBoundary(async ({error}) => {
-	if (error instanceof Error && error.message.startsWith('400: Bad Request: query is too old')) {
+	if (
+		error instanceof Error
+		&& error.message.startsWith('400: Bad Request: query is too old')
+	) {
 		return;
 	}
 

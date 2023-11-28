@@ -1,13 +1,25 @@
 import * as process from 'node:process';
 import {Composer} from 'grammy';
-import type {InlineKeyboardMarkup, InlineQueryResultArticle, InlineQueryResultPhoto} from 'grammy/types';
+import type {
+	InlineKeyboardMarkup,
+	InlineQueryResultArticle,
+	InlineQueryResultPhoto,
+} from 'grammy/types';
 import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
 import type {SearchResult} from 'wikibase-sdk';
-import {entitiesInClaimValues, getPopularEntities, searchEntities} from './wd-helper.js';
-import {entityButtons, entityWithClaimText, image} from './format-wd-entity.js';
-import {format} from './format/index.js';
-import * as CLAIMS from './claim-ids.js';
 import type {Context} from './bot-generics.js';
+import * as CLAIMS from './claim-ids.js';
+import {
+	entityButtons,
+	entityWithClaimText,
+	image,
+} from './format-wd-entity.js';
+import {format} from './format/index.js';
+import {
+	entitiesInClaimValues,
+	getPopularEntities,
+	searchEntities,
+} from './wd-helper.js';
 
 export const bot = new Composer<Context>();
 
@@ -27,7 +39,15 @@ bot.on('inline_query', async ctx => {
 	const {query} = ctx.inlineQuery;
 	const language = ctx.wd.locale();
 
-	const identifier = `inline query ${Number(ctx.inlineQuery.id).toString(36).slice(-4)} ${ctx.from.id} ${ctx.from.first_name} ${language} ${query.length} ${query}`;
+	const identifier = [
+		'inline query',
+		Number(ctx.inlineQuery.id).toString(36).slice(-4),
+		ctx.from.id,
+		ctx.from.first_name,
+		language,
+		query.length,
+		query,
+	].join(' ');
 	console.time(identifier);
 
 	const searchResults = await getSearchResults(language, query);
@@ -88,7 +108,11 @@ async function createInlineResult(
 	ctx: Context,
 	entityId: string,
 ): Promise<InlineQueryResultArticle | InlineQueryResultPhoto> {
-	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
+	const text = await entityWithClaimText(
+		ctx.wd,
+		entityId,
+		CLAIMS.TEXT_INTEREST,
+	);
 
 	const buttons = await entityButtons(ctx.wd, entityId);
 	const keyboard: InlineKeyboardMarkup = {

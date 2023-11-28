@@ -1,6 +1,6 @@
-import {createBackMainMenuButtons} from 'grammy-inline-menu';
-import type {Context as BaseContext, SessionFlavor} from 'grammy';
 import type {I18nFlavor} from '@grammyjs/i18n';
+import type {Context as BaseContext, SessionFlavor} from 'grammy';
+import {createBackMainMenuButtons} from 'grammy-inline-menu';
 import type {MiddlewareProperty} from 'telegraf-wikibase';
 
 export type Session = {

@@ -1,9 +1,9 @@
 import {Composer} from 'grammy';
-import {html as format} from 'telegram-format';
 import {type Body, MenuMiddleware, MenuTemplate} from 'grammy-inline-menu';
 import type {Location} from 'grammy/types';
-import {sparqlQuerySimplified} from './wd-helper.js';
+import {html as format} from 'telegram-format';
 import type {Context} from './bot-generics.js';
+import {sparqlQuerySimplified} from './wd-helper.js';
 
 type EntityId = string;
 
@@ -105,14 +105,21 @@ function formatDistance(distance: number): string {
 }
 
 async function menuBody(ctx: Context, path: string): Promise<Body> {
-	const [longitude, latitude] = path.split('/')[0]!.split(':').slice(1).map(Number);
+	const [longitude, latitude] = path.split('/')[0]!
+		.split(':')
+		.slice(1)
+		.map(Number);
 	const results = await queryLocation({
 		longitude: longitude!,
 		latitude: latitude!,
 	}, 3);
 	await ctx.wd.preload(results.map(o => o.place));
 	ctx.state.locationTotalPages = results.length / ENTRIES_PER_PAGE;
-	const text = await createResultsString(ctx, results, ctx.session.locationPage ?? 0);
+	const text = await createResultsString(
+		ctx,
+		results,
+		ctx.session.locationPage ?? 0,
+	);
 	return {
 		text,
 		parse_mode: format.parse_mode,
@@ -132,7 +139,10 @@ menu.pagination('page', {
 
 export const bot = new Composer<Context>();
 
-const menuMiddleware = new MenuMiddleware(/^location:([.\d]+):([.\d]+)\//, menu);
+const menuMiddleware = new MenuMiddleware(
+	/^location:([.\d]+):([.\d]+)\//,
+	menu,
+);
 bot.use(menuMiddleware.middleware());
 
 bot.command('location', async ctx => {

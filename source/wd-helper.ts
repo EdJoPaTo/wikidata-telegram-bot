@@ -1,7 +1,16 @@
 import {arrayFilterUnique} from 'array-filter-unique';
-import {type EntityId, isEntityId, type PropertyId, type SearchResult, simplifySparqlResults, type SnakValue, type SparqlResults, type SparqlValueType} from 'wikibase-sdk';
-import {wdk} from 'wikibase-sdk/wikidata.org';
 import type {WikibaseEntityReader} from 'telegraf-wikibase';
+import {
+	type EntityId,
+	isEntityId,
+	type PropertyId,
+	type SearchResult,
+	simplifySparqlResults,
+	type SnakValue,
+	type SparqlResults,
+	type SparqlValueType,
+} from 'wikibase-sdk';
+import {wdk} from 'wikibase-sdk/wikidata.org';
 
 type Wbk = typeof wdk;
 

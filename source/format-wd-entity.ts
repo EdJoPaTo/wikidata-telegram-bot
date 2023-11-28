@@ -1,9 +1,16 @@
-import {type PropertyId, type SnakValue, wikibaseTimeToSimpleDay} from 'wikibase-sdk';
+import type {
+	MiddlewareProperty as WikibaseMiddlewareProperty,
+	WikibaseEntityReader,
+} from 'telegraf-wikibase';
+import {
+	type PropertyId,
+	type SnakValue,
+	wikibaseTimeToSimpleDay,
+} from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
-import type {MiddlewareProperty as WikibaseMiddlewareProperty, WikibaseEntityReader} from 'telegraf-wikibase';
+import * as CLAIMS from './claim-ids.js';
 import {array, format} from './format/index.js';
 import {typedEntries, unreachable} from './javascript-helper.js';
-import * as CLAIMS from './claim-ids.js';
 
 export async function entityWithClaimText(
 	wb: WikibaseMiddlewareProperty,
