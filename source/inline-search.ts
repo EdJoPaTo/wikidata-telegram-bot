@@ -146,8 +146,8 @@ async function createInlineResult(
 		type: 'article',
 		...inlineResultBase,
 		input_message_content: {
+			link_preview_options: {is_disabled: true},
 			message_text: text,
-			disable_web_page_preview: true,
 			parse_mode: format.parse_mode,
 		},
 	};

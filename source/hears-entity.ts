@@ -38,7 +38,7 @@ bot.hears(/^\/?([qpl][1-9]\d*)$/i, async ctx => {
 	}
 
 	return ctx.reply(text, {
-		disable_web_page_preview: true,
+		link_preview_options: {is_disabled: true},
 		parse_mode: format.parse_mode,
 		reply_markup: {inline_keyboard},
 	});
