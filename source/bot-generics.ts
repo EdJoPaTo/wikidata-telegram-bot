@@ -9,7 +9,7 @@ export type Session = {
 	locationPage?: number;
 };
 
-export type State = {
+type State = {
 	locationTotalPages?: number;
 };
 
