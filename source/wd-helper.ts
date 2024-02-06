@@ -71,7 +71,7 @@ export async function getPopularEntities() {
 		const results: string[] = [];
 
 		while ((match = regex.exec(body)) !== null) {
-			results.push(match[0]!);
+			results.push(match[0]);
 		}
 
 		popularEntities = results;

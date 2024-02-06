@@ -59,10 +59,8 @@ bot.use(session({
 }));
 
 bot.use(async (ctx, next) => {
-	if (!ctx.state) {
-		// @ts-expect-error set readonly property
-		ctx.state = {};
-	}
+	// @ts-expect-error set readonly property
+	ctx.state ??= {};
 
 	return next();
 });
