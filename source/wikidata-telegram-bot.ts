@@ -50,7 +50,6 @@ bot.use(session({
 	initial: (): Session => ({}),
 	storage: new FileAdapter({dirName: 'persist/sessions/'}),
 	getSessionKey(ctx) {
-		// TODO: remove once https://github.com/grammyjs/grammY/pull/89 is released
 		const chatInstance = ctx.chat?.id
 			?? ctx.callbackQuery?.chat_instance
 			?? ctx.from?.id;
