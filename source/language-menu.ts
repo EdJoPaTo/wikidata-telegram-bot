@@ -21,8 +21,9 @@ async function languageMenuText(ctx: Context) {
 	return `${flag} ${reader.label()}`;
 }
 
-menu.select('lang', async ctx => ctx.wd.availableLocales(0), {
+menu.select('lang', {
 	columns: 3,
+	choices: async ctx => ctx.wd.availableLocales(0),
 	buttonText(_, key) {
 		const flag = flagString(key);
 		return `${flag} ${key}`;
