@@ -7,6 +7,7 @@ import {MenuMiddleware} from 'grammy-inline-menu';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {resourceKeysFromYaml, TelegrafWikibase} from 'telegraf-wikibase';
 import type {Context, Session} from './bot-generics.js';
+import {format} from './format/index.js';
 import {bot as hearsEntity} from './hears-entity.js';
 import {bot as inlineSearch} from './inline-search.js';
 import {menu as languageMenu} from './language-menu.js';
@@ -103,6 +104,17 @@ bot.command(['start', 'help', 'search'], async ctx => {
 	});
 });
 
+bot.command('privacy', async ctx =>
+	ctx.reply(
+		'This bot only stores minimal data like your language selection for consistent behaviour between bot server restarts. Requests to Wikidata are not identifyable to the given user. See the source code at https://github.com/EdJoPaTo/wikidata-telegram-bot\n\nYour Telegram User ID: '
+			+ format.monospace(String(ctx.from?.id)) + '\n\n'
+			+ format.monospaceBlock(
+				JSON.stringify(ctx.session, undefined, '  '),
+				'json',
+			),
+		{parse_mode: format.parse_mode, reply_markup: {remove_keyboard: true}},
+	));
+
 await baseBot.api.setMyCommands([
 	{
 		command: 'location',
@@ -111,6 +123,7 @@ await baseBot.api.setMyCommands([
 	{command: 'help', description: 'Show help'},
 	{command: 'language', description: 'set your language'},
 	{command: 'settings', description: 'set your language'},
+	{command: 'privacy', description: 'see information about stored data'},
 ]);
 
 await baseBot.start({
