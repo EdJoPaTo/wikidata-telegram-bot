@@ -182,7 +182,7 @@ export function image(
 		...entity.claimValues('P117'), // Chemical structure
 	]
 		.map(o => o.value)
-		.filter((o): o is string => typeof o === 'string');
+		.filter(o => typeof o === 'string');
 
 	if (possible.length === 0) {
 		return {};
