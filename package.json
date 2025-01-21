@@ -11,8 +11,8 @@
 		"url": "https://edjopato.de"
 	},
 	"scripts": {
-		"start": "tsc --sourceMap && node --enable-source-maps dist/wikidata-telegram-bot.js",
-		"test": "tsc --sourceMap && xo"
+		"start": "tsc && node --enable-source-maps dist/wikidata-telegram-bot.js",
+		"test": "tsc && xo"
 	},
 	"type": "module",
 	"engines": {
