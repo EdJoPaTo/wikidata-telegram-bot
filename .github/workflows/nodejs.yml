@@ -3,15 +3,17 @@ name: Node.js
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
     name: Node.js
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
       - uses: actions/checkout@v4
       - run: npm ci
       - run: npm test
