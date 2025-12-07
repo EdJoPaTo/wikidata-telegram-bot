@@ -1,13 +1,13 @@
 import {Composer} from 'grammy';
-import type {Context} from './bot-generics.js';
-import * as CLAIMS from './claim-ids.js';
+import type {Context} from './bot-generics.ts';
+import * as CLAIMS from './claim-ids.ts';
 import {
 	entityButtons,
 	entityWithClaimText,
 	image,
-} from './format-wd-entity.js';
-import {format} from './format/index.js';
-import {entitiesInClaimValues} from './wd-helper.js';
+} from './format-wd-entity.ts';
+import {format} from './format/index.ts';
+import {entitiesInClaimValues} from './wd-helper.ts';
 
 export const bot = new Composer<Context>();
 

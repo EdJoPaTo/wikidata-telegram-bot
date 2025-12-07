@@ -8,9 +8,9 @@ import {
 	wikibaseTimeToSimpleDay,
 } from 'wikibase-sdk';
 import {wdk} from 'wikibase-sdk/wikidata.org';
-import * as CLAIMS from './claim-ids.js';
-import {array, format} from './format/index.js';
-import {typedEntries, unreachable} from './javascript-helper.js';
+import * as CLAIMS from './claim-ids.ts';
+import {array, format} from './format/index.ts';
+import {typedEntries, unreachable} from './javascript-helper.ts';
 
 export async function entityWithClaimText(
 	wb: WikibaseMiddlewareProperty,

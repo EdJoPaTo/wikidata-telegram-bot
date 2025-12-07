@@ -11,12 +11,17 @@
 		"url": "https://edjopato.de"
 	},
 	"scripts": {
-		"start": "tsc && node --enable-source-maps dist/wikidata-telegram-bot.js",
+		"start": "node --enable-source-maps source/wikidata-telegram-bot.ts",
 		"test": "tsc && xo"
 	},
 	"type": "module",
 	"engines": {
-		"node": ">=22"
+		"node": ">=24"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "npm"
+		}
 	},
 	"dependencies": {
 		"@grammyjs/i18n": "^1.0.1",
@@ -31,8 +36,7 @@
 		"wikibase-sdk": "^9.2.2"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^7.0.0",
-		"@types/node": "^22.10.7",
+		"@types/node": "^24.10.1",
 		"typescript": "^5.9.3",
 		"xo": "^1.2.3"
 	},

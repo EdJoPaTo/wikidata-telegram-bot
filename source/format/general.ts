@@ -1,4 +1,4 @@
-import {format} from './format.js';
+import {format} from './format.ts';
 
 export function array(
 	label: string,

@@ -6,12 +6,12 @@ import {Bot, session} from 'grammy';
 import {MenuMiddleware} from 'grammy-inline-menu';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
 import {resourceKeysFromYaml, TelegrafWikibase} from 'telegraf-wikibase';
-import type {Context, Session} from './bot-generics.js';
-import {format} from './format/index.js';
-import {bot as hearsEntity} from './hears-entity.js';
-import {bot as inlineSearch} from './inline-search.js';
-import {menu as languageMenu} from './language-menu.js';
-import {bot as locationSearch} from './location-search.js';
+import type {Context, Session} from './bot-generics.ts';
+import {format} from './format/index.ts';
+import {bot as hearsEntity} from './hears-entity.ts';
+import {bot as inlineSearch} from './inline-search.ts';
+import {menu as languageMenu} from './language-menu.ts';
+import {bot as locationSearch} from './location-search.ts';
 
 const token = env['BOT_TOKEN'];
 if (!token) {

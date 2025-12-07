@@ -2,8 +2,8 @@ import {Composer} from 'grammy';
 import {type Body, MenuMiddleware, MenuTemplate} from 'grammy-inline-menu';
 import type {Location} from 'grammy/types';
 import {html as format} from 'telegram-format';
-import type {Context} from './bot-generics.js';
-import {sparqlQuerySimplified} from './wd-helper.js';
+import type {Context} from './bot-generics.ts';
+import {sparqlQuerySimplified} from './wd-helper.ts';
 
 type EntityId = string;
 
