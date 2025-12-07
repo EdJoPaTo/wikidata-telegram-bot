@@ -23,12 +23,9 @@ export async function entityWithClaimText(
 	text += headerText(entity);
 	text += '\n\n';
 
-	const claimTextEntries = await Promise.all(claimIds
-		.map(async o => claimText(wb, entity, o)));
+	const claimTextEntries = await Promise.all(claimIds.map(async o => claimText(wb, entity, o)));
 
-	text += claimTextEntries
-		.filter(Boolean)
-		.join('\n\n');
+	text += claimTextEntries.filter(Boolean).join('\n\n');
 
 	return text;
 }
@@ -48,7 +45,10 @@ function headerText(entity: WikibaseEntityReader): string {
 	const aliases = entity.aliases();
 	if (aliases.length > 0) {
 		text += '\n\n';
-		text += array('Alias', aliases.map(o => format.escape(o)));
+		text += array(
+			'Alias',
+			aliases.map(o => format.escape(o)),
+		);
 	}
 
 	return text;
@@ -60,41 +60,36 @@ export async function entityButtons(
 ) {
 	const entity = await wb.reader(entityId);
 	const buttonTextReader = await wb.reader('buttons.wikidata');
-	const buttons = [{
-		text: buttonTextReader.label(),
-		url: entity.url(),
-	}];
-
-	const claimButtons = await Promise.all(
-		typedEntries(CLAIMS.BUTTON_INTEREST).map(
-			async ([propertyId, urlModifier]) => {
-				const property = await wb.reader(propertyId);
-				return entity.claimValues(propertyId)
-					.map(o => String(o.value))
-					.map((o, _i, array) => ({
-						text: `${property.label()}${
-							array.length > 1 ? ` ${String(o)}` : ''
-						}`,
-						url: urlModifier(o),
-					}));
-			},
-		),
-	);
-
-	return [
-		...buttons,
-		...sitelinkButtons(entity),
-		...claimButtons.flat(),
+	const buttons = [
+		{
+			text: buttonTextReader.label(),
+			url: entity.url(),
+		},
 	];
+
+	const claimButtons = await Promise.all(typedEntries(CLAIMS.BUTTON_INTEREST).map(async ([propertyId, urlModifier]) => {
+		const property = await wb.reader(propertyId);
+		return entity
+			.claimValues(propertyId)
+			.map(o => o.value)
+			.filter(o => typeof o === 'string')
+			.map((o, _i, array) => ({
+				text: `${property.label()}${
+					array.length > 1 ? ` ${String(o)}` : ''
+				}`,
+				url: urlModifier(o),
+			}));
+	}));
+
+	return [...buttons, ...sitelinkButtons(entity), ...claimButtons.flat()];
 }
 
 function sitelinkButtons(entity: WikibaseEntityReader) {
 	try {
-		return entity.allSitelinksInLang()
-			.map(o => ({
-				text: wdk.getSitelinkData(o).project,
-				url: entity.sitelinkUrl(o)!,
-			}));
+		return entity.allSitelinksInLang().map(o => ({
+			text: wdk.getSitelinkData(o).project,
+			url: entity.sitelinkUrl(o)!,
+		}));
 	} catch (error: unknown) {
 		console.error(
 			'something failed with sitelinkButtons',
@@ -113,8 +108,7 @@ async function claimText(
 	const claimLabel = claimReader.label();
 	const claimValues = entity.claimValues(claim);
 
-	const claimValueTexts = await Promise.all(claimValues
-		.map(async o => claimValueText(wb, o)));
+	const claimValueTexts = await Promise.all(claimValues.map(async o => claimValueText(wb, o)));
 
 	return array(claimLabel, claimValueTexts);
 }
@@ -133,8 +127,9 @@ async function claimValueText(
 	}
 
 	if (s.type === 'monolingualtext') {
-		return format.monospace(s.value.language) + ': '
-			+ format.escape(s.value.text);
+		const language = format.monospace(s.value.language);
+		const text = format.escape(s.value.text);
+		return `${language}: ${text}`;
 	}
 
 	if (s.type === 'quantity') {
@@ -169,9 +164,10 @@ async function formatUnit(wb: WikibaseMiddlewareProperty, unit: string) {
 	return format.url(format.escape(reader.label()), reader.url());
 }
 
-export function image(
-	entity: WikibaseEntityReader,
-): {photo?: string; thumb?: string} {
+export function image(entity: WikibaseEntityReader): {
+	photo?: string;
+	thumb?: string;
+} {
 	const possible = [
 		...entity.claimValues('P18'), // Image
 		...entity.claimValues('P154'), // Logo image

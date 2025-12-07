@@ -66,7 +66,7 @@ export async function getPopularEntities() {
 		const body = await response.text();
 
 		const regex = /Q\d+/g;
-		// eslint-disable-next-line @typescript-eslint/ban-types
+		// eslint-disable-next-line @typescript-eslint/no-restricted-types
 		let match: RegExpExecArray | null;
 		const results: string[] = [];
 
@@ -84,16 +84,16 @@ type SearchEntitiesOptions = Parameters<Wbk['searchEntities']>[0];
 export async function searchEntities(options: SearchEntitiesOptions) {
 	const url = wdk.searchEntities(options);
 	const response = await fetch(url, FETCH_OPTIONS);
-	const body = await response.json() as {search: SearchResult[]};
+	const body = (await response.json()) as {search: SearchResult[]};
 	return body.search;
 }
 
-export async function sparqlQuerySimplified(
-	query: string,
-): Promise<ReadonlyArray<Record<string, SparqlValueType>>> {
+export async function sparqlQuerySimplified(query: string): Promise<ReadonlyArray<Record<string, SparqlValueType>>> {
 	const url = wdk.sparqlQuery(query);
 	const response = await fetch(url, FETCH_OPTIONS);
-	const body = await response.json() as SparqlResults;
-	const simplified = simplifySparqlResults(body) as ReadonlyArray<Record<string, SparqlValueType>>;
+	const body = (await response.json()) as SparqlResults;
+	const simplified = simplifySparqlResults(body) as ReadonlyArray<
+		Record<string, SparqlValueType>
+	>;
 	return simplified;
 }

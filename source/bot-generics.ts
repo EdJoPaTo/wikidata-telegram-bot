@@ -13,10 +13,14 @@ type State = {
 	locationTotalPages?: number;
 };
 
-export type Context = BaseContext & SessionFlavor<Session> & I18nFlavor & {
-	readonly state: State;
-	readonly wd: MiddlewareProperty;
-};
+export type Context =
+	& BaseContext
+	& SessionFlavor<Session>
+	& I18nFlavor
+	& {
+		readonly state: State;
+		readonly wd: MiddlewareProperty;
+	};
 
 export const backButtons = createBackMainMenuButtons<Context>(
 	ctx => `🔙 ${ctx.t('menu-back')}`,

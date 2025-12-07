@@ -56,9 +56,7 @@ bot.on('inline_query', async ctx => {
 	await preload(ctx.wd, searchResults);
 	console.timeLog(identifier, 'preload');
 
-	const inlineResults = await Promise.all(
-		searchResults.map(async o => createInlineResult(ctx, o)),
-	);
+	const inlineResults = await Promise.all(searchResults.map(async o => createInlineResult(ctx, o)));
 
 	const options = {
 		// eslint-disable-next-line unicorn/no-await-expression-member
@@ -74,9 +72,7 @@ bot.on('inline_query', async ctx => {
 
 	console.timeEnd(identifier);
 
-	return ctx.answerInlineQuery([
-		...inlineResults,
-	], options);
+	return ctx.answerInlineQuery([...inlineResults], options);
 });
 
 async function search(
@@ -96,9 +92,7 @@ async function preload(
 	entityIds: readonly string[],
 ): Promise<void> {
 	await wb.preload([...entityIds, ...CLAIMS.ALL]);
-	const entities = await Promise.all(
-		entityIds.map(async id => wb.reader(id)),
-	);
+	const entities = await Promise.all(entityIds.map(async id => wb.reader(id)));
 
 	const claimEntityIds = entitiesInClaimValues(entities, CLAIMS.TEXT_INTEREST);
 	await wb.preload(claimEntityIds);

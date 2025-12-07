@@ -73,7 +73,9 @@ export const TEXT_INTEREST = [
 	'P1659', // see also
 ] as const satisfies readonly PropertyId[];
 
-export const BUTTON_INTEREST: Readonly<Record<PropertyId, ((value: string) => string)>> = {
+export const BUTTON_INTEREST: Readonly<
+	Record<PropertyId, (value: string) => string>
+> = {
 	P856: url => url, // official website
 	P4033: mastodonUrl,
 	P345: part => `https://www.imdb.com/title/${part}/`,
@@ -96,5 +98,5 @@ function mastodonUrl(value: string): string {
 
 export const ALL: readonly PropertyId[] = [
 	...TEXT_INTEREST,
-	...Object.keys(BUTTON_INTEREST) as PropertyId[],
+	...(Object.keys(BUTTON_INTEREST) as PropertyId[]),
 ];

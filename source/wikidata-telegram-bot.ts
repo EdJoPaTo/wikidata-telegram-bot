@@ -15,9 +15,7 @@ import {bot as locationSearch} from './location-search.js';
 
 const token = env['BOT_TOKEN'];
 if (!token) {
-	throw new Error(
-		'You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)',
-	);
+	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)');
 }
 
 export const i18n = new I18n({
@@ -51,8 +49,7 @@ bot.use(session({
 	initial: (): Session => ({}),
 	storage: new FileAdapter({dirName: 'persist/sessions/'}),
 	getSessionKey(ctx) {
-		const chatInstance = ctx.chat?.id
-			?? ctx.callbackQuery?.chat_instance
+		const chatInstance = ctx.chat?.id ?? ctx.callbackQuery?.chat_instance
 			?? ctx.from?.id;
 		return chatInstance?.toString();
 	},
@@ -93,13 +90,20 @@ bot.command(['start', 'help', 'search'], async ctx => {
 	const text = ctx.t('help');
 	return ctx.reply(text, {
 		reply_markup: {
-			inline_keyboard: [[{
-				text: 'inline search…',
-				switch_inline_query_current_chat: '',
-			}], [{
-				text: '🦑GitHub',
-				url: 'https://github.com/EdJoPaTo/wikidata-telegram-bot',
-			}]],
+			inline_keyboard: [
+				[
+					{
+						text: 'inline search…',
+						switch_inline_query_current_chat: '',
+					},
+				],
+				[
+					{
+						text: '🦑GitHub',
+						url: 'https://github.com/EdJoPaTo/wikidata-telegram-bot',
+					},
+				],
+			],
 		},
 	});
 });
@@ -107,11 +111,12 @@ bot.command(['start', 'help', 'search'], async ctx => {
 bot.command('privacy', async ctx =>
 	ctx.reply(
 		'This bot only stores minimal data like your language selection for consistent behaviour between bot server restarts. Requests to Wikidata are not identifyable to the given user. See the source code at https://github.com/EdJoPaTo/wikidata-telegram-bot\n\nYour Telegram User ID: '
-			+ format.monospace(String(ctx.from?.id)) + '\n\n'
-			+ format.monospaceBlock(
-				JSON.stringify(ctx.session, undefined, '  '),
-				'json',
-			),
+		+ format.monospace(String(ctx.from?.id))
+		+ '\n\n'
+		+ format.monospaceBlock(
+			JSON.stringify(ctx.session, undefined, '  '),
+			'json',
+		),
 		{parse_mode: format.parse_mode, reply_markup: {remove_keyboard: true}},
 	));
 
