@@ -131,6 +131,11 @@ await baseBot.api.setMyCommands([
 	{command: 'privacy', description: 'see information about stored data'},
 ]);
 
+console.log(new Date(), 'Start regular Wikidata resourceKeys preload');
+await twb.startRegularResourceKeyUpdate(error => {
+	console.error('Wikidata resourceKeys update failed', error);
+});
+
 await baseBot.start({
 	onStart(botInfo) {
 		console.log(new Date(), 'Bot starts as', botInfo.username);
