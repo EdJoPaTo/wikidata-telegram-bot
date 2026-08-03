@@ -67,7 +67,7 @@ async function createResultsString(
 			pageZeroBased * ENTRIES_PER_PAGE,
 			(pageZeroBased + 1) * ENTRIES_PER_PAGE,
 		);
-
+	await ctx.wd.preload(relevant.map(o => o.place));
 	const parts = await Promise.all(relevant.map(async o => entryString(ctx, o)));
 	const text = parts.join('\n\n');
 	return text;
@@ -113,7 +113,6 @@ async function menuBody(ctx: Context, path: string): Promise<Body> {
 		latitude: latitude!,
 	};
 	const results = await queryLocation(location, 3);
-	await ctx.wd.preload(results.map(o => o.place));
 	ctx.state.locationTotalPages = results.length / ENTRIES_PER_PAGE;
 	const text = await createResultsString(
 		ctx,
