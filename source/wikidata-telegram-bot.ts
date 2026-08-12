@@ -49,7 +49,8 @@ bot.use(session({
 	initial: (): Session => ({}),
 	storage: new FileAdapter({dirName: 'persist/sessions/'}),
 	getSessionKey(ctx) {
-		const chatInstance = ctx.chat?.id ?? ctx.callbackQuery?.chat_instance
+		const chatInstance = ctx.chatId
+			?? ctx.callbackQuery?.chat_instance
 			?? ctx.from?.id;
 		return chatInstance?.toString();
 	},
