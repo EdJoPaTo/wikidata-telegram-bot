@@ -145,14 +145,14 @@ const menuMiddleware = new MenuMiddleware(
 bot.use(menuMiddleware.middleware());
 
 bot.command('location', async ctx => {
-	ctx.session.locationPage = 0;
+	delete ctx.session.locationPage;
 	await ctx.reply(ctx.t('location'));
 	// Hamburger Michel
 	return menuMiddleware.replyToContext(ctx, 'location:9.978889:53.548333/');
 });
 
 bot.on('message:location', async ctx => {
-	ctx.session.locationPage = 0;
+	delete ctx.session.locationPage;
 	const {location} = ctx.message;
 	const path = `location:${location.longitude}:${location.latitude}/`;
 	return menuMiddleware.replyToContext(ctx, path);
