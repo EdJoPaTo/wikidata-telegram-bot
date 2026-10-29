@@ -1,27 +1,11 @@
 {
 	"name": "wikidata-telegram-bot",
 	"private": true,
-	"version": "2.1.3",
-	"description": "Quick Look on Wikidata Entities via Telegram",
 	"license": "MIT",
-	"repository": "EdJoPaTo/wikidata-telegram-bot",
-	"author": {
-		"name": "EdJoPaTo",
-		"email": "wikidata-telegram-bot@edjopato.de",
-		"url": "https://edjopato.de"
-	},
+	"type": "module",
 	"scripts": {
 		"start": "node --enable-source-maps source/wikidata-telegram-bot.ts",
-		"test": "tsc && xo"
-	},
-	"type": "module",
-	"engines": {
-		"node": ">=24"
-	},
-	"devEngines": {
-		"packageManager": {
-			"name": "npm"
-		}
+		"test": "tsc && oxlint && oxfmt --check"
 	},
 	"dependencies": {
 		"@grammyjs/i18n": "^1.0.1",
@@ -37,13 +21,17 @@
 	},
 	"devDependencies": {
 		"@types/node": "^24.10.1",
-		"typescript": "^6.0.2",
-		"xo": "^1.2.3"
+		"oxfmt": "^0.75.0",
+		"oxlint": "^1.90.0",
+		"oxlint-tsgolint": "^7.0.2005",
+		"typescript": "^7.0.2"
 	},
-	"xo": {
-		"rules": {
-			"@typescript-eslint/naming-convention": "off",
-			"unicorn/prevent-abbreviations": "off"
+	"devEngines": {
+		"packageManager": {
+			"name": "npm"
 		}
+	},
+	"engines": {
+		"node": ">=24"
 	}
 }

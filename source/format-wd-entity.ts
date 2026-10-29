@@ -1,16 +1,13 @@
 import type {
 	MiddlewareProperty as WikibaseMiddlewareProperty,
 	WikibaseEntityReader,
-} from 'telegraf-wikibase';
-import {
-	type PropertyId,
-	type SnakValue,
-	wikibaseTimeToSimpleDay,
-} from 'wikibase-sdk';
-import {wdk} from 'wikibase-sdk/wikidata.org';
-import * as CLAIMS from './claim-ids.ts';
-import {array, format} from './format/index.ts';
-import {typedEntries, unreachable} from './javascript-helper.ts';
+} from "telegraf-wikibase";
+import { type PropertyId, type SnakValue, wikibaseTimeToSimpleDay } from "wikibase-sdk";
+import { wdk } from "wikibase-sdk/wikidata.org";
+
+import * as CLAIMS from "./claim-ids.ts";
+import { array, format } from "./format/index.ts";
+import { typedEntries, unreachable } from "./javascript-helper.ts";
 
 export async function entityWithClaimText(
 	wb: WikibaseMiddlewareProperty,
@@ -19,47 +16,44 @@ export async function entityWithClaimText(
 ): Promise<string> {
 	const entity = await wb.reader(entityId);
 
-	let text = '';
+	let text = "";
 	text += headerText(entity);
-	text += '\n\n';
+	text += "\n\n";
 
-	const claimTextEntries = await Promise.all(claimIds.map(async o => claimText(wb, entity, o)));
+	const claimTextEntries = await Promise.all(claimIds.map((o) => claimText(wb, entity, o)));
 
-	text += claimTextEntries.filter(Boolean).join('\n\n');
+	text += claimTextEntries.filter(Boolean).join("\n\n");
 
 	return text;
 }
 
 function headerText(entity: WikibaseEntityReader): string {
-	let text = '';
+	let text = "";
 	text += format.bold(format.escape(entity.label()));
-	text += ' ';
+	text += " ";
 	text += format.monospace(entity.qNumber());
 
 	const description = entity.description();
 	if (description) {
-		text += '\n';
+		text += "\n";
 		text += format.escape(description);
 	}
 
 	const aliases = entity.aliases();
 	if (aliases.length > 0) {
-		text += '\n\n';
+		text += "\n\n";
 		text += array(
-			'Alias',
-			aliases.map(o => format.escape(o)),
+			"Alias",
+			aliases.map((o) => format.escape(o)),
 		);
 	}
 
 	return text;
 }
 
-export async function entityButtons(
-	wb: WikibaseMiddlewareProperty,
-	entityId: string,
-) {
+export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: string) {
 	const entity = await wb.reader(entityId);
-	const buttonTextReader = await wb.reader('buttons.wikidata');
+	const buttonTextReader = await wb.reader("buttons.wikidata");
 	const buttons = [
 		{
 			text: buttonTextReader.label(),
@@ -67,32 +61,32 @@ export async function entityButtons(
 		},
 	];
 
-	const claimButtons = await Promise.all(typedEntries(CLAIMS.BUTTON_INTEREST).map(async ([propertyId, urlModifier]) => {
-		const property = await wb.reader(propertyId);
-		return entity
-			.claimValues(propertyId)
-			.map(o => o.value)
-			.filter(o => typeof o === 'string')
-			.map((o, _i, array) => ({
-				text: `${property.label()}${
-					array.length > 1 ? ` ${String(o)}` : ''
-				}`,
-				url: urlModifier(o),
-			}));
-	}));
+	const claimButtons = await Promise.all(
+		typedEntries(CLAIMS.BUTTON_INTEREST).map(async ([propertyId, urlModifier]) => {
+			const property = await wb.reader(propertyId);
+			return entity
+				.claimValues(propertyId)
+				.map((o) => o.value)
+				.filter((o) => typeof o === "string")
+				.map((value, _i, allValues) => ({
+					text: `${property.label()}${allValues.length > 1 ? ` ${value}` : ""}`,
+					url: urlModifier(value),
+				}));
+		}),
+	);
 
 	return [...buttons, ...sitelinkButtons(entity), ...claimButtons.flat()];
 }
 
 function sitelinkButtons(entity: WikibaseEntityReader) {
 	try {
-		return entity.allSitelinksInLang().map(o => ({
+		return entity.allSitelinksInLang().map((o) => ({
 			text: wdk.getSitelinkData(o).project,
 			url: entity.sitelinkUrl(o)!,
 		}));
 	} catch (error: unknown) {
 		console.error(
-			'something failed with sitelinkButtons',
+			"something failed with sitelinkButtons",
 			error instanceof Error ? error.message : error,
 		);
 		return [];
@@ -108,54 +102,56 @@ async function claimText(
 	const claimLabel = claimReader.label();
 	const claimValues = entity.claimValues(claim);
 
-	const claimValueTexts = await Promise.all(claimValues.map(async o => claimValueText(wb, o)));
+	const claimValueTexts = await Promise.all(claimValues.map((o) => claimValueText(wb, o)));
 
 	return array(claimLabel, claimValueTexts);
 }
 
-async function claimValueText(
-	wb: WikibaseMiddlewareProperty,
-	s: SnakValue,
-): Promise<string> {
-	if (s.type === 'wikibase-entityid') {
+// false positive, typescript already checks this
+// oxlint-disable-next-line typescript/consistent-return
+async function claimValueText(wb: WikibaseMiddlewareProperty, s: SnakValue): Promise<string> {
+	if (s.type === "wikibase-entityid") {
 		const reader = await wb.reader(s.value.id);
 		return format.url(format.escape(reader.label()), reader.url());
 	}
 
-	if (s.type === 'string') {
+	if (s.type === "string") {
 		return format.escape(s.value);
 	}
 
-	if (s.type === 'monolingualtext') {
+	if (s.type === "monolingualtext") {
 		const language = format.monospace(s.value.language);
 		const text = format.escape(s.value.text);
 		return `${language}: ${text}`;
 	}
 
-	if (s.type === 'quantity') {
+	if (s.type === "quantity") {
 		const amount = format.escape(s.value.amount);
 		const unit = await formatUnit(wb, s.value.unit);
 		return unit ? `${amount} ${unit}` : amount;
 	}
 
-	if (s.type === 'time') {
+	if (s.type === "time") {
 		return format.escape(wikibaseTimeToSimpleDay(s.value));
 	}
 
-	if (s.type === 'globecoordinate') {
+	if (s.type === "globecoordinate") {
 		return format.monospace(`${s.value.latitude},${s.value.longitude}`);
 	}
 
 	unreachable(s);
 }
 
-async function formatUnit(wb: WikibaseMiddlewareProperty, unit: string) {
+async function formatUnit(
+	wb: WikibaseMiddlewareProperty,
+	unit: string,
+): Promise<string | undefined> {
 	// Special case: This is like factor 1, it does nothing.
-	if (unit === '1') {
-		return false;
+	if (unit === "1") {
+		return undefined;
 	}
 
-	const entity = /Q\d+$/.exec(unit);
+	const entity = /Q\d+$/u.exec(unit);
 	if (!entity) {
 		return format.escape(unit);
 	}
@@ -169,16 +165,16 @@ export function image(entity: WikibaseEntityReader): {
 	thumb?: string;
 } {
 	const possible = [
-		...entity.claimValues('P18'), // Image
-		...entity.claimValues('P154'), // Logo image
-		...entity.claimValues('P94'), // Coat of arms
-		...entity.claimValues('P41'), // Flag image
-		...entity.claimValues('P242'), // Locator map image
-		...entity.claimValues('P5555'), // Schematic illustation
-		...entity.claimValues('P117'), // Chemical structure
+		...entity.claimValues("P18"), // Image
+		...entity.claimValues("P154"), // Logo image
+		...entity.claimValues("P94"), // Coat of arms
+		...entity.claimValues("P41"), // Flag image
+		...entity.claimValues("P242"), // Locator map image
+		...entity.claimValues("P5555"), // Schematic illustation
+		...entity.claimValues("P117"), // Chemical structure
 	]
-		.map(o => o.value)
-		.filter(o => typeof o === 'string');
+		.map((o) => o.value)
+		.filter((o) => typeof o === "string");
 
 	if (possible.length === 0) {
 		return {};

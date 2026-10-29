@@ -1,1 +1,1 @@
-export {html as format} from 'telegram-format';
+export { html as format } from "telegram-format";

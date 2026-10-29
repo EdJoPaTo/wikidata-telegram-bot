@@ -1,4 +1,7 @@
-export function typedEntries<K extends keyof any, V>(record: Readonly<Partial<Record<K, V>>>): Array<[K, V]> {
+export function typedEntries<K extends keyof any, V>(
+	record: Readonly<Partial<Record<K, V>>>,
+): Array<[K, V]> {
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
 	if (!record) {
 		return [];
 	}
@@ -6,7 +9,6 @@ export function typedEntries<K extends keyof any, V>(record: Readonly<Partial<Re
 	return Object.entries(record) as unknown[] as Array<[K, V]>;
 }
 
-export function unreachable(unreachable: never): never {
-	throw new Error('Should have been unreachable but looks like it wasnt: '
-		+ JSON.stringify(unreachable));
+export function unreachable(value: never): never {
+	throw new Error("Should have been unreachable but looks like it wasnt: " + JSON.stringify(value));
 }

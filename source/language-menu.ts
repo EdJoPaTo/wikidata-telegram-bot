@@ -1,7 +1,8 @@
-import {MenuTemplate} from 'grammy-inline-menu';
+import { MenuTemplate } from "grammy-inline-menu";
 // @ts-expect-error there are no types
-import localeEmoji from 'locale-emoji';
-import {backButtons, type Context} from './bot-generics.ts';
+import localeEmoji from "locale-emoji";
+
+import { backButtons, type Context } from "./bot-generics.ts";
 
 export const menu = new MenuTemplate<Context>(languageMenuText);
 
@@ -9,7 +10,7 @@ function flagString(languageCode: string, useFallbackFlag = false) {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 	const flag = localeEmoji(languageCode) as string;
 	if (!flag && useFallbackFlag) {
-		return '🏳️‍🌈';
+		return "🏳️‍🌈";
 	}
 
 	return flag;
@@ -17,13 +18,13 @@ function flagString(languageCode: string, useFallbackFlag = false) {
 
 async function languageMenuText(ctx: Context) {
 	const flag = flagString(ctx.wd.locale(), true);
-	const reader = await ctx.wd.reader('menu.language');
+	const reader = await ctx.wd.reader("menu.language");
 	return `${flag} ${reader.label()}`;
 }
 
-menu.select('lang', {
+menu.select("lang", {
 	columns: 3,
-	choices: async ctx => ctx.wd.availableLocales(0),
+	choices: (ctx) => ctx.wd.availableLocales(0),
 	buttonText(_, key) {
 		const flag = flagString(key);
 		return `${flag} ${key}`;
@@ -34,7 +35,7 @@ menu.select('lang', {
 		ctx.wd.locale(key);
 		return true;
 	},
-	getCurrentPage: ctx => ctx.session.page,
+	getCurrentPage: (ctx) => ctx.session.page,
 	setPage(ctx, page) {
 		ctx.session.page = page;
 	},

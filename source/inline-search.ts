@@ -1,72 +1,62 @@
-import * as process from 'node:process';
-import {Composer} from 'grammy';
+import * as process from "node:process";
+
+import { Composer } from "grammy";
 import type {
 	InlineKeyboardMarkup,
 	InlineQueryResultArticle,
 	InlineQueryResultPhoto,
-} from 'grammy/types';
-import type {MiddlewareProperty as WikibaseMiddlewareProperty} from 'telegraf-wikibase';
-import type {SearchResult} from 'wikibase-sdk';
-import type {Context} from './bot-generics.ts';
-import * as CLAIMS from './claim-ids.ts';
-import {
-	entityButtons,
-	entityWithClaimText,
-	image,
-} from './format-wd-entity.ts';
-import {format} from './format/index.ts';
-import {
-	entitiesInClaimValues,
-	getPopularEntities,
-	searchEntities,
-} from './wd-helper.ts';
+} from "grammy/types";
+import type { MiddlewareProperty as WikibaseMiddlewareProperty } from "telegraf-wikibase";
+import type { SearchResult } from "wikibase-sdk";
+
+import type { Context } from "./bot-generics.ts";
+import * as CLAIMS from "./claim-ids.ts";
+import { entityButtons, entityWithClaimText, image } from "./format-wd-entity.ts";
+import { format } from "./format/index.ts";
+import { entitiesInClaimValues, getPopularEntities, searchEntities } from "./wd-helper.ts";
 
 export const bot = new Composer<Context>();
 
-async function getSearchResults(
-	language: string,
-	query: string,
-): Promise<readonly string[]> {
+async function getSearchResults(language: string, query: string): Promise<readonly string[]> {
 	if (query) {
 		const results = await search(language, query);
-		return results.map(o => o.id);
+		return results.map((o) => o.id);
 	}
 
 	return getPopularEntities();
 }
 
-bot.on('inline_query', async ctx => {
-	const {query} = ctx.inlineQuery;
+bot.on("inline_query", async (ctx) => {
+	const { query } = ctx.inlineQuery;
 	const language = ctx.wd.locale();
 
 	const identifier = [
-		'inline query',
+		"inline query",
 		Number(ctx.inlineQuery.id).toString(36).slice(-4),
 		ctx.from.id,
 		ctx.from.first_name,
 		language,
 		query.length,
 		query,
-	].join(' ');
+	].join(" ");
 	console.time(identifier);
 
 	const searchResults = await getSearchResults(language, query);
-	console.timeLog(identifier, 'search', searchResults.length);
+	console.timeLog(identifier, "search", searchResults.length);
 
 	await preload(ctx.wd, searchResults);
-	console.timeLog(identifier, 'preload');
+	console.timeLog(identifier, "preload");
 
-	const inlineResults = await Promise.all(searchResults.map(async o => createInlineResult(ctx, o)));
+	const inlineResults = await Promise.all(searchResults.map((o) => createInlineResult(ctx, o)));
 
 	const options = {
-		// eslint-disable-next-line unicorn/no-await-expression-member
-		switch_pm_text: '🏳️‍🌈 ' + (await ctx.wd.reader('menu.language')).label(),
-		switch_pm_parameter: 'language',
+		switch_pm_text: "🏳️‍🌈 " + (await ctx.wd.reader("menu.language")).label(),
+		switch_pm_parameter: "language",
 		is_personal: true,
 		cache_time: 20,
 	};
 
-	if (process.env['NODE_ENV'] !== 'production') {
+	if (process.env["NODE_ENV"] !== "production") {
 		options.cache_time = 2;
 	}
 
@@ -75,10 +65,7 @@ bot.on('inline_query', async ctx => {
 	return ctx.answerInlineQuery([...inlineResults], options);
 });
 
-async function search(
-	language: string,
-	query: string,
-): Promise<readonly SearchResult[]> {
+function search(language: string, query: string): Promise<readonly SearchResult[]> {
 	return searchEntities({
 		search: query,
 		language,
@@ -92,7 +79,7 @@ async function preload(
 	entityIds: readonly string[],
 ): Promise<void> {
 	await wb.preload([...entityIds, ...CLAIMS.ALL]);
-	const entities = await Promise.all(entityIds.map(async id => wb.reader(id)));
+	const entities = await Promise.all(entityIds.map((id) => wb.reader(id)));
 
 	const claimEntityIds = entitiesInClaimValues(entities, CLAIMS.TEXT_INTEREST);
 	await wb.preload(claimEntityIds);
@@ -102,19 +89,15 @@ async function createInlineResult(
 	ctx: Context,
 	entityId: string,
 ): Promise<InlineQueryResultArticle | InlineQueryResultPhoto> {
-	const text = await entityWithClaimText(
-		ctx.wd,
-		entityId,
-		CLAIMS.TEXT_INTEREST,
-	);
+	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
 	const buttons = await entityButtons(ctx.wd, entityId);
 	const keyboard: InlineKeyboardMarkup = {
-		inline_keyboard: buttons.map(o => [o]),
+		inline_keyboard: buttons.map((o) => [o]),
 	};
 
 	const entity = await ctx.wd.reader(entityId);
-	const {photo, thumb} = image(entity);
+	const { photo, thumb } = image(entity);
 
 	const inlineResultBase = {
 		id: entityId,
@@ -126,7 +109,7 @@ async function createInlineResult(
 
 	if (photo && thumb) {
 		const inlineResult: InlineQueryResultPhoto = {
-			type: 'photo',
+			type: "photo",
 			...inlineResultBase,
 			photo_url: photo,
 			thumbnail_url: thumb,
@@ -137,10 +120,10 @@ async function createInlineResult(
 	}
 
 	const inlineResult: InlineQueryResultArticle = {
-		type: 'article',
+		type: "article",
 		...inlineResultBase,
 		input_message_content: {
-			link_preview_options: {is_disabled: true},
+			link_preview_options: { is_disabled: true },
 			message_text: text,
 			parse_mode: format.parse_mode,
 		},
