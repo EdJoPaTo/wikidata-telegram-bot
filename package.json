@@ -15,9 +15,9 @@
 		"grammy-inline-menu": "^9.0.0",
 		"locale-emoji": "^0.3.0",
 		"telegraf-middleware-console-time": "^3.0.0",
-		"telegraf-wikibase": "^0.13.0",
+		"telegraf-wikibase": "^0.14.0",
 		"telegram-format": "^3.0.0",
-		"wikibase-sdk": "^9.2.2"
+		"wikibase-sdk": "^11.6.6"
 	},
 	"devDependencies": {
 		"@types/node": "^24.10.1",

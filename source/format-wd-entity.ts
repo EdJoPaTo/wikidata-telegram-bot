@@ -2,7 +2,7 @@ import type {
 	MiddlewareProperty as WikibaseMiddlewareProperty,
 	WikibaseEntityReader,
 } from "telegraf-wikibase";
-import { type PropertyId, type SnakValue, wikibaseTimeToSimpleDay } from "wikibase-sdk";
+import { type PropertyId, type SnakDataValue, wikibaseTimeToSimpleDay } from "wikibase-sdk";
 import { wdk } from "wikibase-sdk/wikidata.org";
 
 import * as CLAIMS from "./claim-ids.ts";
@@ -64,14 +64,10 @@ export async function entityButtons(wb: WikibaseMiddlewareProperty, entityId: st
 	const claimButtons = await Promise.all(
 		typedEntries(CLAIMS.BUTTON_INTEREST).map(async ([propertyId, urlModifier]) => {
 			const property = await wb.reader(propertyId);
-			return entity
-				.claimValues(propertyId)
-				.map((o) => o.value)
-				.filter((o) => typeof o === "string")
-				.map((value, _i, allValues) => ({
-					text: `${property.label()}${allValues.length > 1 ? ` ${value}` : ""}`,
-					url: urlModifier(value),
-				}));
+			return entity.claimStringDataValues(propertyId).map((value, _i, allValues) => ({
+				text: `${property.label()}${allValues.length > 1 ? ` ${value}` : ""}`,
+				url: urlModifier(value),
+			}));
 		}),
 	);
 
@@ -100,7 +96,7 @@ async function claimText(
 ): Promise<string> {
 	const claimReader = await wb.reader(claim);
 	const claimLabel = claimReader.label();
-	const claimValues = entity.claimValues(claim);
+	const claimValues = entity.claimDataValues(claim);
 
 	const claimValueTexts = await Promise.all(claimValues.map((o) => claimValueText(wb, o)));
 
@@ -109,7 +105,7 @@ async function claimText(
 
 // false positive, typescript already checks this
 // oxlint-disable-next-line typescript/consistent-return
-async function claimValueText(wb: WikibaseMiddlewareProperty, s: SnakValue): Promise<string> {
+async function claimValueText(wb: WikibaseMiddlewareProperty, s: SnakDataValue): Promise<string> {
 	if (s.type === "wikibase-entityid") {
 		const reader = await wb.reader(s.value.id);
 		return format.url(format.escape(reader.label()), reader.url());
@@ -165,16 +161,14 @@ export function image(entity: WikibaseEntityReader): {
 	thumb?: string;
 } {
 	const possible = [
-		...entity.claimValues("P18"), // Image
-		...entity.claimValues("P154"), // Logo image
-		...entity.claimValues("P94"), // Coat of arms
-		...entity.claimValues("P41"), // Flag image
-		...entity.claimValues("P242"), // Locator map image
-		...entity.claimValues("P5555"), // Schematic illustation
-		...entity.claimValues("P117"), // Chemical structure
-	]
-		.map((o) => o.value)
-		.filter((o) => typeof o === "string");
+		...entity.claimStringDataValues("P18"), // Image
+		...entity.claimStringDataValues("P154"), // Logo image
+		...entity.claimStringDataValues("P94"), // Coat of arms
+		...entity.claimStringDataValues("P41"), // Flag image
+		...entity.claimStringDataValues("P242"), // Locator map image
+		...entity.claimStringDataValues("P5555"), // Schematic illustation
+		...entity.claimStringDataValues("P117"), // Chemical structure
+	];
 
 	if (possible.length === 0) {
 		return {};

@@ -5,10 +5,11 @@ import {
 	isEntityId,
 	type PropertyId,
 	type SearchResult,
+	type SimplifiedSparqlValueGroup,
 	simplifySparqlResults,
-	type SnakValue,
+	type SnakDataValue,
 	type SparqlResults,
-	type SparqlValueType,
+	type SparqlValueRaw,
 } from "wikibase-sdk";
 import { wdk } from "wikibase-sdk/wikidata.org";
 
@@ -29,12 +30,12 @@ export function entitiesInClaimValues(
 	claims: readonly PropertyId[],
 ) {
 	return claims
-		.flatMap((claim) => entities.flatMap((entity) => entity.claimValues(claim)))
+		.flatMap((claim) => entities.flatMap((entity) => entity.claimDataValues(claim)))
 		.flatMap((value) => entitiesInSnakValue(value))
 		.filter(arrayFilterUnique());
 }
 
-function entitiesInSnakValue(claim: SnakValue): EntityId[] {
+function entitiesInSnakValue(claim: SnakDataValue): EntityId[] {
 	if (claim.type === "wikibase-entityid") {
 		return [claim.value.id];
 	}
@@ -89,10 +90,9 @@ export async function searchEntities(options: SearchEntitiesOptions) {
 
 export async function sparqlQuerySimplified(
 	query: string,
-): Promise<ReadonlyArray<Record<string, SparqlValueType>>> {
+): Promise<ReadonlyArray<Record<string, SparqlValueRaw | SimplifiedSparqlValueGroup>>> {
 	const url = wdk.sparqlQuery(query);
 	const response = await fetch(url, FETCH_OPTIONS);
 	const body = (await response.json()) as SparqlResults;
-	const simplified = simplifySparqlResults(body) as ReadonlyArray<Record<string, SparqlValueType>>;
-	return simplified;
+	return simplifySparqlResults(body);
 }
