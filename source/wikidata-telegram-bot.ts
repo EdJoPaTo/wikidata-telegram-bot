@@ -115,10 +115,7 @@ bot.command("privacy", (ctx) =>
 );
 
 await baseBot.api.setMyCommands([
-	{
-		command: "location",
-		description: "Show info on how to use the location feature",
-	},
+	{ command: "location", description: "Show info on how to use the location feature" },
 	{ command: "help", description: "Show help" },
 	{ command: "language", description: "set your language" },
 	{ command: "settings", description: "set your language" },

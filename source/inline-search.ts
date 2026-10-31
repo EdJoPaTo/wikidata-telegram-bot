@@ -92,9 +92,7 @@ async function createInlineResult(
 	const text = await entityWithClaimText(ctx.wd, entityId, CLAIMS.TEXT_INTEREST);
 
 	const buttons = await entityButtons(ctx.wd, entityId);
-	const keyboard: InlineKeyboardMarkup = {
-		inline_keyboard: buttons.map((o) => [o]),
-	};
+	const keyboard: InlineKeyboardMarkup = { inline_keyboard: buttons.map((o) => [o]) };
 
 	const entity = await ctx.wd.reader(entityId);
 	const { photo, thumb } = image(entity);

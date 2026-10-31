@@ -60,9 +60,7 @@ export async function getPopularEntities() {
 
 		const response = await fetch(
 			"https://www.wikidata.org/w/index.php?title=Wikidata:Main_Page/Popular&action=raw",
-			{
-				headers,
-			},
+			{ headers },
 		);
 		const body = await response.text();
 
